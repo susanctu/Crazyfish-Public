@@ -2,6 +2,48 @@ import datetime
 from django.db import models
 from django.core.exceptions import ValidationError
 
+### Models for the event app here ###
+
+# Location model here
+class Location(models.Model):
+    city = models.CharField(max_length=60)
+    state_province = models.CharField('state or province', max_length=30,
+                                      blank=True)
+    country = models.CharField(max_length=50)
+    zip_code = models.PositiveIntegerField(max_length=5)
+
+    """ Location.__unicode__
+    ----------
+    Defines the formatting of a Location
+
+    """
+    def __unicode(self):
+        return self.city
+
+    """ Location.clean()
+    ----------
+    Custom validation method, which runs the following checks: 
+        - if state_or_province is stripped if country is not "U.S.A." 
+        or "Canada"
+        - if country is USA or Canada, then the state_or_province should be 
+        provided
+
+    """
+    def clean(self):
+        # Dont allow events happening in CA or USA to not have a state or
+        # province
+        if self.country == 'U.S.A' or self.country == 'Canada':
+            if not self.state_province:
+                raise ValidationError(
+                    'Events in the USA or Canada must have a state or province')
+        # For events outside these two countries, strip the state or province.
+        else:
+            self.state_province = ""
+
+    class Meta:
+        ordering = ['zip_code']
+
+
 # Event model here...
 """ Event model class
 ----------
@@ -21,10 +63,8 @@ class Event(models.Model):
     name = models.CharField(max_length=100)
     category = models.CharField(max_length=50)
     description = models.CharField(max_length=500, blank=True)
-    city = models.CharField(max_length=60)
-    state_province = models.CharField('state or province', max_length=30,
-                                      blank=True)
-    country = models.CharField(max_length=50)
+    event_location = models.ForeignKey(Location)
+    address = models.CharField(max_length=120, blank=True)
     website = models.URLField(blank=True)
     event_start_date = models.DateField('start date')
     event_end_date = models.DateField('end date, optional',
@@ -44,24 +84,11 @@ class Event(models.Model):
     """ Event.clean()
     ----------
     Custom model validation, which runs the following sanity checks:
-        - if state_or_province is stripped if country is not "U.S.A." 
-        or "Canada"
-        - if country is USA or Canada, then the state_or_province should be 
-        provided
         - price should be always be positive
         - event start time should be before event end time.
-    
+   
     """
     def clean(self):
-        # Dont allow events happening in CA or USA to not have a state or
-        # province
-        if self.country == 'U.S.A' or self.country == 'Canada':
-            if not self.state_province:
-                raise ValidationError(
-                    'Events in the USA or Canada must have a state or province')
-        else:
-            self.state_province = ""
-        
         # Price should always be positive
         if self.price is not None and self.price<0:
             raise ValidationError('Price cannot be negative')
@@ -92,6 +119,8 @@ class Event(models.Model):
 
     class Meta:
         ordering = ['category','name']
+
+### Managers below this ###
 
 # EventManager model here...
 """ EventManager model class
