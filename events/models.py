@@ -13,7 +13,18 @@ from django.core.exceptions import ValidationError
 # Location model here
 """ Location model class
 ----------
-TODO: description
+This class represents a pre-approved location where events take place. 
+The location has the following fields:
+    - city: name of the city where events take place
+    - zip_code: zip code of the city
+    - state_province: optional, used only if the event takes place in the US
+    or in Canada
+    - country: country where the events take place. 
+
+Each event in the database is tied to one instance of the Location class, 
+so that events are always linked to a known location. Events which cannot be 
+linked to a know event will need to be approved manually, after the location
+where the event takes place has been verified.
 
 """
 class Location(models.Model):
@@ -55,11 +66,15 @@ class Location(models.Model):
         ordering = ['zip_code']
 
 
-
 # Category model here...
 """ Category model class
 ----------
-TODO: description
+This class represents a category for an event. Categories can consist only of 
+a generic classification (stored in base_name), or they can also have a 
+sub-category type of classification (stored in sub_category).
+
+In general, an event will be tied only to one category, but it is possible 
+to associate an event with multiple categories as well.
 
 """
 class Category(models.Model):
@@ -99,9 +114,14 @@ this day.
 
 Detailed explanation of the fields of this class:
     - name: string summarising the event. 
-    - category: one of the previously approved categories for events
-    - description: string describing the event, optional
-    - event_location: one of the previously approved locations for events
+    - category: one (or more) of the previously approved categories for events.
+    Note: it is important to use a many-to-many field for this, because of the 
+    way categories are described. Since there is one Category object instance
+    for each category/subcategory combination, it is very likely that an
+    event will be linked to more than one Category object, even if in the end
+    it only appears in one basic category.
+    - description: string describing the event, optional.
+    - event_location: one of the previously approved locations for events.
     - address: string giving the address of the event (street and number),
     optional. The location (city, country) should not be present in this string,
     because it is already included in the event_location field.
@@ -120,7 +140,7 @@ Detailed explanation of the fields of this class:
 """
 class Event(models.Model):
     name = models.CharField(max_length=100)
-    category = models.ForeignKey(Category)
+    category = models.ManyToManyField(Category)
     description = models.CharField(max_length=500, blank=True)
     event_location = models.ForeignKey(Location)
     address = models.CharField(max_length=120, blank=True)
