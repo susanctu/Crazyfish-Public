@@ -1,3 +1,9 @@
+""" events/model.py
+----------
+TODO: description
+author: Georges Goetz - ggoetz@stanford.edu
+
+"""
 import datetime
 from django.db import models
 from django.core.exceptions import ValidationError
@@ -5,12 +11,17 @@ from django.core.exceptions import ValidationError
 ### Models for the event app here ###
 
 # Location model here
+""" Location model class
+----------
+TODO: description
+
+"""
 class Location(models.Model):
     city = models.CharField(max_length=60)
     state_province = models.CharField('state or province', max_length=30,
                                       blank=True)
     country = models.CharField(max_length=50)
-    zip_code = models.PositiveIntegerField(max_length=5)
+    zip_code = models.PositiveIntegerField('zip code',max_length=5)
 
     """ Location.__unicode__
     ----------
@@ -44,6 +55,33 @@ class Location(models.Model):
         ordering = ['zip_code']
 
 
+
+# Category model here...
+""" Category model class
+----------
+TODO: description
+
+"""
+class Category(models.Model):
+    base_name = models.CharField(max_length=100)
+    sub_category = models.CharField(max_length=100)
+
+    """ Category.__unicode__
+    ----------
+    Formatting of a category
+
+    """
+    def __unicode(self):
+        if sub_category is not None:
+            return u'%s/%s' (self.base_name, self.sub_category)
+        else:
+            return u'%s/%s' (self.base_name, 'all')
+
+    class Meta:
+        ordering = ['base_name']
+
+
+
 # Event model here...
 """ Event model class
 ----------
@@ -58,10 +96,31 @@ When the end date and time of and event are not specified, the event is assumed
 to end an hour after its initial start time. If an event end date is specified
 but not the event end hour, the event will be assumed to end at midnight on 
 this day.
+
+Detailed explanation of the fields of this class:
+    - name: string summarising the event. 
+    - category: one of the previously approved categories for events
+    - description: string describing the event, optional
+    - event_location: one of the previously approved locations for events
+    - address: string giving the address of the event (street and number),
+    optional. The location (city, country) should not be present in this string,
+    because it is already included in the event_location field.
+    - website: website where tickets can be bought.
+    - event_start_date: start date of the event.
+    - event_end_date: optional, end time of the event.
+    - event_start_time: start time of the event.
+    - event_end_time: optional, end time of the event. If it is not specified
+    and the event_end_date was not specified either, then the event is assumed
+    to last 1 hour. If it is not specified and the event end date was specified,
+    then the event is assumed to end at 23:59 on the day of the event end.
+    - price: optional, typical price of the event (starting price). 
+    - price_details: optional, string describing in more details the pricing
+    policy for the event.
+
 """
 class Event(models.Model):
     name = models.CharField(max_length=100)
-    category = models.CharField(max_length=50)
+    category = models.ForeignKey(Category)
     description = models.CharField(max_length=500, blank=True)
     event_location = models.ForeignKey(Location)
     address = models.CharField(max_length=120, blank=True)
@@ -72,6 +131,7 @@ class Event(models.Model):
     event_start_time = models.TimeField('start time')
     event_end_time = models.TimeField('end time', blank=True, null=True)
     price = models.FloatField(blank=True, null=True)
+    price_details = models.CharField(max_length=200, blank=True)
 
     """ Event.__unicode__
     ----------
@@ -119,6 +179,9 @@ class Event(models.Model):
 
     class Meta:
         ordering = ['category','name']
+
+
+
 
 ### Managers below this ###
 
