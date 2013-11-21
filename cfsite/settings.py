@@ -59,7 +59,8 @@ WSGI_APPLICATION = 'cfsite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, os.path.join('database','db.sqlite3')),
+        'NAME': os.path.join(BASE_DIR, os.path.join('database_temp',
+                                                    'cfdb_temp.db')),
     }
 }
 
