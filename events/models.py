@@ -152,7 +152,7 @@ class Event(models.Model):
     event_end_time = models.TimeField('end time', blank=True, null=True)
     price = models.FloatField(blank=True, null=True)
     price_details = models.CharField(max_length=200, blank=True)
-    rating = models.CommaSeparatedIntegerField(max_length=250)
+    rating = models.CommaSeparatedIntegerField(max_length=250, blank=True)
     is_valid_event = models.BooleanField()
 
     """ Event.__unicode__
@@ -195,7 +195,7 @@ class Event(models.Model):
                 raise ValidationError('Start and end times are inconsistent.')
 
     class Meta:
-        ordering = ['name']
+        ordering = ['event_start_time','name']
 
 
 
