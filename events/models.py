@@ -129,13 +129,13 @@ Detailed explanation of the fields of this class:
     - event_start_date: start date of the event.
     - event_end_date: optional, end time of the event.
     - event_start_time: start time of the event.
-    - event_end_time: optional, end time of the event. If it is not specified
-    and the event_end_date was not specified either, then the event is assumed
-    to last 1 hour. If it is not specified and the event end date was specified,
-    then the event is assumed to end at 23:59 on the day of the event end.
+    - event_end_time: optional, end time of the event. If it is not specified 
+    and the event end date was specified, then the event is assumed to end at 
+    23:59 on the day of the event end.
     - price: optional, typical price of the event (starting price). 
     - price_details: optional, string describing in more details the pricing
     policy for the event.
+    - rating: list of integer ratings, between 0 and 5.
 
 """
 class Event(models.Model):
@@ -152,6 +152,8 @@ class Event(models.Model):
     event_end_time = models.TimeField('end time', blank=True, null=True)
     price = models.FloatField(blank=True, null=True)
     price_details = models.CharField(max_length=200, blank=True)
+    rating = models.CommaSeparatedIntegerField(max_length=250)
+    is_valid_event = models.BooleanField()
 
     """ Event.__unicode__
     ----------
@@ -180,14 +182,10 @@ class Event(models.Model):
         if self.event_end_date is None:
             self.event_end_date = self.event_start_date
 
-        # Default event duration is 1 hour
+        # If even duration was not specified, set start time to end time
+        # to indicate we don't know what to do with the time.
         if self.event_end_time is None:
             self.event_end_time = self.event_start_time
-            if self.event_start_time.hour == 23:
-                self.event_end_time.hours = 0
-                self.event_end_date += datetime.timedelta(days=1)
-            else:
-                self.event_end_time.hours += 1
 
         # Check that start and end date and time of the event are consistent
         if self.event_end_date < self.event_start_date:
@@ -196,9 +194,8 @@ class Event(models.Model):
             if self.event_start_time > self.event_end_time:
                 raise ValidationError('Start and end times are inconsistent.')
 
-
     class Meta:
-        ordering = ['category','name']
+        ordering = ['name']
 
 
 
