@@ -79,7 +79,7 @@ to associate an event with multiple categories as well.
 """
 class Category(models.Model):
     base_name = models.CharField(max_length=100)
-    sub_category = models.CharField(max_length=100)
+    sub_category = models.CharField(max_length=100, blank = True)
 
     """ Category.__unicode__
     ----------
@@ -87,13 +87,25 @@ class Category(models.Model):
 
     """
     def __unicode(self):
-        if sub_category is not None:
+        if self.sub_category:
             return u'%s/%s' (self.base_name, self.sub_category)
         else:
             return u'%s/%s' (self.base_name, 'all')
 
+    """ Category.clean()
+    ----------
+    Category validation method. Doesn't do much, other than make sure that
+    the subcategory is called "all" if the user didn't specify it.
+
+    """
+    def clean(self):
+        if not self.sub_category:
+            self.sub_category = "all"
+            
+
     class Meta:
         ordering = ['base_name']
+        verbose_name_plural = 'categories'
 
 
 

@@ -6,6 +6,10 @@ class LocationAdmin(admin.ModelAdmin):
     ordering = ('zip_code',)
     search_fields = ('city','zip_code',)
 
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('base_name', 'sub_category')
+    ordering = ('base_name',)
+
 class EventAdmin(admin.ModelAdmin):
     list_display = ('name','event_start_date','event_start_time',
                     'event_end_time','event_location','price','website',)
@@ -14,6 +18,6 @@ class EventAdmin(admin.ModelAdmin):
     search_fields = ('category','event_start_date','location',)
 
 # Register the models here.
-admin.site.register(Category)
+admin.site.register(Category, CategoryAdmin)
 admin.site.register(Location, LocationAdmin)
 admin.site.register(Event, EventAdmin)
