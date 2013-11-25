@@ -13,7 +13,7 @@ class CategoryAdmin(admin.ModelAdmin):
 class EventAdmin(admin.ModelAdmin):
     list_display = ('name','event_start_date','event_start_time',
                     'event_end_time','event_location','price','website',)
-    list_filter = ('category','event_start_date',)
+    list_filter = ('category','event_start_date','event_location')
     ordering = ('category','-event_start_date',)
     search_fields = ('category','event_start_date','location',)
 

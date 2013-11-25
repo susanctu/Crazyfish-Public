@@ -39,7 +39,7 @@ class Location(models.Model):
     Defines the formatting of a Location
 
     """
-    def __unicode(self):
+    def __unicode__(self):
         return self.city
 
     """ Location.clean()
@@ -54,7 +54,7 @@ class Location(models.Model):
     def clean(self):
         # Dont allow events happening in CA or USA to not have a state or
         # province
-        if self.country == 'U.S.A' or self.country == 'Canada':
+        if self.country == 'United States' or self.country == 'Canada':
             if not self.state_province:
                 raise ValidationError(
                     'Events in the USA or Canada must have a state or province')
@@ -86,11 +86,11 @@ class Category(models.Model):
     Formatting of a category
 
     """
-    def __unicode(self):
+    def __unicode__(self):
         if self.sub_category:
-            return u'%s/%s' (self.base_name, self.sub_category)
+            return u'%s/%s' % (self.base_name, self.sub_category)
         else:
-            return u'%s/%s' (self.base_name, 'all')
+            return u'%s/all' % (self.base_name)
 
     """ Category.clean()
     ----------
@@ -100,7 +100,7 @@ class Category(models.Model):
     """
     def clean(self):
         if not self.sub_category:
-            self.sub_category = "all"
+            self.sub_category = "generic"
             
 
     class Meta:
