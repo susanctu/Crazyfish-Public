@@ -34,24 +34,26 @@ class Location(models.Model):
     country = models.CharField(max_length=50)
     zip_code = models.PositiveIntegerField('zip code',max_length=5)
 
-    """ Location.__unicode__
-    ----------
-    Defines the formatting of a Location
 
-    """
     def __unicode__(self):
+        """ Location.__unicode__
+        ----------
+        Defines the formatting of a Location
+        
+        """
         return self.city
 
-    """ Location.clean()
-    ----------
-    Custom validation method, which runs the following checks: 
-        - if state_or_province is stripped if country is not "U.S.A." 
-        or "Canada"
-        - if country is USA or Canada, then the state_or_province should be 
-        provided
 
-    """
     def clean(self):
+        """ Location.clean()
+        ----------
+        Custom validation method, which runs the following checks: 
+            - if state_or_province is stripped if country is not "U.S.A." 
+            or "Canada"
+            - if country is USA or Canada, then the state_or_province should be 
+            provided
+        
+        """
         # Dont allow events happening in CA or USA to not have a state or
         # province
         if self.country == 'United States' or self.country == 'Canada':
@@ -61,6 +63,7 @@ class Location(models.Model):
         # For events outside these two countries, strip the state or province.
         else:
             self.state_province = ""
+
 
     class Meta:
         ordering = ['zip_code']
@@ -81,27 +84,29 @@ class Category(models.Model):
     base_name = models.CharField(max_length=100)
     sub_category = models.CharField(max_length=100, blank = True)
 
-    """ Category.__unicode__
-    ----------
-    Formatting of a category
 
-    """
     def __unicode__(self):
+        """ Category.__unicode__
+        ----------
+        Formatting of a category
+        
+        """
         if self.sub_category:
             return u'%s/%s' % (self.base_name, self.sub_category)
         else:
             return u'%s/all' % (self.base_name)
 
-    """ Category.clean()
-    ----------
-    Category validation method. Doesn't do much, other than make sure that
-    the subcategory is called "all" if the user didn't specify it.
 
-    """
     def clean(self):
+        """ Category.clean()
+        ----------
+        Category validation method. Doesn't do much, other than make sure that
+        the subcategory is called "all" if the user didn't specify it.
+        
+        """
         if not self.sub_category:
-            self.sub_category = "generic"
-            
+            self.sub_category = "generic"    
+
 
     class Meta:
         ordering = ['base_name']
@@ -148,6 +153,8 @@ Detailed explanation of the fields of this class:
     - price_details: optional, string describing in more details the pricing
     policy for the event.
     - rating: list of integer ratings, between 0 and 5.
+    - is_valid_event: flag, used to choose if events should be served to the
+    user or not.
 
 """
 class Event(models.Model):
@@ -165,26 +172,30 @@ class Event(models.Model):
     price = models.FloatField(blank=True, null=True)
     price_details = models.CharField(max_length=200, blank=True)
     rating = models.CommaSeparatedIntegerField(max_length=250, blank=True)
-    is_valid_event = models.BooleanField()
+    is_valid_event = models.BooleanField('Is event valid?')
 
-    """ Event.__unicode__
-    ----------
-    Defines the formatting of an event
 
-    """
     def __unicode__(self):
+        """ Event.__unicode__
+        ----------
+        Defines the formatting of an event
+        
+        """
         return self.name
+
     
-    """ Event.clean()
-    ----------
-    Custom model validation, which runs the following sanity checks:
-        - price should be always be positive
-        - event start time should be before event end time.
-   
-    """
     def clean(self):
+        """ Event.clean()
+        ----------
+        Custom model validation, which runs the following sanity checks:
+            - price should be always be positive
+            - event start time should be before event end time.
+            - an event should always be linked to the generic 'All/generic'
+            category.
+
+        """
         # Price should always be positive
-        if self.price is not None and self.price<0:
+        if self.price<0:
             raise ValidationError('Price cannot be negative')
         
         # Plug in default values if end date and end time weren't specified
@@ -205,10 +216,19 @@ class Event(models.Model):
         elif self.event_end_date == self.event_start_date:
             if self.event_start_time > self.event_end_time:
                 raise ValidationError('Start and end times are inconsistent.')
+            
+
+    def category_names(self):
+        """ Category.category_names()
+        ----------
+        Database query used to display event category.
+        
+        """
+        return', '.join([a.__unicode__() for a in self.category.all()])
+    category_names.short_description = "Categories"
 
     class Meta:
         ordering = ['event_start_time','name']
-
 
 
 
@@ -220,19 +240,19 @@ class Event(models.Model):
 
 """
 class EventManager(models.Manager):
-    """ EventManager.name_count(keyword)
-    -----------
-    Returns the number of events that have a name which matches a 
-    keyword.
-
-    """
     def name_count(self, keyword):
+        """ EventManager.name_count(keyword)
+        -----------
+        Returns the number of events that have a name which matches a 
+        keyword.
+        
+        """
         return self.filter(name__icontains=keyword).count()
 
-    """ EventManager.search_name_by_keyword(keyword)
-    ----------
-    Returns a list of elements that have a name which matches a keyword.
-
-    """
     def search_name_by_keyword(self, keyword):
+        """ EventManager.search_name_by_keyword(keyword)
+        ----------
+        Returns a list of elements that have a name which matches a keyword.
+        
+        """
         return self.filter(name__icontains=keyword)
