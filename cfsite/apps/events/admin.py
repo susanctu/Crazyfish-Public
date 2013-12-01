@@ -1,7 +1,6 @@
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
-from events.models import Event, Location, Category
-
+from apps.events.models import Event, Location, Category
 
 
 class LocationAdmin(admin.ModelAdmin):
