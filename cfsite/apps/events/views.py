@@ -33,6 +33,20 @@ def home(request):
 
 def search(request):
     # TODO: replace all this by a SearchForm instance.
+    if request.method == 'GET':
+        form = SearchForm(request.GET)
+    else:
+        form = SearchForm()
+
+    # If no errors in the form, we can proceed with the search
+    if not form.errors:
+        return render(request, 'search_results.html')
+    # If errors, redirect to the home page.
+    else:
+        # TODO: add helpful error message code by passing get data in url
+        return HttpResponseRedirect('/')
+        
+"""
     errors = []
     # Validating event category
     if 'category' in request.GET and request.GET['category']:
@@ -61,3 +75,4 @@ def search(request):
     else:
         # TODO: add helpful error message code by passing get data in url
         return HttpResponseRedirect('/')
+"""

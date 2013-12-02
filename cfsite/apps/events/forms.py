@@ -14,43 +14,39 @@ class SearchForm(forms.Form):
     date = forms.DateField()
     location = forms.CharField()
     location_id = forms.IntegerField(required=False)
-    
+
     def clean_category(self):
         """ SearchForm.clean_category
         ----------
         Make sure that the category selected is among those we have approved.
 
         """
-        if self.category is u'all':
-            self.category_id = 0
-            return
-        else:
-            cat_names_and_ids = [(c.id, c.base_name) 
-                                 for c in Category.objects.all()]
-            matching_id = [cid for (cid, bn) in cat_names_and_ids 
-                           if bn == self.category]
-            if len(matching_id)>1:
+        category = self.cleaned_data['category']
+
+        if category != u'all':
+            matching_ids = get_category_ids(category)
+            if len(matching_ids)>1:
                 # If there is more than one match: something went wrong
                 raise forms.ValidationError(
                     "The category could not be matched properly.")
-            elif matching_id:
-                self.category_id = matching_id[0]
-                return
-            else:
+            elif not matching_ids:
                 raise forms.ValidationError("Please choose a valid category.")
 
+        return category
+
+    
     def clean_date(self):
         """ SearchForm.clean_date
         ----------
         Make sure the date is a date, and is after today's date.
 
         """
-        t = datetime.strptime(self.date,"%d/%m/%Y").date()
+        t = self.cleaned_data['date']
         now = datetime.now().date()
         if (t < now):
             raise forms.ValidationError("Crazyfish can't help you go back in time.")
-        else:
-            return
+        return t
+
 
     def clean_location(self):
         """ SearchForm.clean_location
@@ -58,14 +54,38 @@ class SearchForm(forms.Form):
         Make sure the location is amongst those we know.
 
         """
-        locations_and_ids = [(l.id, l.city) for l in Location.objects.all()]
-        matching_id = [lid for (lid, city) in locations_and_ids
-                       if city == self.location]
-        if len(matching_id)>1:
+        location = self.cleaned_data['location']
+
+        matching_ids = get_location_ids(location)
+        if len(matching_ids)>1:
             raise forms.ValidationError("Something went wrong when trying to find the location")
-        elif matching_id:
-            self.location_id = matching_id[0]
-            return
+        elif matching_ids:
+            self.location_id = matching_ids[0]
         else:
             raise forms.ValidationError("Please choose a location.")
 
+        return location
+
+    def get_category_ids(category_name):
+        """ SearchForm.get_category_ids
+        ----------
+        This function returns a list (possibly empty) of category ids matching
+        a category name.
+
+        """
+        cat_names_and_ids = [(c.id, c.base_name) 
+                             for c in Category.objects.all()]
+        return [cid for (cid, bn) in cat_names_and_ids 
+                       if bn == self.cleaned_data['category']]
+
+
+    def get_location_ids(location_name):
+        """ SearchForm.get_location_ids
+        ----------
+        This function returns a list (possibly empty) of location ids matching
+        a location name
+
+        """
+        locations_and_ids = [(l.id, l.city) for l in Location.objects.all()]
+        return [lid for (lid, city) in locations_and_ids
+                if city == self.location]
