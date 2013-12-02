@@ -32,6 +32,7 @@ def home(request):
 
 
 def search(request):
+    # TODO: replace all this by a SearchForm instance.
     errors = []
     # Validating event category
     if 'category' in request.GET and request.GET['category']:
