@@ -1,0 +1,18 @@
+<html>
+  <head>
+  </head>
+  
+  <body>
+
+    {% if errors %}
+      <ul>
+	{% for error in errors %}
+	<li>{{ error }}</li>
+	{% endfor %}
+      </ul>
+    {% else %}
+      <p>You searched for: <strong>{{ query }}</strong></p>
+    {% endif %}
+
+  </body>
+</html>
