@@ -8,26 +8,27 @@ import datetime
 from django.db import models
 from django.core.exceptions import ValidationError
 
+
 ### Models for the event app here ###
 
 # Location model here
-""" Location model class
-----------
-This class represents a pre-approved location where events take place. 
-The location has the following fields:
-    - city: name of the city where events take place
-    - zip_code: zip code of the city
-    - state_province: optional, used only if the event takes place in the US
-    or in Canada
-    - country: country where the events take place. 
-
-Each event in the database is tied to one instance of the Location class, 
-so that events are always linked to a known location. Events which cannot be 
-linked to a know event will need to be approved manually, after the location
-where the event takes place has been verified.
-
-"""
 class Location(models.Model):
+    """ Location model class
+    ----------
+    This class represents a pre-approved location where events take place. 
+    The location has the following fields:
+        - city: name of the city where events take place
+        - zip_code: zip code of the city
+        - state_province: optional, used only if the event takes place in the US
+        or in Canada
+        - country: country where the events take place. 
+    
+    Each event in the database is tied to one instance of the Location class, 
+    so that events are always linked to a known location. Events which cannot be
+    linked to a known event will need to be approved manually, after the 
+    location where the event takes place has been verified.
+    
+    """
     city = models.CharField(max_length=60)
     state_province = models.CharField('state or province', max_length=30,
                                       blank=True)
@@ -70,17 +71,17 @@ class Location(models.Model):
 
 
 # Category model here...
-""" Category model class
-----------
-This class represents a category for an event. Categories can consist only of 
-a generic classification (stored in base_name), or they can also have a 
-sub-category type of classification (stored in sub_category).
-
-In general, an event will be tied only to one category, but it is possible 
-to associate an event with multiple categories as well.
-
-"""
 class Category(models.Model):
+    """ Category model class
+    ----------
+    This class represents a category for an event. Categories can consist only 
+    of     a generic classification (stored in base_name), or they can also have
+    a sub-category type of classification (stored in sub_category).
+    
+    In general, an event will be tied only to one category, but it is possible 
+    to associate an event with multiple categories as well.
+    
+    """
     base_name = models.CharField(max_length=100)
     sub_category = models.CharField(max_length=100, blank = True)
 
@@ -114,50 +115,94 @@ class Category(models.Model):
 
 
 
+# EventManager class here
+class EventManager(models.Manager):
+    """ EventManager model class
+    ----------
+    This manager provides search functionality in the events database.
+    
+    """
+
+    def name_count(self, keyword):
+        """ EventManager.name_count(keyword)
+        -----------
+        Returns the number of events that have a name which matches a 
+        keyword.
+        
+        """
+        return self.filter(name__icontains=keyword).count()
+
+    def search_name_by_keyword(self, keyword):
+        """ EventManager.search_name_by_keyword(keyword)
+        ----------
+        Returns a list of elements that have a name which matches a keyword.
+        
+        """
+        return self.filter(name__icontains=keyword)
+
+    def search_for_events(self, date, category_id, location_id):
+        """ EventManager.search_for_events(date, category_id, location_id)
+        ----------
+        Returns the list of all events that occurs on the date specified, 
+        for the matching category and location.
+
+        Note: for now, it does not return events which last more than one day
+        and do not start on the date specified. 
+
+        """
+        categories = Category.objects.get(id=category_id)
+        locations = Location.objects.get(id=location_id)
+        l1 = categories.event_set.filter(event_start_date=date)
+        l2 = categories.event_set.all(event_start_date=date)
+        return list(set(l1) & set(l2))
+
+
+
 # Event model here...
-""" Event model class
-----------
-This class represents a model for the event stored in the database. 
-An event is primarily comprised of a name and category. It also needs a time 
-and place for it to be valid. 
-Optionally, an event can have a price, a description and a website.
-
-An event can have a different start date from its end date (required for events
-which last more than a day, for exmple a music festival). 
-When the end date and time of and event are not specified, the event is assumed
-to end an hour after its initial start time. If an event end date is specified
-but not the event end hour, the event will be assumed to end at midnight on 
-this day.
-
-Detailed explanation of the fields of this class:
-    - name: string summarising the event. 
-    - category: one (or more) of the previously approved categories for events.
-    Note: it is important to use a many-to-many field for this, because of the 
-    way categories are described. Since there is one Category object instance
-    for each category/subcategory combination, it is very likely that an
-    event will be linked to more than one Category object, even if in the end
-    it only appears in one basic category.
-    - description: string describing the event, optional.
-    - event_location: one of the previously approved locations for events.
-    - address: string giving the address of the event (street and number),
-    optional. The location (city, country) should not be present in this string,
-    because it is already included in the event_location field.
-    - website: website where tickets can be bought.
-    - event_start_date: start date of the event.
-    - event_end_date: optional, end time of the event.
-    - event_start_time: start time of the event.
-    - event_end_time: optional, end time of the event. If it is not specified 
-    and the event end date was specified, then the event is assumed to end at 
-    23:59 on the day of the event end.
-    - price: optional, typical price of the event (starting price). 
-    - price_details: optional, string describing in more details the pricing
-    policy for the event.
-    - rating: list of integer ratings, between 0 and 5.
-    - is_valid_event: flag, used to choose if events should be served to the
-    user or not.
-
-"""
 class Event(models.Model):
+    """ Event model class
+    ----------
+    This class represents a model for the event stored in the database. 
+    An event is primarily comprised of a name and category. It also needs a time
+    and place for it to be valid. 
+    Optionally, an event can have a price, a description and a website.
+    
+    An event can have a different start date from its end date (required for 
+    events which last more than a day, for exmple a music festival). 
+    When the end date and time of and event are not specified, the event is 
+    assumed to end an hour after its initial start time. If an event end date 
+    is specified but not the event end hour, the event will be assumed to end 
+    at midnight on this day.
+
+    Detailed explanation of the fields of this class:
+        - name: string summarising the event. 
+        - category: one (or more) of the previously approved categories for 
+        events. Note: it is important to use a many-to-many field for this, 
+        because of the way categories are described. Since there is one Category
+        object instance for each category/subcategory combination, it is very 
+        likely that an event will be linked to more than one Category object, 
+        even if in the end it only appears in one basic category.
+        - description: string describing the event, optional.
+        - event_location: one of the previously approved locations for events.
+        - address: string giving the address of the event (street and number),
+        optional. The location (city, country) should not be present in this 
+        string, because it is already included in the event_location field.
+        - website: website where tickets can be bought.
+        - event_start_date: start date of the event.
+        - event_end_date: optional, end time of the event.
+        - event_start_time: start time of the event.
+        - event_end_time: optional, end time of the event. If it is not 
+        specified and the event end date was specified, then the event is 
+        assumed to end at 23:59 on the day of the event end.
+        - price: optional, typical price of the event (starting price). 
+        - price_details: optional, string describing in more details the pricing
+        policy for the event.
+        - rating: list of integer ratings, between 0 and 5.
+        - is_valid_event: flag, used to choose if events should be served to the
+        user or not.
+        
+    """
+
     name = models.CharField(max_length=100)
     category = models.ManyToManyField(Category)
     description = models.CharField(max_length=500, blank=True)
@@ -173,6 +218,7 @@ class Event(models.Model):
     price_details = models.CharField(max_length=200, blank=True)
     rating = models.CommaSeparatedIntegerField(max_length=250, blank=True)
     is_valid_event = models.BooleanField('Is event valid?')
+    objects = EventManager()
 
 
     def __unicode__(self):
@@ -230,29 +276,3 @@ class Event(models.Model):
     class Meta:
         ordering = ['event_start_time','name']
 
-
-
-### Managers below this ###
-
-# EventManager model here...
-""" EventManager model class
-----------
-
-"""
-class EventManager(models.Manager):
-    def name_count(self, keyword):
-        """ EventManager.name_count(keyword)
-        -----------
-        Returns the number of events that have a name which matches a 
-        keyword.
-        
-        """
-        return self.filter(name__icontains=keyword).count()
-
-    def search_name_by_keyword(self, keyword):
-        """ EventManager.search_name_by_keyword(keyword)
-        ----------
-        Returns a list of elements that have a name which matches a keyword.
-        
-        """
-        return self.filter(name__icontains=keyword)
