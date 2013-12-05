@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import Context
 from django.template.loader import get_template
-from cfsite.apps.events.models import Location, Category
+from cfsite.apps.events.models import Location, Category, Event
 from cfsite.apps.events.forms import SearchForm
 
 # Create your views here.
@@ -32,7 +32,16 @@ def home(request):
 
 
 def search(request):
-    # TODO: replace all this by a SearchForm instance.
+    """ search(request)
+    ----------
+    Logic for handling a search request. 
+    It will validate the data entered by the user, and if the data is valid,
+    look up the list of events which matches the user's request, and render
+    them in html.
+    If the data is invalid, it will refuse to proceed with the request, and 
+    redirect the user to the home search page.
+
+    """
     if request.method == 'GET':
         form = SearchForm(request.GET)
     else:
@@ -40,39 +49,12 @@ def search(request):
 
     # If no errors in the form, we can proceed with the search
     if not form.errors:
-        return render(request, 'search_results.html')
+        event_list = Event.objects.search_for_events(form.get_date(),
+                                                     form.get_category_id(),
+                                                     form.get_location_id())
+        return render(request, 'search_results.html', 
+                      {'event_list': event_list,})
     # If errors, redirect to the home page.
     else:
         # TODO: add helpful error message code by passing get data in url
         return HttpResponseRedirect('/')
-        
-"""
-    errors = []
-    # Validating event category
-    if 'category' in request.GET and request.GET['category']:
-        category_name = request.GET['category']
-    else:
-        errors.append('Please select a category.')
-
-    # Validating date and time field
-    if 'date' in request.GET and request.GET['date']:
-        date = request.GET['date']
-    else:
-        errors.append('Please choose a date.')
-
-    # Validating location
-    if 'location' in request.GET and request.GET['location']:
-        location = request.GET['location']
-    else:
-        errors.append('Please choose a location.')
-
-    # TODO: replace all this error handling by a SearchForm instance
-        
-    # If no errors so far, we can proceed with the search
-    if not errors:
-        return render(request, 'search_results.html')
-    # If errors, redirect to the home page.
-    else:
-        # TODO: add helpful error message code by passing get data in url
-        return HttpResponseRedirect('/')
-"""
