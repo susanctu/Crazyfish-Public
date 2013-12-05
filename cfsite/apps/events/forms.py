@@ -16,7 +16,7 @@ class SearchForm(forms.Form):
     location_id = forms.IntegerField(required=False)
 
     def clean_category(self):
-        """ SearchForm.clean_category
+        """ SearchForm.clean_category()
         ----------
         Make sure that the category selected is among those we have approved.
 
@@ -24,7 +24,7 @@ class SearchForm(forms.Form):
         category = self.cleaned_data['category']
 
         if category != u'all':
-            matching_ids = get_category_ids(category)
+            matching_ids = get_all_matching_category_ids(category)
             if len(matching_ids)>1:
                 # If there is more than one match: something went wrong
                 raise forms.ValidationError(
@@ -36,7 +36,7 @@ class SearchForm(forms.Form):
 
     
     def clean_date(self):
-        """ SearchForm.clean_date
+        """ SearchForm.clean_date()
         ----------
         Make sure the date is a date, and is after today's date.
 
@@ -47,16 +47,15 @@ class SearchForm(forms.Form):
             raise forms.ValidationError("Crazyfish can't help you go back in time.")
         return t
 
-
     def clean_location(self):
-        """ SearchForm.clean_location
+        """ SearchForm.clean_location()
         ----------
         Make sure the location is amongst those we know.
 
         """
         location = self.cleaned_data['location']
 
-        matching_ids = get_location_ids(location)
+        matching_ids = get_all_matching_location_ids(location)
         if len(matching_ids)>1:
             raise forms.ValidationError("Something went wrong when trying to find the location")
         elif matching_ids:
@@ -66,8 +65,30 @@ class SearchForm(forms.Form):
 
         return location
 
-    def get_category_ids(category_name):
-        """ SearchForm.get_category_ids
+
+    def clean(self):
+        """ SearchForm.clean()
+        ----------
+        After all the user inputs have been validated, this function will 
+        fill in the category and location ID from the valid location and 
+        category data.
+        These IDs can then be used to search matching events.
+        Note: there is no need to verify a single ID is returned by the 
+        functions get_category_ids and get_location_ids, because this 
+        check already happened in the location and category validation methods.
+
+        """
+        category = self.cleaned_data['category']
+        location = self.cleaned_data['location']
+        self.cleaned_data['category_id'] = get_all_matching_category_ids(
+            category)
+        self.cleaned_data['location_id'] = get__all_matching_location_ids(
+            location)
+        return self.cleaned_data
+
+
+    def get_all_matching_category_ids(category_name):
+        """ SearchForm.get_all_matching_category_ids(category_name)
         ----------
         This function returns a list (possibly empty) of category ids matching
         a category name.
@@ -79,8 +100,8 @@ class SearchForm(forms.Form):
                        if bn == self.cleaned_data['category']]
 
 
-    def get_location_ids(location_name):
-        """ SearchForm.get_location_ids
+    def get_all_matching_location_ids(location_name):
+        """ SearchForm.get_all_matching_location_ids(location_name)
         ----------
         This function returns a list (possibly empty) of location ids matching
         a location name
@@ -89,3 +110,29 @@ class SearchForm(forms.Form):
         locations_and_ids = [(l.id, l.city) for l in Location.objects.all()]
         return [lid for (lid, city) in locations_and_ids
                 if city == self.location]
+
+    def get_location_id(self):
+        """ SearchForm.get_location_id()
+        ----------
+        Returns the location id matching the user's request from the 
+        cleaned form data.
+        
+        """
+        return self.cleaned_data['location_id']
+
+    def get_category_id(self):
+        """ SearchForm.get_gategory_id()
+        ----------
+        Returns the category id matching the user's request from the cleaned
+        form data.
+        
+        """
+        return self.cleaned_data['category_id']
+
+    def get_date(self):
+        """ SearchForm.get_date()
+        ----------
+        Returns the date if the field passed validation.
+        
+        """
+        return self.cleaned_data['date']
