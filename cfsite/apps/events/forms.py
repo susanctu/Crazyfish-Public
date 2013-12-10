@@ -1,3 +1,4 @@
+import pytz
 from datetime import datetime
 from django import forms
 from cfsite.apps.events.models import Category, Location
@@ -35,18 +36,6 @@ class SearchForm(forms.Form):
         return category
 
     
-    def clean_date(self):
-        """ SearchForm.clean_date()
-        ----------
-        Make sure the date is a date, and is after today's date.
-
-        """
-        t = self.cleaned_data['date']
-        now = datetime.now().date()
-        if (t < now):
-            raise forms.ValidationError("Crazyfish can't help you go back in time.")
-        return t
-
     def clean_location(self):
         """ SearchForm.clean_location()
         ----------
@@ -77,13 +66,24 @@ class SearchForm(forms.Form):
         functions get_category_ids and get_location_ids, because this 
         check already happened in the location and category validation methods.
 
+        After IDs have been validated, the date is cleaned. This cannot be done
+        before as it needs to know in which time zone the location is in 
+        order to check things properly.
+
         """
+        # Cleaning IDs
         category = self.cleaned_data['category']
         location = self.cleaned_data['location']
         self.cleaned_data['category_id'] = get_all_matching_category_ids(
             category)
         self.cleaned_data['location_id'] = get__all_matching_location_ids(
             location)
+        # Cleaning date
+        t = self.cleaned_data['date']
+        now = datetime.now(pytz.timezone(location.timezone))
+        if (t < now):
+            raise forms.ValidationError("Crazyfish can't help you go back in time.")
+
         return self.cleaned_data
 
 

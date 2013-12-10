@@ -22,6 +22,7 @@ class Location(models.Model):
         - state_province: optional, used only if the event takes place in the US
         or in Canada
         - country: country where the events take place. 
+        - timezone: local time zone.
     
     Each event in the database is tied to one instance of the Location class, 
     so that events are always linked to a known location. Events which cannot be
@@ -34,6 +35,7 @@ class Location(models.Model):
                                       blank=True)
     country = models.CharField(max_length=50)
     zip_code = models.PositiveIntegerField('zip code',max_length=5)
+    timezone = models.CharField(max_length=50)
 
 
     def __unicode__(self):
