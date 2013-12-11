@@ -1,11 +1,25 @@
+{% load staticfiles %}
 <html>
   <head>
+    <title>crazyfish: all your events in one place</title>
+
+    <link href="{% static "css/crazyfish.css" %}" rel="stylesheet">
+    
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
   </head>
   
   <body>
 
+    {% if event_list %}
+      <p> Here is a list of events which match your query:</p>
+      <ul>
+      {% for event in event_list %}
+        <li>{{ event.name }}</li>
+      {% endfor %}
+      </ul>
     {% else %}
-    <p>You searched for: <strong>{{ query }}</strong></p>
+      <p>Sorry, I could not find any events matching your request.</p>
     {% endif %}
 
   </body>
