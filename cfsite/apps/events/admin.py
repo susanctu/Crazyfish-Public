@@ -4,7 +4,7 @@ from cfsite.apps.events.models import Event, Location, Category
 
 
 class LocationAdmin(admin.ModelAdmin):
-    list_display = ('city','zip_code','state_province','country',)
+    list_display = ('city','zip_code','state_province','country','timezone')
     ordering = ('zip_code',)
     search_fields = ('city','zip_code',)
 
