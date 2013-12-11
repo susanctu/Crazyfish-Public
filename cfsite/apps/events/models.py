@@ -147,6 +147,9 @@ class EventManager(models.Manager):
         ----------
         Returns the list of all events that occurs on the date specified, 
         for the matching category and location.
+        It assumes that the date requested is specified in the event local
+        time zone, and therefore does not make any checks as far as time 
+        zones go before filtering by date.
 
         Note: for now, it does not return events which last more than one day
         and do not start on the date specified. 
@@ -155,7 +158,7 @@ class EventManager(models.Manager):
         categories = Category.objects.get(id=category_id)
         locations = Location.objects.get(id=location_id)
         l1 = categories.event_set.filter(event_start_date=date)
-        l2 = categories.event_set.all(event_start_date=date)
+        l2 = categories.event_set.filter(event_start_date=date)
         return list(set(l1) & set(l2))
 
 

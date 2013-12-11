@@ -47,9 +47,7 @@ class SearchForm(forms.Form):
         matching_ids = get_all_matching_location_ids(location)
         if len(matching_ids)>1:
             raise forms.ValidationError("Something went wrong when trying to find the location")
-        elif matching_ids:
-            self.location_id = matching_ids[0]
-        else:
+        elif not matching_ids:
             raise forms.ValidationError("Please choose a location.")
 
         return location
@@ -71,45 +69,26 @@ class SearchForm(forms.Form):
         order to check things properly.
 
         """
+
         # Cleaning IDs
-        category = self.cleaned_data['category']
-        location = self.cleaned_data['location']
-        self.cleaned_data['category_id'] = get_all_matching_category_ids(
-            category)
-        self.cleaned_data['location_id'] = get__all_matching_location_ids(
-            location)
+        category_name = self.cleaned_data['category']
+        location_name = self.cleaned_data['location']
+        matching_category_ids = get_all_matching_category_ids(
+            category_name)
+        self.cleaned_data['category_id'] = matching_category_ids[0]
+        matching_location_ids = get_all_matching_location_ids(
+            location_name)
+        self.cleaned_data['location_id'] = matching_location_ids[0]
+        location = Location.objects.get(id=matching_location_ids[0])
+
         # Cleaning date
         t = self.cleaned_data['date']
-        now = datetime.now(pytz.timezone(location.timezone))
+        now = datetime.now(pytz.timezone(location.timezone)).date()
         if (t < now):
             raise forms.ValidationError("Crazyfish can't help you go back in time.")
 
         return self.cleaned_data
 
-
-    def get_all_matching_category_ids(category_name):
-        """ SearchForm.get_all_matching_category_ids(category_name)
-        ----------
-        This function returns a list (possibly empty) of category ids matching
-        a category name.
-
-        """
-        cat_names_and_ids = [(c.id, c.base_name) 
-                             for c in Category.objects.all()]
-        return [cid for (cid, bn) in cat_names_and_ids 
-                       if bn == self.cleaned_data['category']]
-
-
-    def get_all_matching_location_ids(location_name):
-        """ SearchForm.get_all_matching_location_ids(location_name)
-        ----------
-        This function returns a list (possibly empty) of location ids matching
-        a location name
-
-        """
-        locations_and_ids = [(l.id, l.city) for l in Location.objects.all()]
-        return [lid for (lid, city) in locations_and_ids
-                if city == self.location]
 
     def get_location_id(self):
         """ SearchForm.get_location_id()
@@ -120,6 +99,7 @@ class SearchForm(forms.Form):
         """
         return self.cleaned_data['location_id']
 
+
     def get_category_id(self):
         """ SearchForm.get_gategory_id()
         ----------
@@ -129,6 +109,7 @@ class SearchForm(forms.Form):
         """
         return self.cleaned_data['category_id']
 
+
     def get_date(self):
         """ SearchForm.get_date()
         ----------
@@ -136,3 +117,29 @@ class SearchForm(forms.Form):
         
         """
         return self.cleaned_data['date']
+
+
+def get_all_matching_category_ids(category_name):
+    """ SearchForm.get_all_matching_category_ids(category_name)
+    ----------
+    This function returns a list (possibly empty) of category ids matching
+    a category name.
+    
+    """
+    cat_names_and_ids = [(c.id, c.base_name) 
+                         for c in Category.objects.all()]
+    return [cid for (cid, bn) in cat_names_and_ids 
+            if bn == category_name]
+
+
+def get_all_matching_location_ids(location_name):
+    """ SearchForm.get_all_matching_location_ids(location_name)
+    ----------
+    This function returns a list (possibly empty) of location ids matching
+    a location name
+    
+    """
+    locations_and_ids = [(l.id, l.city) for l in Location.objects.all()]
+    return [lid for (lid, city) in locations_and_ids
+            if city == location_name]
+    
