@@ -79,7 +79,8 @@ class GdocsCrawler:
         header_values = self.events_worksheet.row_values(1)
         num_fields = len(header_values)
         # Parsing the worksheet header... Kind of ugly!
-        # Note that column indices are 1-based and not 0-based, hence the frequent +1.
+        # Note that column indices are 1-based and not 0-based,
+        # hence the frequent +1.
         for i in range(0, num_fields-1):
             c_header_name = header_values[i]
             if c_header_name.find('Name'):
@@ -117,15 +118,16 @@ class GdocsCrawler:
         ----------
         Returns the number of events found in the worksheet.
         This function assumes that the first row _only_ of the worksheet
-        is a header. Anything happening on the second row and below is fair game
-        and should be parsed.
+        is a header. Anything happening on the second row and below is fair
+        game and should be parsed.
 
         @return: number of events in the Events worksheet.
         @rtype: int
         """
-        # All events should have a name, so we can count the number of names and return
-        # that as our answer.
-        event_names = self.events_worksheet.col_values(self.events_fields_and_pos['name'])
+        # All events should have a name, so we can count the number of names
+        # and return that as our answer.
+        event_names = self.events_worksheet.col_values(
+            self.events_fields_and_pos['name'])
         return len(event_names)-1
 
     def get_nth_event(self, n):
@@ -135,8 +137,8 @@ class GdocsCrawler:
         defined in the spreadsheet.
         Raises an exception if the event data could not properly be parsed.
 
-        @param n: index of the element to return (0-based, ie first event after the header
-        is event 0 - even if it is on line 2)
+        @param n: index of the element to return (0-based, ie first event after
+        the header is event 0 - even if it is on line 2)
         @type n: int
 
         @return: Event object representing the data entered in the spreadsheet
@@ -147,30 +149,46 @@ class GdocsCrawler:
 
         try:
             # Finding the location
-            location_name = event_data[self.events_fields_and_pos['event_location']]
+            location_name = event_data[
+                self.events_fields_and_pos['event_location']]
             l = Location.objects.get(city=location_name)
 
             # Creating event object, first with fields that cannot be omitted
             e = Event(name=event_data[self.events_fields_and_pos['name']],
                       event_location=l,
-                      website=event_data[self.events_fields_and_pos['website']],
-                      event_start_date=event_data[self.events_fields_and_pos['event_start_date']],
-                      event_start_time=event_data[self.events_fields_and_pos['event_start_time']],
+                      website=event_data[
+                          self.events_fields_and_pos['website']],
+                      event_start_date=event_data[
+                          self.events_fields_and_pos['event_start_date']],
+                      event_start_time=event_data[
+                          self.events_fields_and_pos['event_start_time']],
                       is_valid_event=True)
 
             # Then, add the optional fields if they have been specified
             if event_data[self.events_fields_and_pos['description']]:
-                e.description = event_data[self.events_fields_and_pos['description']]
+                e.description = event_data[
+                    self.events_fields_and_pos['description']]
+
             if event_data[self.events_fields_and_pos['address']]:
-                e.address = event_data[self.events_fields_and_pos['address']]
+                e.address = event_data[
+                    self.events_fields_and_pos['address']]
+
             if event_data[self.events_fields_and_pos['event_end_time']]:
-                e.event_end_date = event_data[self.events_fields_and_pos['event_end_date']]
+                e.event_end_date = event_data[
+                    self.events_fields_and_pos['event_end_date']]
+
             if event_data[self.events_fields_and_pos['event_end_time']]:
-                e.event_end_time = event_data[self.events_fields_and_pos['event_end_time']]
+                e.event_end_time = event_data[
+                    self.events_fields_and_pos['event_end_time']]
+
             if event_data[self.events_fields_and_pos['price']]:
-                e.price = event_data[self.events_fields_and_pos['price']]
+                e.price = event_data[
+                    self.events_fields_and_pos['price']]
+
             if event_data[self.events_fields_and_pos['price_details']]:
-                e.price_details = event_data[self.events_fields_and_pos['price_details']]
+                e.price_details = event_data[
+                    self.events_fields_and_pos['price_details']]
+
             if event_data[self.events_fields_and_pos['rating']]:
                 e.rating = event_data[self.events_fields_and_pos['rating']]
 
