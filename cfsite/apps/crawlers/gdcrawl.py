@@ -79,36 +79,34 @@ class GdocsCrawler:
         header_values = self.events_worksheet.row_values(1)
         num_fields = len(header_values)
         # Parsing the worksheet header... Kind of ugly!
-        # Note that column indices are 1-based and not 0-based,
-        # hence the frequent +1.
-        for i in range(0, num_fields-1):
+        for i in range(0, num_fields):
             c_header_name = header_values[i]
-            if c_header_name.find('Name'):
-                self.events_fields_and_pos['name'] = i+1
-            elif c_header_name.find('Category'):
-                self.events_fields_and_pos['category'] = i+1
-            elif c_header_name.find('Description'):
-                self.events_fields_and_pos['description'] = i+1
-            elif c_header_name.find('Location'):
-                self.events_fields_and_pos['event_location'] = i+1
-            elif c_header_name.find('Address'):
-                self.events_fields_and_pos['address'] = i+1
-            elif c_header_name.find('Website'):
-                self.events_fields_and_pos['website'] = i+1
-            elif c_header_name.find('Start date'):
-                self.events_fields_and_pos['event_start_date'] = i+1
-            elif c_header_name.find('Start time'):
-                self.events_fields_and_pos['event_start_time'] = i+1
-            elif c_header_name.find('End date'):
-                self.events_fields_and_pos['event_end_date'] = i+1
-            elif c_header_name.find('End time'):
-                self.events_fields_and_pos['event_end_time'] = i+1
-            elif c_header_name.find('Price'):
-                self.events_fields_and_pos['price'] = i+1
-            elif c_header_name.find('Pricing details'):
-                self.events_fields_and_pos['price_details'] = i+1
-            elif c_header_name.find('Rating'):
-                self.events_fields_and_pos['rating'] = i+1
+            if c_header_name.find('Name') >= 0:
+                self.events_fields_and_pos['name'] = i
+            elif c_header_name.find('Category') >= 0:
+                self.events_fields_and_pos['category'] = i
+            elif c_header_name.find('Description') >= 0:
+                self.events_fields_and_pos['description'] = i
+            elif c_header_name.find('Location') >= 0:
+                self.events_fields_and_pos['event_location'] = i
+            elif c_header_name.find('Address') >= 0:
+                self.events_fields_and_pos['address'] = i
+            elif c_header_name.find('Website') >= 0:
+                self.events_fields_and_pos['website'] = i
+            elif c_header_name.find('Start date') >= 0:
+                self.events_fields_and_pos['event_start_date'] = i
+            elif c_header_name.find('Start time') >= 0:
+                self.events_fields_and_pos['event_start_time'] = i
+            elif c_header_name.find('End date') >= 0:
+                self.events_fields_and_pos['event_end_date'] = i
+            elif c_header_name.find('End time') >= 0:
+                self.events_fields_and_pos['event_end_time'] = i
+            elif c_header_name.find('Price') >= 0:
+                self.events_fields_and_pos['price'] = i
+            elif c_header_name.find('Pricing details') >= 0:
+                self.events_fields_and_pos['price_details'] = i
+            elif c_header_name.find('Rating') >= 0:
+                self.events_fields_and_pos['rating'] = i
         # Verifying we've got all the fields required... There should be 13 exactly.
         if len(self.events_fields_and_pos) != 13:
             raise GdocsParsingError('Could not parse the Events worksheet header.')
@@ -165,32 +163,39 @@ class GdocsCrawler:
                       is_valid_event=True)
 
             # Then, add the optional fields if they have been specified
-            if event_data[self.events_fields_and_pos['description']]:
-                e.description = event_data[
-                    self.events_fields_and_pos['description']]
+            if self.events_fields_and_pos['description'] < len(event_data):
+                if event_data[self.events_fields_and_pos['description']]:
+                    e.description = event_data[
+                        self.events_fields_and_pos['description']]
 
-            if event_data[self.events_fields_and_pos['address']]:
-                e.address = event_data[
-                    self.events_fields_and_pos['address']]
+            if self.events_fields_and_pos['address'] < len(event_data):
+                if event_data[self.events_fields_and_pos['address']]:
+                    e.address = event_data[
+                        self.events_fields_and_pos['address']]
 
-            if event_data[self.events_fields_and_pos['event_end_time']]:
-                e.event_end_date = event_data[
-                    self.events_fields_and_pos['event_end_date']]
+            if self.events_fields_and_pos['event_end_date'] < len(event_data):
+                if event_data[self.events_fields_and_pos['event_end_date']]:
+                    e.event_end_date = event_data[
+                        self.events_fields_and_pos['event_end_date']]
 
-            if event_data[self.events_fields_and_pos['event_end_time']]:
-                e.event_end_time = event_data[
-                    self.events_fields_and_pos['event_end_time']]
+            if self.events_fields_and_pos['event_end_time'] < len(event_data):
+                if event_data[self.events_fields_and_pos['event_end_time']]:
+                    e.event_end_time = event_data[
+                        self.events_fields_and_pos['event_end_time']]
 
-            if event_data[self.events_fields_and_pos['price']]:
-                e.price = event_data[
-                    self.events_fields_and_pos['price']]
+            if self.events_fields_and_pos['price'] < len(event_data):
+                if event_data[self.events_fields_and_pos['price']]:
+                    e.price = event_data[
+                        self.events_fields_and_pos['price']]
 
-            if event_data[self.events_fields_and_pos['price_details']]:
-                e.price_details = event_data[
-                    self.events_fields_and_pos['price_details']]
+            if self.events_fields_and_pos['price_details'] < len(event_data):
+                if event_data[self.events_fields_and_pos['price_details']]:
+                    e.price_details = event_data[
+                        self.events_fields_and_pos['price_details']]
 
-            if event_data[self.events_fields_and_pos['rating']]:
-                e.rating = event_data[self.events_fields_and_pos['rating']]
+            if self.events_fields_and_pos['rating'] < len(event_data):
+                if event_data[self.events_fields_and_pos['rating']]:
+                    e.rating = event_data[self.events_fields_and_pos['rating']]
 
             return e
 
@@ -220,7 +225,7 @@ class GdocsCrawler:
         """
         # Loading raw input
         event_data = self.events_worksheet.row_values(n+2)
-        event_categories = event_data(self.events_fields_and_pos['category'])
+        event_categories = event_data[self.events_fields_and_pos['category']]
         event_categories = event_categories.split(",")
         categories_list = []
 
