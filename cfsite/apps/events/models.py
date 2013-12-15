@@ -34,9 +34,8 @@ class Location(models.Model):
     state_province = models.CharField('state or province', max_length=30,
                                       blank=True)
     country = models.CharField(max_length=50)
-    zip_code = models.PositiveIntegerField('zip code',max_length=5)
+    zip_code = models.PositiveIntegerField('zip code', max_length=5)
     timezone = models.CharField(max_length=50)
-
 
     def __unicode__(self):
         """ Location.__unicode__
@@ -45,7 +44,6 @@ class Location(models.Model):
         
         """
         return self.city
-
 
     def clean(self):
         """ Location.clean()
@@ -57,7 +55,7 @@ class Location(models.Model):
             provided
         
         """
-        # Dont allow events happening in CA or USA to not have a state or
+        # Don't allow events happening in CA or USA to not have a state or
         # province
         if self.country == 'United States' or self.country == 'Canada':
             if not self.state_province:
@@ -66,7 +64,6 @@ class Location(models.Model):
         # For events outside these two countries, strip the state or province.
         else:
             self.state_province = ""
-
 
     class Meta:
         ordering = ['zip_code']
@@ -87,7 +84,6 @@ class Category(models.Model):
     base_name = models.CharField(max_length=100)
     sub_category = models.CharField(max_length=100, blank = True)
 
-
     def __unicode__(self):
         """ Category.__unicode__
         ----------
@@ -97,8 +93,7 @@ class Category(models.Model):
         if self.sub_category:
             return u'%s/%s' % (self.base_name, self.sub_category)
         else:
-            return u'%s/all' % (self.base_name)
-
+            return u'%s/all' % self.base_name
 
     def clean(self):
         """ Category.clean()
@@ -110,11 +105,9 @@ class Category(models.Model):
         if not self.sub_category:
             self.sub_category = "generic"    
 
-
     class Meta:
         ordering = ['base_name']
         verbose_name_plural = 'categories'
-
 
 
 # EventManager class here
@@ -130,7 +123,11 @@ class EventManager(models.Manager):
         -----------
         Returns the number of events that have a name which matches a 
         keyword.
-        
+
+        @type keyword: str
+        @param keyword: keyword for which we will search against in
+        the database of events.
+
         """
         return self.filter(name__icontains=keyword).count()
 
@@ -138,7 +135,11 @@ class EventManager(models.Manager):
         """ EventManager.search_name_by_keyword(keyword)
         ----------
         Returns a list of elements that have a name which matches a keyword.
-        
+
+        @type keyword: str
+        @param keyword: keyword for which we will do a search against in the
+        events database.
+
         """
         return self.filter(name__icontains=keyword)
 
@@ -152,15 +153,20 @@ class EventManager(models.Manager):
         zones go before filtering by date.
 
         Note: for now, it does not return events which last more than one day
-        and do not start on the date specified. 
+        and do not start on the date specified.
+
+        @type category_id: int
+        @param category_id: numerical ID of the category of interest
+
+        @type: location_id: int
+        @param: location_id: numerical ID of the location of interest
 
         """
         categories = Category.objects.get(id=category_id)
         locations = Location.objects.get(id=location_id)
         l1 = categories.event_set.filter(event_start_date=date)
-        l2 = categories.event_set.filter(event_start_date=date)
+        l2 = locations.event_set.filter(event_start_date=date)
         return list(set(l1) & set(l2))
-
 
 
 # Event model here...
@@ -225,7 +231,6 @@ class Event(models.Model):
     is_valid_event = models.BooleanField('Is event valid?')
     objects = EventManager()
 
-
     def __unicode__(self):
         """ Event.__unicode__
         ----------
@@ -233,7 +238,6 @@ class Event(models.Model):
         
         """
         return self.name
-
     
     def clean(self):
         """ Event.clean()
@@ -246,13 +250,13 @@ class Event(models.Model):
 
         """
         # Price should always be positive
-        if self.price<0:
+        if self.price < 0:
             raise ValidationError('Price cannot be negative')
         
         # Plug in default values if end date and end time weren't specified
         # If the end date was specified, the end time could be implied.
         if self.event_end_date is not None and self.event_end_time is None:
-            self.event_end_time.hours = datetime.time(23,59,0)
+            self.event_end_time.hours = datetime.time(23, 59, 0)
         if self.event_end_date is None:
             self.event_end_date = self.event_start_date
 
@@ -267,7 +271,6 @@ class Event(models.Model):
         elif self.event_end_date == self.event_start_date:
             if self.event_start_time > self.event_end_time:
                 raise ValidationError('Start and end times are inconsistent.')
-            
 
     def category_names(self):
         """ Category.category_names()
@@ -275,9 +278,9 @@ class Event(models.Model):
         Database query used to display event category.
         
         """
-        return', '.join([a.__unicode__() for a in self.category.all()])
+        return', '.join([a.__unicode__ for a in self.category.all()])
     category_names.short_description = "Categories"
 
     class Meta:
-        ordering = ['event_start_time','name']
+        ordering = ['event_start_time', 'name']
 
