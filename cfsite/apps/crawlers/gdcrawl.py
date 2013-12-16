@@ -38,6 +38,7 @@ class GdocsCrawler:
     """
     events_worksheet = gspread.Worksheet
     events_fields_and_pos = {}
+    events_metadata = {}
 
     def __init__(self):
         """ GdocsCrawler.__init__()
@@ -47,6 +48,7 @@ class GdocsCrawler:
         """
         self.load_spreadsheet()
         self.build_event_fields_dictionary()
+        self.build_metadata_dictionary()
 
     def load_spreadsheet(self):
         """ GdocsCrawler.load_spreadsheet()
@@ -81,9 +83,8 @@ class GdocsCrawler:
         """
         # Get the worksheet header. Assumed to be the first row.
         header_values = self.events_worksheet.row_values(1)
-        num_fields = len(header_values)
         # Parsing the worksheet header... Kind of ugly!
-        for i in range(0, num_fields):
+        for i in range(0, len(header_values)):
             c_header_name = header_values[i]
             if c_header_name.find('Name') >= 0:
                 self.events_fields_and_pos['name'] = i
@@ -111,12 +112,26 @@ class GdocsCrawler:
                 self.events_fields_and_pos['price_details'] = i
             elif c_header_name.find('Rating') >= 0:
                 self.events_fields_and_pos['rating'] = i
-        # Verifying we've got all the fields required... There should be 13 exactly.
+        # Verifying we've got all the fields required...
+        # There should be 13 exactly.
         if len(self.events_fields_and_pos) != 13:
             raise GdocsParsingError('Could not parse the Events worksheet header.')
 
-    def get_number_of_events(self):
-        """ GdocsCrawler.get_number_of_events
+    def build_metadata_dictionary(self):
+        """ GdocsCrawler.build_metadata_dictionary()
+        ----------
+        This function builds a dictionary which stores where the event metadata
+        is located in the spreadsheet (for example, event ID).
+
+        """
+        header_values = self.events_worksheet.row_values(1)
+        for i in range(0, len(header_values)):
+            if header_values[i].find("Event ID"):
+                self.events_metadata['event_id'] = i
+
+    @property
+    def number_of_events(self):
+        """ GdocsCrawler.number_of_events()
         ----------
         Returns the number of events found in the worksheet.
         This function assumes that the first row _only_ of the worksheet
@@ -131,6 +146,24 @@ class GdocsCrawler:
         event_names = self.events_worksheet.col_values(
             self.events_fields_and_pos['name'])
         return len(event_names)-1
+
+    @property
+    def new_events_indices(self):
+        """ GdocsCrawler.new_events_indices()
+        ----------
+        Returns a list of indices (0-based) of all the events that do not have
+        a database ID specified in the spreadsheet. These events are assumed to
+        correspond to events not yet entered in the database.
+
+        @return: a list of indices for all the events in the spreadsheet that
+        do not have IDs
+        @rtype: list(int)
+        """
+        new_events_indices = []
+        for i in range(0, self.number_of_events):
+            if self.get_id_nth_event(i) > 0:
+                new_events_indices.append(i)
+        return new_events_indices
 
     def get_nth_event(self, n):
         """ GdocsCrawler.get_nth_event
@@ -245,6 +278,49 @@ class GdocsCrawler:
             categories_list.append(Category.objects.get(base_name=u'other'))
 
         return categories_list
+
+    def get_id_nth_event(self, n):
+        """ GdocsCrawler.get_id_nth_event(n)
+        ----------
+        Returns the ID of the n-th event if it exists in the spreadsheet.
+        If the ID does not exist (which means the event hasn't been added
+        to the database yet) then it return -1.
+
+        @param n: 0-based index of the event for which the ID is queried
+        @type n: int
+
+        @return: ID of the event if it is in the spreadsheet (it should then
+        correspond to the ID in the database), -1 if no ID.
+        @rtype: int
+        """
+        id_data = self.events_worksheet.cell(self.events_metadata['event_id'],
+                                             n+2)
+        if id_data:
+            return int(id_data)
+        else:
+            return -1
+
+    def write_id_nth_event(self, n, id):
+        """ GdocsCrawler.write_id_nth_event(n, id)
+        ----------
+        Writes the ID of the n-th event in the relevant cell in the gDocs
+        worksheet. Returns a boolean indicator of success.
+
+        @param n: 0-based index of the event for which the ID should be updated
+        @type n: int
+
+        @param id: id to be written in the spreadsheet
+        @type n: int
+
+        @return: True on success, False on fail.
+        @rtype: Bool
+        """
+        try:
+            self.events_worksheet.update_cell(self.events_metadata['event_id'],
+                                              n+2, str(id))
+            return True
+        except:
+            return False
 
 
 def get_user_name():
