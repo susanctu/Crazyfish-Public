@@ -1,9 +1,7 @@
-""" events/model.py
-----------
-TODO: description
-author: Georges Goetz - ggoetz@stanford.edu
+__author__ = "Georges Goetz"
+__email__ = "ggoetz@stanford.edu"
+__status__ = "Prototype"
 
-"""
 import datetime
 from django.db import models
 from django.core.exceptions import ValidationError

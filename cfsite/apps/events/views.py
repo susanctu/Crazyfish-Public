@@ -1,9 +1,14 @@
+__author__ = "Georges Goetz"
+__email__ = "ggoetz@stanford.edu"
+__status__ = "Prototype"
+
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import Context
 from django.template.loader import get_template
 from cfsite.apps.events.models import Location, Category, Event
 from cfsite.apps.events.forms import SearchForm
+
 
 # Create your views here.
 def home(request):
@@ -28,7 +33,7 @@ def home(request):
 
     # Render.
     return render(request, 'index.html', {'category_list': category_list,
-                                         'location_list': location_list,})
+                                          'location_list': location_list,})
 
 
 def search(request):
@@ -53,7 +58,7 @@ def search(request):
                                                      form.get_category_id(),
                                                      form.get_location_id())
         return render(request, 'search_results.html', 
-                      {'event_list': event_list,})
+                      {'event_list': event_list, })
     # If errors, redirect to the home page.
     else:
         # TODO: add helpful error message code by passing get data in url

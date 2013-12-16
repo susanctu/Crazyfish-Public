@@ -1,3 +1,7 @@
+__author__ = "Georges Goetz"
+__email__ = "ggoetz@stanford.edu"
+__status__ = "Prototype"
+
 import pytz
 from datetime import datetime
 from django import forms

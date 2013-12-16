@@ -1,3 +1,7 @@
+__author__ = "Georges Goetz"
+__email__ = "ggoetz@stanford.edu"
+__status__ = "prototype"
+
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
 from cfsite.apps.events.models import Event, Location, Category

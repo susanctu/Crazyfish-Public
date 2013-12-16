@@ -1,3 +1,7 @@
+__author__ = "Georges Goetz"
+__email__ = "ggoetz@stanford.edu"
+__status__ = "Prototype"
+
 import gspread
 from cfsite.apps.events.models import Event, Location, Category
 from django.core.exceptions import ValidationError
