@@ -146,4 +146,4 @@ def get_all_matching_location_ids(location_name):
     locations_and_ids = [(l.id, l.city) for l in Location.objects.all()]
     return [lid for (lid, city) in locations_and_ids
             if city == location_name]
-    
+

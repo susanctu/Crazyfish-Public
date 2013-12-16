@@ -1,6 +1,6 @@
 __author__ = "Georges Goetz"
 __email__ = "ggoetz@stanford.edu"
-__status__ = "prototype"
+__status__ = "Prototype"
 
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
