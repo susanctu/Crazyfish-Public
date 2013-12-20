@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title> :: crazyfish :: all your events in once place </title>
+    <title> :: crazyfish :: all your events in one place </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -34,9 +34,27 @@
     </div>
 <br/><br/><br/>
 
+<div id="container" style="position:relative;">
+    </div>
+    
+</div>
 
 <div class="main-search">
-  Show me <font color="#00e3fe" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ </font>events on <font color="#00e3fe" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _</font> in <font color="#00e3fe" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ </font>
+	<div class="dropdown" style="position:relative; width:1100px; margin:0 auto;">
+	<div style="position:absolute;">
+		Show me <font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ </font> 
+		events on <font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _</font>
+		in <font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _</font>
+	</div>
+	<div style="position:absolute;">
+		<font color="#00e3fe">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;category&nbsp;&nbsp;&nbsp;</font> 
+		<font color="#00e3fe">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Mon Jul 12&nbsp;&nbsp;</font> 
+		<font color="#00e3fe" class="dropdown-toggle" data-toggle="dropdown">&nbsp;&nbsp;Palo Alto, CA</font>
+		<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+			<li>We're only available in Palo Alto, CA for now!
+		 </ul>
+	</div>
+	</div>
 </div>
 
 <br/><br/><br/>
@@ -46,5 +64,9 @@
 
 </div>
 
+    <script> 
+    $('.dropdown-toggle').dropdown();
+    </script>
+    
   </body>
 </html>
