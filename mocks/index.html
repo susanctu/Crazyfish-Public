@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title> :: crazyfish :: all your events in once place </title>
+    <title> :: crazyfish :: all your events in one place </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -34,9 +34,55 @@
     </div>
 <br/><br/><br/>
 
+<div id="container" style="position:relative;">
+    </div>
+    
+</div>
 
-<div class="main-search">
-  Show me <font color="#00e3fe" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ </font>events on <font color="#00e3fe" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _</font> in <font color="#00e3fe" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ </font>
+<div class="main-search dropdown">
+	<div style="position:absolute;"> 
+		Show me <font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ </font> 
+		events on <font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _</font>
+		in <font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ _</font>
+	</div>
+	<form class="form-inline" role="form">
+		  <div class="form-group">
+    <label class="sr-only" for="datePicker">Email address</label>
+    <input class="form-control" id="datePicker" placeholder="day & date" style="position:absolute; top:24px; left:615px; width: 200px;">
+  </div>
+		<div class="form-group">
+			<label class="sr-only" for="categoryPicker"  style="position:absolute; top:24px; left:196px;">Category</label>
+			<input class="form-control dropdown-toggle" data-toggle="dropdown" id="categoryPicker"  style="position:absolute; top:24px; left:196px; width: 240px;" placeholder="art & culture">
+			<table class="dropdown-menu" role="menu" aria-labelledby="dLabel" width="100%">
+				<colgroup>
+				  <col width="600px">
+					<col width="600px">
+				</colgroup>
+				<tr>
+					<td class="icon arts-icon">arts &amp; culture</td>
+					<td class="icon food-icon">food &amp; wine</td>
+				</tr>
+				<tr>
+					<td class="icon classes-icon">classes &amp; workshops</td>
+					<td class="icon meetups-icon">meetup</td>
+				</tr>
+				<tr>
+					<td class="icon conferences-icon">conference</td>
+					<td class="icon music-icon">music</td>
+				</tr>
+				<tr>
+					<td class="icon family-icon">family</td>
+					<td class="icon sport-icon">sport</td>
+				</tr>
+			</table>
+		</div>
+	</form>
+	<div>
+		<font color="#00e3fe" data-toggle="dropdown"  class="dropdown-toggle" style="position:absolute; top:31px; left:875px; width:250px">Palo Alto, CA</font>
+		<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+			<li>We're only available in Palo Alto, CA for now!
+		</ul>
+	</div>
 </div>
 
 <br/><br/><br/>
@@ -46,5 +92,41 @@
 
 </div>
 
+    <script> 
+    $(document).ready( function() {
+		var now = new Date();
+		var weekday=new Array(7);
+		weekday[0]="Sun";
+		weekday[1]="Mon";
+		weekday[2]="Tue";
+		weekday[3]="Wed";
+		weekday[4]="Thur";
+		weekday[5]="Frid";
+		weekday[6]="Sat";
+		var day = weekday[now.getDay()];
+		var monthNames=new Array(12);
+		monthNames[0]="Jan";
+		monthNames[1]="Feb";
+		monthNames[2]="Mar";
+		monthNames[3]="Apr";
+		monthNames[4]="May";
+		monthNames[5]="Jun";
+		monthNames[6]="Jul";
+		monthNames[7]="Aug";
+		monthNames[8]="Sept";
+		monthNames[9]="Oct";
+		monthNames[10]="Nov";
+		monthNames[11]="Dec";
+		var month = monthNames[now.getMonth()];               
+		var date = now.getDate();
+		if(date < 10) 
+			date = "0" + date;
+		var today = day + ' ' + month + ' ' + date;
+		$('#datePicker').val(today);
+	});
+	
+    $('.dropdown-toggle').dropdown();
+    </script>
+    
   </body>
 </html>

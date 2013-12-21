@@ -15,14 +15,19 @@
  }
 
  .main-search{
-   background-color: #057f99;
-   text-align: center;
-   color: #fff; /* text color */
+  min-width: 1200px;
+  margin: 0px 30px 30px;
+  background-color: #057f99;
+  color: #fff; /* text color */
   font-family: "Quicksand";
   font-size: 35px;
+  height: 105px;
   padding: 30px;
  }
 
+ .search-comp {
+	float: left;
+ }
  .btn-search{
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
@@ -44,3 +49,75 @@
  .a:hover{
   color:white;
  }
+ 
+ .dropdown-menu{
+	position:absolute;
+	right:0px;
+	font-family: "Quicksand";
+	font-weight: 400; 
+	font-size: 23px;
+	background-color:#35b2d2;
+	color: #057f99;
+	padding: 15px;
+	margin:0; /* set back to default */
+	border: none; /* back to default */
+	border-radius:0;/* back to default */
+	webkit-box-shadow: none;/* back to default */
+	box-shadow: none; /* back to default */
+	background-clip:border-box; /* back to default */
+ }
+
+
+ textarea:focus, input[type="text"]:focus,textarea[type="text"]:focus,   input[type="password"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="date"]:focus, input[type="month"]:focus, input[type="time"]:focus, input[type="week"]:focus, input[type="number"]:focus, input[type="email"]:focus, input[type="url"]:focus, input[type="search"]:focus, input[type="tel"]:focus,  input[type="color"]:focus, .uneditable-input:focus, .form-control:focus {  
+border-color: none;
+box-shadow: none;
+outline: none;}
+ 
+ .form-control {
+	font-size: 35px;
+	color: #00e3fe;
+	height: 60px;
+	background-color:transparent;
+	border: none; /* back to default */
+	border-radius:0;/* back to default */
+	webkit-box-shadow: none;/* back to default */
+	box-shadow: none; /* back to default */
+	background-clip:border-box; /* back to default */
+	webkit-transition: none; /* back to default */
+	transition: none;
+ }
+ 
+ .icon {
+	padding: 5px 0 0 38px;
+ }
+ .categ-icon {
+   background: url('../img/icons/icon-black-arts.png') no-repeat left;
+}
+ 
+ .arts-icon {
+   background: url('../img/icons/icon-black-arts.png') no-repeat left;
+}
+ .food-icon {
+   background: url('../img/icons/icon-black-food.png') no-repeat left;
+}
+ .classes-icon {
+   background: url('../img/icons/icon-black-classes.png') no-repeat left;
+}
+ .meetups-icon {
+   background: url('../img/icons/icon-black-meetups.png') no-repeat left;
+}
+ .conferences-icon {
+   background: url('../img/icons/icon-black-conferences.png') no-repeat left;
+}
+ .music-icon {
+   background: url('../img/icons/icon-black-music.png') no-repeat left;
+}
+ .family-icon {
+   background: url('../img/icons/icon-black-family.png') no-repeat left;
+}
+ .sport-icon {
+   background: url('../img/icons/icon-black-sports.png') no-repeat left;
+}
+
+
+
