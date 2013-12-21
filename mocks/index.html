@@ -39,21 +39,49 @@
     
 </div>
 
-<div class="main-search">
-	<div class="dropdown" style="position:relative; width:1100px; margin:0 auto;">
-	<div style="position:absolute;">
+<div class="main-search dropdown">
+	<div style="position:absolute;"> 
 		Show me <font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ </font> 
 		events on <font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _</font>
-		in <font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _</font>
+		in <font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ _</font>
 	</div>
-	<div style="position:absolute;">
-		<font color="#00e3fe">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;category&nbsp;&nbsp;&nbsp;</font> 
-		<font color="#00e3fe">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Mon Jul 12&nbsp;&nbsp;</font> 
-		<font color="#00e3fe" class="dropdown-toggle" data-toggle="dropdown">&nbsp;&nbsp;Palo Alto, CA</font>
+	<form class="form-inline" role="form">
+		  <div class="form-group">
+    <label class="sr-only" for="datePicker">Email address</label>
+    <input class="form-control" id="datePicker" placeholder="day & date" style="position:absolute; top:24px; left:620px; width: 200px;">
+  </div>
+		<div class="form-group">
+			<label class="sr-only" for="categoryPicker"  style="position:absolute; top:24px; left:196px;">Category</label>
+			<input class="form-control dropdown-toggle" data-toggle="dropdown" id="categoryPicker"  style="position:absolute; top:24px; left:196px; width: 240px;" placeholder="art & culture">
+			<table class="dropdown-menu" role="menu" aria-labelledby="dLabel" width="100%">
+				<colgroup>
+				  <col width="600px">
+					<col width="600px">
+				</colgroup>
+				<tr>
+					<td class="icon arts-icon">arts &amp; culture</td>
+					<td class="icon food-icon">food &amp; wine</td>
+				</tr>
+				<tr>
+					<td class="icon classes-icon">classes &amp; workshops</td>
+					<td class="icon meetups-icon">meetup</td>
+				</tr>
+				<tr>
+					<td class="icon conferences-icon">conference</td>
+					<td class="icon music-icon">music</td>
+				</tr>
+				<tr>
+					<td class="icon family-icon">family</td>
+					<td class="icon sport-icon">sport</td>
+				</tr>
+			</table>
+		</div>
+	</form>
+	<div>
+		<font color="#00e3fe" data-toggle="dropdown"  class="dropdown-toggle" style="position:absolute; top:31px; left:875px; width:250px">Palo Alto, CA</font>
 		<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
 			<li>We're only available in Palo Alto, CA for now!
-		 </ul>
-	</div>
+		</ul>
 	</div>
 </div>
 
@@ -65,6 +93,18 @@
 </div>
 
     <script> 
+    $(document).ready( function() {
+		var now = new Date();
+		var month = (now.getMonth() + 1);               
+		var day = now.getDate();
+		if(month < 10) 
+			month = "0" + month;
+		if(day < 10) 
+			day = "0" + day;
+		var today = now.getFullYear() + '-' + month + '-' + day;
+		$('#datePicker').val(today);
+	});
+	
     $('.dropdown-toggle').dropdown();
     </script>
     
