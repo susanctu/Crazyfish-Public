@@ -143,6 +143,7 @@ class GdocsCrawler:
 
         @return: number of events in the Events worksheet.
         @rtype: int
+
         """
         # All events should have a name, so we can count the number of names
         # and return that as our answer.
@@ -161,6 +162,7 @@ class GdocsCrawler:
         @return: a list of indices for all the events in the spreadsheet that
         do not have IDs
         @rtype: list(int)
+
         """
         new_events_indices = []
         for i in range(0, self.number_of_events):
@@ -181,6 +183,7 @@ class GdocsCrawler:
         spreadsheet that have been entered in the database and since then
         flagged as modified.
         @rtype: list((int, int))
+
         """
         #TODO: debug this
         updated_events_indices_and_ids = []
@@ -204,6 +207,7 @@ class GdocsCrawler:
 
         @return: Event object representing the data entered in the spreadsheet
         @rtype: Event
+
         """
         # Loading raw input
         event_data = self.events_worksheet.row_values(n+2)
@@ -285,6 +289,7 @@ class GdocsCrawler:
 
         @return: list of Categories
         @rtype: list(Category)
+
         """
         # Loading raw input
         event_data = self.events_worksheet.row_values(n+2)
@@ -318,6 +323,7 @@ class GdocsCrawler:
         @return: ID of the event if it is in the spreadsheet (it should then
         correspond to the ID in the database), -1 if no ID.
         @rtype: int
+
         """
         id_data = self.events_worksheet.cell(
             self.events_metadata['event_id'], n+2
@@ -340,6 +346,7 @@ class GdocsCrawler:
 
         @return: True
         @rtype: Boolean
+
         """
         #TODO: debug this
         update_data = self.events_worksheet.cell(
@@ -359,20 +366,13 @@ class GdocsCrawler:
         @param n: 0-based index of the event for which the ID should be updated
         @type n: int
 
-        @param id: id to be written in the spreadsheet
-        @type n: int
+        @param eid: id to be written in the spreadsheet
+        @type eid: int
 
-        @return: True on success, False on fail.
-        @rtype: Bool
         """
-        #TODO: raise exception instad of success/failure flag?
-        try:
-            self.events_worksheet.update_cell(
-                self.events_metadata['event_id'], n+2, str(eid)
-            )
-            return True
-        except:
-            return False
+        self.events_worksheet.update_cell(
+            self.events_metadata['event_id'], n+2, str(eid)
+        )
 
     def write_update_status_nth_event(self, n, status):
         """ GdocsCrawler.write_update_status_nth_event(n, status)
@@ -387,22 +387,16 @@ class GdocsCrawler:
         write "N".
         @type status: Boolean
 
-        @return: True on success, False on fail
-        @rtype: Boolean
         """
-        #TODO: debug. Raise exception instead of success/failure flag?
-        try:
-            if status:
-                self.events_worksheet.update_cell(
-                    self.events_metadata['update_indicator'], n+2, "Y"
-                )
-            else:
-                self.events_worksheet.update_cell(
-                    self.events_metadata['update_indicator'], n+2, "N"
-                )
-            return True
-        except:
-            return False
+        if status:
+            self.events_worksheet.update_cell(
+                self.events_metadata['update_indicator'], n+2, "Y"
+            )
+        else:
+            self.events_worksheet.update_cell(
+                self.events_metadata['update_indicator'], n+2, "N"
+            )
+        return True
 
 
 def get_user_name():
@@ -412,6 +406,7 @@ def get_user_name():
     containing the events list.
 
     @rtype: str
+
     """
     return EVENTS_USERNAME
 
@@ -423,6 +418,7 @@ def get_password():
     for connecting to the Google spreadsheet.
 
     @rtype: str
+
     """
     return EVENTS_PASSWORD
 
@@ -434,6 +430,7 @@ def get_spreadsheet_key():
     loading events.
 
     @rtype: str
+
     """
     return EVENTS_SPREADSHEET_KEY
 
@@ -445,5 +442,6 @@ def get_worksheet_name():
     of interest in the Google Docs spreadsheet.
 
     @rtype: str
+
     """
     return EVENTS_WORKSHEET_NAME

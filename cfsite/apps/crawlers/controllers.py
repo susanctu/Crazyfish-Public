@@ -19,6 +19,7 @@ class GdocsCrawlerController:
     gdc = GdocsCrawler
     _event_list = []
     _event_index_list = []
+    _event_id_list = []
 
     def __init__(self):
         """ GdocsCrawlerController.__init__()
@@ -42,16 +43,43 @@ class GdocsCrawlerController:
         """
         return self._event_list
 
-    def load_event_list(self):
-        """ GdocsCrawlerController.load_event_list
+    def load_new_events_list(self):
+        """ GdocsCrawlerController.load_new_events_list
         ----------
-        Returns a list of all the new events that the GdocsCrawler found in the
+        Loads the list of all the new events that the GdocsCrawler found in the
         GoogleDocs spreadsheet. These events have not been checked for
         duplication at this point, they are detected as new only from the data
         entered in the spreadsheet. No database queries happen here.
+        The event list is loaded in the _event_list field of the object, and
+        corresponding event ids are loaded in _event_index_list.
 
         """
-        self._event_index_list = self.gdc.new_events_indices()
+        self._event_index_list = self.gdc.new_events_indices
+        self.populate_event_list_from_index_list()
+
+    def load_updated_events_list(self):
+        """ GdocsCrawlerController.load_updated_events_list
+        ----------
+        Loads the list of all the events that were flagged as updated in the
+        GoogleDocs spreadsheet.
+        The event list is loaded in the _event_list field of the object, and
+        the corresponding event ids are loaded in _event_index_list.
+
+        """
+        self._event_index_list, self._event_id_list = \
+            zip(*self.gdc.updated_events_indices_and_ids)
+        self.populate_event_list_from_index_list()
+
+    def populate_event_list_from_index_list(self):
+        """ GdocsCrawlerController.populate_event_list_from_index_list
+        ----------
+        Loads the list of events whose ids are stored in _event_index_list
+        into the _event_list field.
+        This method will erase all events previously present in the _event_list
+        in order to make sure indices between _event_index_list and _event_list
+        are in sync.
+
+        """
         self._event_list = []
         for i in self._event_index_list:
             c_event = self.gdc.get_nth_event(i)
@@ -82,9 +110,44 @@ class GdocsCrawlerController:
         Adds the list of events in self._event_list to the database of events.
         For each event added, it writes in the GoogleDocs spreadsheet the DB ID
         of the event.
+        This method does not call load_new_event_list itself, so the list of
+        events should have been populated prior to calling
+        add_events_to_database.
 
-        @return: True on success, False on fail.
-        @rtype: Boolean
         """
-        #TODO
-        return False
+        # Adding events sequentially deals with the case where duplicate
+        # events exist inside the _event_list field.
+        for i in range(0, len(self._event_index_list), 1):
+            e = self._event_list(i)
+            e_ind = self._event_index_list(i)
+            if SimpleDeduplicator.is_not_duplicate(e):
+                e.save()
+                self.gdc.write_id_nth_event(e_ind, e.id)
+                self._event_id_list.append(e.id)
+
+    def update_events_in_database(self):
+        """ GdocsCrawlerController.update_events_in_database()
+        ----------
+        Updates all the events whose database ID is stored in _event_id_list
+        and replaces them by the events defined in the corresponding line
+        of the GoogleDocs spreadsheet.
+        This method does not call load_updated_event_list itself, so the user
+        should make sure to force this update of the list of events himself,
+        before calling update_events_in_database.
+
+        """
+        for i in range(0, len(self._event_id_list), 1):
+            e_id = self._event_id_list(i)
+            e_db = Event.objects.get(id=e_id)
+            e_db = e_db[0]
+            e_new = self._event_list(i)
+
+            # Compare the old and the new event, detect which fields have
+            # changed and update them in the old.
+            change = e_db.compare(e_new)
+            for (name, val) in change:
+                setattr(e_db, name, val)
+
+            # Save the updated old event, saving of only the fields which
+            # have changed
+            e_db.save(update_fields=[name for (name, val) in change])
