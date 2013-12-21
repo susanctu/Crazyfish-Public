@@ -121,13 +121,16 @@ class GdocsCrawler:
         """ GdocsCrawler.build_metadata_dictionary()
         ----------
         This function builds a dictionary which stores where the event metadata
-        is located in the spreadsheet (for example, event ID).
+        is located in the spreadsheet (for example, event ID, or flag which
+        indicates if event needs to be updated or not).
 
         """
         header_values = self.events_worksheet.row_values(1)
         for i in range(0, len(header_values)):
             if header_values[i].find("Event ID"):
                 self.events_metadata['event_id'] = i
+            if header_values[i].find("Update"):
+                self.events_metadata['update_indicator'] = i
 
     @property
     def number_of_events(self):
@@ -164,6 +167,29 @@ class GdocsCrawler:
             if self.get_id_nth_event(i) > 0:
                 new_events_indices.append(i)
         return new_events_indices
+
+    @property
+    def updated_events_indices_and_ids(self):
+        """ GdocsCrawler.updated_events_indices()
+        ----------
+        Returns a list of (indices, ids) tuples for all the events in the
+        spreadsheet which have been marked as updated.
+        Indices are 0-based and correspond to the position of the event in the
+        spreadsheet. Ids are the database ID of the updated event.
+
+        @return: a list of (indices, ids tuples) for all the events in the
+        spreadsheet that have been entered in the database and since then
+        flagged as modified.
+        @rtype: list((int, int))
+        """
+        #TODO: debug this
+        updated_events_indices_and_ids = []
+        for i in range(0, self.number_of_events):
+            if self.is_nth_event_updated(i) > 0:
+                updated_events_indices_and_ids.append(
+                    (i, self.get_id_nth_event(i))
+                )
+        return updated_events_indices_and_ids
 
     def get_nth_event(self, n):
         """ GdocsCrawler.get_nth_event
@@ -258,7 +284,7 @@ class GdocsCrawler:
         @type n: int
 
         @return: list of Categories
-        @rtype: Category
+        @rtype: list(Category)
         """
         # Loading raw input
         event_data = self.events_worksheet.row_values(n+2)
@@ -293,15 +319,39 @@ class GdocsCrawler:
         correspond to the ID in the database), -1 if no ID.
         @rtype: int
         """
-        id_data = self.events_worksheet.cell(self.events_metadata['event_id'],
-                                             n+2)
+        id_data = self.events_worksheet.cell(
+            self.events_metadata['event_id'], n+2
+        )
         if id_data:
             return int(id_data)
         else:
             return -1
 
-    def write_id_nth_event(self, n, id):
-        """ GdocsCrawler.write_id_nth_event(n, id)
+    def is_nth_event_updated(self, n):
+        """ GdocsCrawler.is_nth_event_updated(n)
+        ----------
+        Returns a boolean indicating if the nth event was flagged as updated
+        or not. This method does not check if this event was entered in the
+        database (i.e. if the nth event has a database id).
+
+        @param n: 0-based index of the event for which the update status is
+        queried
+        @type n: int
+
+        @return: True
+        @rtype: Boolean
+        """
+        #TODO: debug this
+        update_data = self.events_worksheet.cell(
+            self.events_metadata['update_indicator'], n+2
+        )
+        if update_data == "Y" and self.get_id_nth_event(n) < 0:
+            return True
+        else:
+            return False
+
+    def write_id_nth_event(self, n, eid):
+        """ GdocsCrawler.write_id_nth_event(n, eid)
         ----------
         Writes the ID of the n-th event in the relevant cell in the gDocs
         worksheet. Returns a boolean indicator of success.
@@ -315,9 +365,41 @@ class GdocsCrawler:
         @return: True on success, False on fail.
         @rtype: Bool
         """
+        #TODO: raise exception instad of success/failure flag?
         try:
-            self.events_worksheet.update_cell(self.events_metadata['event_id'],
-                                              n+2, str(id))
+            self.events_worksheet.update_cell(
+                self.events_metadata['event_id'], n+2, str(eid)
+            )
+            return True
+        except:
+            return False
+
+    def write_update_status_nth_event(self, n, status):
+        """ GdocsCrawler.write_update_status_nth_event(n, status)
+        ----------
+        Writes the update status of the n-th event in the relevant cell in the
+        gDocs worksheet. Returns a boolean indicator of success.
+
+        @param n: 0-based index of the event for which the ID should be updated
+        @type n: int
+
+        @param status: if True, then will write "Y" in the cell, otherwise will
+        write "N".
+        @type status: Boolean
+
+        @return: True on success, False on fail
+        @rtype: Boolean
+        """
+        #TODO: debug. Raise exception instead of success/failure flag?
+        try:
+            if status:
+                self.events_worksheet.update_cell(
+                    self.events_metadata['update_indicator'], n+2, "Y"
+                )
+            else:
+                self.events_worksheet.update_cell(
+                    self.events_metadata['update_indicator'], n+2, "N"
+                )
             return True
         except:
             return False

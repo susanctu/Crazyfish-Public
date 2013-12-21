@@ -141,7 +141,8 @@ class EventManager(models.Manager):
         """
         return self.filter(name__icontains=keyword)
 
-    def search_for_events(self, date, category_id, location_id):
+    @staticmethod
+    def search_for_events(date, category_id, location_id):
         """ EventManager.search_for_events(date, category_id, location_id)
         ----------
         Returns the list of all events that occurs on the date specified, 
@@ -177,7 +178,7 @@ class Event(models.Model):
     Optionally, an event can have a price, a description and a website.
     
     An event can have a different start date from its end date (required for 
-    events which last more than a day, for exmple a music festival). 
+    events which last more than a day, for example a music festival).
     When the end date and time of and event are not specified, the event is 
     assumed to end an hour after its initial start time. If an event end date 
     is specified but not the event end hour, the event will be assumed to end 
