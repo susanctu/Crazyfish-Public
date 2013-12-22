@@ -138,6 +138,7 @@ class GdocsCrawlerController:
         """
         for i in range(0, len(self._event_id_list), 1):
             e_id = self._event_id_list(i)
+            e_ind = self._event_index_list(i)
             e_db = Event.objects.get(id=e_id)
             e_db = e_db[0]
             e_new = self._event_list(i)
@@ -151,3 +152,6 @@ class GdocsCrawlerController:
             # Save the updated old event, saving of only the fields which
             # have changed
             e_db.save(update_fields=[name for (name, val) in change])
+
+            # Mark the event status as not requiring an update anymore
+            self.gdc.write_update_status_nth_event(e_ind, False)

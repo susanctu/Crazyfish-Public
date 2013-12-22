@@ -127,9 +127,9 @@ class GdocsCrawler:
         """
         header_values = self.events_worksheet.row_values(1)
         for i in range(0, len(header_values)):
-            if header_values[i].find("Event ID"):
+            if header_values[i].find("Event ID") >= 0:
                 self.events_metadata['event_id'] = i
-            if header_values[i].find("Update"):
+            if header_values[i].find("Update") >= 0:
                 self.events_metadata['update_indicator'] = i
 
     @property
@@ -147,8 +147,9 @@ class GdocsCrawler:
         """
         # All events should have a name, so we can count the number of names
         # and return that as our answer.
+        # Note: indices are 1-based in the spreadsheet
         event_names = self.events_worksheet.col_values(
-            self.events_fields_and_pos['name'])
+            self.events_fields_and_pos['name']+1)
         return len(event_names)-1
 
     @property
@@ -166,7 +167,7 @@ class GdocsCrawler:
         """
         new_events_indices = []
         for i in range(0, self.number_of_events):
-            if self.get_id_nth_event(i) > 0:
+            if self.get_id_nth_event(i) < 0:
                 new_events_indices.append(i)
         return new_events_indices
 
@@ -185,10 +186,9 @@ class GdocsCrawler:
         @rtype: list((int, int))
 
         """
-        #TODO: debug this
         updated_events_indices_and_ids = []
         for i in range(0, self.number_of_events):
-            if self.is_nth_event_updated(i) > 0:
+            if self.is_nth_event_updated(i):
                 updated_events_indices_and_ids.append(
                     (i, self.get_id_nth_event(i))
                 )
@@ -215,7 +215,8 @@ class GdocsCrawler:
         try:
             # Finding the location
             location_name = event_data[
-                self.events_fields_and_pos['event_location']]
+                self.events_fields_and_pos['event_location']
+            ]
             l = Location.objects.get(city=location_name)
 
             # Creating event object, first with fields that cannot be omitted
@@ -233,36 +234,44 @@ class GdocsCrawler:
             if self.events_fields_and_pos['description'] < len(event_data):
                 if event_data[self.events_fields_and_pos['description']]:
                     e.description = event_data[
-                        self.events_fields_and_pos['description']]
+                        self.events_fields_and_pos['description']
+                    ]
 
             if self.events_fields_and_pos['address'] < len(event_data):
                 if event_data[self.events_fields_and_pos['address']]:
                     e.address = event_data[
-                        self.events_fields_and_pos['address']]
+                        self.events_fields_and_pos['address']
+                    ]
 
             if self.events_fields_and_pos['event_end_date'] < len(event_data):
                 if event_data[self.events_fields_and_pos['event_end_date']]:
                     e.event_end_date = event_data[
-                        self.events_fields_and_pos['event_end_date']]
+                        self.events_fields_and_pos['event_end_date']
+                    ]
 
             if self.events_fields_and_pos['event_end_time'] < len(event_data):
                 if event_data[self.events_fields_and_pos['event_end_time']]:
                     e.event_end_time = event_data[
-                        self.events_fields_and_pos['event_end_time']]
+                        self.events_fields_and_pos['event_end_time']
+                    ]
 
             if self.events_fields_and_pos['price'] < len(event_data):
                 if event_data[self.events_fields_and_pos['price']]:
                     e.price = event_data[
-                        self.events_fields_and_pos['price']]
+                        self.events_fields_and_pos['price']
+                    ]
 
             if self.events_fields_and_pos['price_details'] < len(event_data):
                 if event_data[self.events_fields_and_pos['price_details']]:
                     e.price_details = event_data[
-                        self.events_fields_and_pos['price_details']]
+                        self.events_fields_and_pos['price_details']
+                    ]
 
             if self.events_fields_and_pos['rating'] < len(event_data):
                 if event_data[self.events_fields_and_pos['rating']]:
-                    e.rating = event_data[self.events_fields_and_pos['rating']]
+                    e.rating = event_data[
+                        self.events_fields_and_pos['rating']
+                    ]
 
             return e
 
@@ -325,9 +334,10 @@ class GdocsCrawler:
         @rtype: int
 
         """
+        # Note: cell uses 1-based indexing
         id_data = self.events_worksheet.cell(
-            self.events_metadata['event_id'], n+2
-        )
+            n+2, self.events_metadata['event_id']+1
+        ).value
         if id_data:
             return int(id_data)
         else:
@@ -348,10 +358,10 @@ class GdocsCrawler:
         @rtype: Boolean
 
         """
-        #TODO: debug this
+        #Note: cell uses 1-based indexing
         update_data = self.events_worksheet.cell(
-            self.events_metadata['update_indicator'], n+2
-        )
+            n+2, self.events_metadata['update_indicator']+1
+        ).value
         if update_data == "Y" and self.get_id_nth_event(n) < 0:
             return True
         else:
@@ -370,8 +380,9 @@ class GdocsCrawler:
         @type eid: int
 
         """
+        # Note: cell uses 1-based indexing
         self.events_worksheet.update_cell(
-            self.events_metadata['event_id'], n+2, str(eid)
+            n+2, self.events_metadata['event_id']+1, str(eid)
         )
 
     def write_update_status_nth_event(self, n, status):
@@ -388,15 +399,15 @@ class GdocsCrawler:
         @type status: Boolean
 
         """
+        # Note: cell uses 1-based indexing
         if status:
             self.events_worksheet.update_cell(
-                self.events_metadata['update_indicator'], n+2, "Y"
+                n+2, self.events_metadata['update_indicator']+1, "Y"
             )
         else:
             self.events_worksheet.update_cell(
-                self.events_metadata['update_indicator'], n+2, "N"
+                n+2, self.events_metadata['update_indicator']+1, "N"
             )
-        return True
 
 
 def get_user_name():
