@@ -2,6 +2,7 @@ __author__ = 'Georges Goetz'
 __email__ = "ggoetz@stanford.edu"
 __status__ = "Prototype"
 
+import datetime
 from cfsite.apps.events.models import Event
 
 
@@ -31,35 +32,53 @@ class SimpleDeduplicator:
 
         @param event_and_md_list: a list of events from which duplicates should
         be removed. The list has the event object and associated metadata.
-        @type event__and_md_list: list((Event, event_metadata))
+        @type event_and_md_list: list((Event, event_metadata))
 
         @return: a list of events which have not been found already
         in the database
         @rtype: list(Event)
         """
-        return filter(lambda (x, y): SimpleDeduplicator.is_not_duplicate(x), event_and_md_list)
+        return filter(lambda (x, y): not(SimpleDeduplicator.is_duplicate(x)), event_and_md_list)
 
     @staticmethod
-    def is_not_duplicate(event):
-        """ SimpleDeduplicator.is_not_duplicate(event)
+    def is_duplicate(event):
+        """ SimpleDeduplicator.is_duplicate(event)
         ----------
-        Returns true if the event is not detected as a duplicate of any other
+        Returns true if the event is detected as a duplicate of another
         event in the database, and false otherwise.
 
         @param event: a (Event, event_metadata) tuple.
 
-        @return: Boolean,
-        """
-        #TODO
-        # Simple de duplication starts by looking for events that happen on
-        # the same date, and have the same categorization.
+        @return: Boolean, True is the event is detected in the database,
+        False otherwise.
 
-        # Filter out events whose start time is too different (outside a +/-
-        # 1 hour time window.
+        """
+        # Parameters we'll filter against
+        e_date = event.event_start_date
+        e_time = event.event_start_time
+        e_name = event.name.strip()
+        e_cat_ids = [c.id for c in event.category]
+        time_window = datetime.time(0, 30)
+
+        # Simple de duplication starts by looking for events that happen on
+        # the same date, inside a +/- 30 minutes time window, with at least
+        # one matching category.
+        matching_events_queryset = Event.objects.filter(
+            event_start_date__exact=e_date
+        ).exclude(
+            event_start_time__lt=e_time - time_window
+        ).exclude(
+            event_start_time__gt=e_time + time_window
+        ).filter(
+            category__id__in=e_cat_ids
+        )
 
         # Then, look for events whose name matches the name of the new event
-        # (= string edit distance within n, n TBD)
+        matching_events_queryset.filter(name__icontains=e_name)
 
         # If name, categories, start date match and start time is very close,
         # then we very probably have a duplicate here. Flag it as such!
-        return False
+        if matching_events_queryset.all():
+            return True
+        else:
+            return False

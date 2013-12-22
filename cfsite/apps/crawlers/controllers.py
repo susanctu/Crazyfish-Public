@@ -120,7 +120,7 @@ class GdocsCrawlerController:
         for i in range(0, len(self._event_index_list), 1):
             e = self._event_list(i)
             e_ind = self._event_index_list(i)
-            if SimpleDeduplicator.is_not_duplicate(e):
+            if not(SimpleDeduplicator.is_duplicate(e)):
                 e.save()
                 self.gdc.write_id_nth_event(e_ind, e.id)
                 self._event_id_list.append(e.id)
