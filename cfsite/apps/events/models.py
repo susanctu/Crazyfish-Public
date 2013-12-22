@@ -80,7 +80,7 @@ class Category(models.Model):
     
     """
     base_name = models.CharField(max_length=100)
-    sub_category = models.CharField(max_length=100, blank = True)
+    sub_category = models.CharField(max_length=100, blank=True)
 
     def __unicode__(self):
         """ Category.__unicode__
@@ -101,7 +101,7 @@ class Category(models.Model):
         
         """
         if not self.sub_category:
-            self.sub_category = "generic"    
+            self.sub_category = "generic"
 
     class Meta:
         ordering = ['base_name']
@@ -141,7 +141,8 @@ class EventManager(models.Manager):
         """
         return self.filter(name__icontains=keyword)
 
-    def search_for_events(self, date, category_id, location_id):
+    @staticmethod
+    def search_for_events(date, category_id, location_id):
         """ EventManager.search_for_events(date, category_id, location_id)
         ----------
         Returns the list of all events that occurs on the date specified, 
@@ -172,12 +173,12 @@ class Event(models.Model):
     """ Event model class
     ----------
     This class represents a model for the event stored in the database. 
-    An event is primarily comprised of a name and category. It also needs a time
-    and place for it to be valid. 
+    An event is primarily comprised of a name and category. It also needs a
+    time and place for it to be valid.
     Optionally, an event can have a price, a description and a website.
     
     An event can have a different start date from its end date (required for 
-    events which last more than a day, for exmple a music festival). 
+    events which last more than a day, for example a music festival).
     When the end date and time of and event are not specified, the event is 
     assumed to end an hour after its initial start time. If an event end date 
     is specified but not the event end hour, the event will be assumed to end 
@@ -236,7 +237,7 @@ class Event(models.Model):
         
         """
         return self.name
-    
+
     def clean(self):
         """ Event.clean()
         ----------
@@ -250,7 +251,7 @@ class Event(models.Model):
         # Price should always be positive
         if self.price < 0:
             raise ValidationError('Price cannot be negative')
-        
+
         # Plug in default values if end date and end time weren't specified
         # If the end date was specified, the end time could be implied.
         if self.event_end_date is not None and self.event_end_time is None:
@@ -258,7 +259,7 @@ class Event(models.Model):
         if self.event_end_date is None:
             self.event_end_date = self.event_start_date
 
-        # If even duration was not specified, set start time to end time
+        # If event duration was not specified, set start time to end time
         # to indicate we don't know what to do with the time.
         if self.event_end_time is None:
             self.event_end_time = self.event_start_time
@@ -278,6 +279,57 @@ class Event(models.Model):
         """
         return', '.join([a.__unicode__ for a in self.category.all()])
     category_names.short_description = "Categories"
+
+    def compare(self, new_obj):
+        """ Event.compare(new_obj)
+        ----------
+        Compares the event object with another event object.
+        Returns a dictionary with the changed attributes between self and
+        new_obj. Values of the attributes are those of new_obj.
+
+        @param new_obj: new event.
+        @type new_obj: Event
+
+        @return: dictionary of changed attributes
+
+        """
+        ignore_keys = 'created', '_state', 'timestamp', 'user', 'uid', 'changed'
+        return Event._compare(self, new_obj, ignore_keys)
+
+    @staticmethod
+    def _compare(old_obj, new_obj, ignore_keys):
+        """ Event._compare(old_obj, new_obj, ignore_keys)
+        ----------
+        Compares two Event objects (an old one and a new one) and returns
+        a dictionary of attributes which differ between the two. The values
+        associated with the key are those of the new object.
+        @warning: will silently ignore fields present in one object which are
+        not present in the other.
+
+        @param old_obj: older Event
+        @type old_obj: Event
+
+        @param new_obj: newer Event
+        @type new_obj: Event
+
+        @param ignore_keys: dictionary of keys to ignore when comparing Events
+        @type ignore_keys: dict
+
+        @return: dictionary of attributes which differ between old and new
+
+        """
+        d_old, d_new = old_obj.__dict__, new_obj.__dict__
+        change = {}
+        for k, v in d_old.items():
+            if k in ignore_keys:
+                continue
+            try:
+                if v != d_new[k]:
+                    change.update({k: d_new[k]})
+            except KeyError:
+                continue
+
+        return change
 
     class Meta:
         ordering = ['event_start_time', 'name']
