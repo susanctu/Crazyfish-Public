@@ -48,31 +48,31 @@
 	<form class="form-inline" role="form">
 		  <div class="form-group">
     <label class="sr-only" for="datePicker">Email address</label>
-    <input class="form-control" id="datePicker" placeholder="day & date" style="position:absolute; top:24px; left:615px; width: 200px;">
+    <input class="form-control" id="datePicker" placeholder="date" style="position:absolute; top:24px; left:615px; width: 200px;">
   </div>
 		<div class="form-group">
 			<label class="sr-only" for="categoryPicker"  style="position:absolute; top:24px; left:196px;">Category</label>
-			<input class="form-control dropdown-toggle" data-toggle="dropdown" id="categoryPicker"  style="position:absolute; top:24px; left:196px; width: 240px;" placeholder="art & culture">
+			<input class="form-control dropdown-toggle" data-toggle="dropdown" id="categoryPicker"  style="position:absolute; top:24px; left:196px; width: 240px;" placeholder="category">
 			<table class="dropdown-menu" role="menu" aria-labelledby="dLabel" width="100%">
 				<colgroup>
 				  <col width="600px">
 					<col width="600px">
 				</colgroup>
 				<tr>
-					<td class="icon arts-icon">arts &amp; culture</td>
-					<td class="icon food-icon">food &amp; wine</td>
+					<td id="arts-opt" class="icon arts-icon hover-white dropdown-toggle" data-toggle="dropdown"  onClick="set_selection(this.id)">arts &amp; culture</td>
+					<td id="food-opt" class="icon food-icon hover-white dropdown-toggle" data-toggle="dropdown"  onClick="set_selection(this.id)">food &amp; wine</td>
 				</tr>
 				<tr>
-					<td class="icon classes-icon">classes &amp; workshops</td>
-					<td class="icon meetups-icon">meetup</td>
+					<td id="classes-opt" class="icon classes-icon hover-white dropdown-toggle" data-toggle="dropdown" onClick="set_selection(this.id)">classes &amp; workshops</td>
+					<td id="meetups-opt" class="icon meetups-icon hover-white dropdown-toggle" data-toggle="dropdown" onClick="set_selection(this.id)">meetup</td>
 				</tr>
 				<tr>
-					<td class="icon conferences-icon">conference</td>
-					<td class="icon music-icon">music</td>
+					<td id="conferences-opt" class="icon conferences-icon hover-white dropdown-toggle" data-toggle="dropdown" onClick="set_selection(this.id)">conference</td>
+					<td id="music-opt" class="icon music-icon hover-white dropdown-toggle" data-toggle="dropdown" onClick="set_selection(this.id)">music</td>
 				</tr>
 				<tr>
-					<td class="icon family-icon">family</td>
-					<td class="icon sport-icon">sport</td>
+					<td id="family-opt" class="icon family-icon hover-white dropdown-toggle" data-toggle="dropdown" onClick="set_selection(this.id)">family</td>
+					<td id="sport-opt" class="icon sport-icon hover-white dropdown-toggle" data-toggle="dropdown" onClick="set_selection(this.id)">sport</td>
 				</tr>
 			</table>
 		</div>
@@ -124,8 +124,12 @@
 		var today = day + ' ' + month + ' ' + date;
 		$('#datePicker').val(today);
 	});
-	
+    
     $('.dropdown-toggle').dropdown();
+    
+    function set_selection(element_id) {
+		$('#categoryPicker').val(document.getElementById(element_id).firstChild.nodeValue);
+	}
     </script>
     
   </body>
