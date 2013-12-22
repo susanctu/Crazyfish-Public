@@ -46,9 +46,7 @@
   text-shadow: 0 1px 2px rgba(0,0,0,.25); /* drop shadow */
  }
 
- .a:hover{
-  color:white;
- }
+ 
  
  .dropdown-menu{
 	position:absolute;
@@ -90,34 +88,73 @@ outline: none;}
  .icon {
 	padding: 5px 0 0 38px;
  }
- .categ-icon {
-   background: url('../img/icons/icon-black-arts.png') no-repeat left;
-}
  
  .arts-icon {
    background: url('../img/icons/icon-black-arts.png') no-repeat left;
 }
+
+ .arts-icon:hover {
+   background: url('../img/icons/icon-on-arts.png') no-repeat left;
+}
+
  .food-icon {
    background: url('../img/icons/icon-black-food.png') no-repeat left;
 }
+
+ .food-icon:hover {
+   background: url('../img/icons/icon-on-food.png') no-repeat left;
+}
+
  .classes-icon {
    background: url('../img/icons/icon-black-classes.png') no-repeat left;
 }
+
+ .classes-icon:hover {
+   background: url('../img/icons/icon-on-classes.png') no-repeat left;
+}
+
  .meetups-icon {
    background: url('../img/icons/icon-black-meetups.png') no-repeat left;
 }
+
+ .meetups-icon:hover {
+   background: url('../img/icons/icon-on-meetups.png') no-repeat left;
+}
+
  .conferences-icon {
    background: url('../img/icons/icon-black-conferences.png') no-repeat left;
 }
+
+ .conferences-icon:hover {
+   background: url('../img/icons/icon-on-conferences.png') no-repeat left;
+}
+
  .music-icon {
    background: url('../img/icons/icon-black-music.png') no-repeat left;
 }
+
+ .music-icon:hover {
+   background: url('../img/icons/icon-on-music.png') no-repeat left;
+}
+
  .family-icon {
    background: url('../img/icons/icon-black-family.png') no-repeat left;
 }
+
+ .family-icon:hover {
+   background: url('../img/icons/icon-on-family.png') no-repeat left;
+}
+
  .sport-icon {
    background: url('../img/icons/icon-black-sports.png') no-repeat left;
 }
 
+ .sport-icon:hover {
+   background: url('../img/icons/icon-on-sports.png') no-repeat left;
+}
+
+.hover-white:hover{
+  color:white;
+}
 
 
