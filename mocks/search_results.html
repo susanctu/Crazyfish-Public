@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>crazyfish :: all your events in one place</title>
+    <link href="css/cf.css" rel="stylesheet">
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+</head>
+
+<body id="body">
+<div id="header-wrapper">
+    <div id="header" class="">
+        <table cellspacing="0" cellpadding="0" border="0" style="width: 100%">
+            <tbody>
+                <tr>
+                    <td class="logo-wrapper">
+                        <div class="nowrap">
+                            <a href="/">
+                                <div id="header-logo">
+                                    <div class="sliced_whaley"></div>
+                                    <div class="cflogo"></div>
+                                </div>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div id="results-area">
+    <div id="results" class="results results-events">
+        <div class="results-over-content">
+            <div class="results-over-content__error-container" style="display: none;">
+                <div class="search-results-tab-error">
+                    <div class="search-results-tab-error__header"></div>
+                    <div class="search-results-tab-error__message"></div>
+                    <img src="/static/img/logo-dead-transparent.png">
+                </div>
+            </div>
+        </div>
+        <div class="results-content">
+            <div id="event-holder" class="event-holder border-filter border-timesabove">
+                <div id="etable" class="clip-children">
+                    <div id="timeline-header" class="timeline-header" style="left: 0px;">
+                        <div class="controls-header">
+                            <!-- FILTERS GO HERE (Category and Sort by) -->
+                            <div class="filter-controls control-set">
+                                <!-- TODO -->
+                                <div class="label">
+                                    Filter by:
+                                </div>
+                                <div class="filter-arts-culture init-tooltip selected">
+                                    <div class="filter-logo filter-logo-arts-culture"></div>
+                                    <div class="tile-explanation exp-below" style="display:none; top:auto; left:0px; bottom:auto; right:auto;">
+                                        <div class="tooltip-text">
+                                            Arts & Culture.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="filter-classes-workshops init-tooltip">
+                                    <div class="filter-logo filter-logo-classes-workshops"></div>
+                                    <div class="tile-explanation exp-below" style="display:none; top:auto; left:0px; bottom:auto; right:auto;">
+                                        <div class="tooltip-text">
+                                            Classes & Workshops.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="filter-conference init-tooltip">
+                                    <div class="filter-logo filter-logo-conference"></div>
+                                    <div class="tile-explanation exp-below" style="display:none; top:auto; left:0px; bottom:auto; right:auto;">
+                                        <div class="tooltip-text">
+                                            Conference.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="filter-family init-tooltip">
+                                    <div class="filter-logo filter-logo-family"></div>
+                                    <div class="tile-explanation exp-below" style="display:none; top:auto; left:0px; bottom:auto; right:auto;">
+                                        <div class="tooltip-text">
+                                            Family.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="filter-food-wine init-tooltip">
+                                    <div class="filter-logo filter-logo-food-wine"></div>
+                                    <div class="tile-explanation exp-below" style="display:none; top:auto; left:0px; bottom:auto; right:auto;">
+                                        <div class="tooltip-text">
+                                            Food & Wine.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="filter-meetup init-tooltip">
+                                    <div class="filter-logo filter-logo-meetup"></div>
+                                    <div class="tile-explanation exp-below" style="display:none; top:auto; left:0px; bottom:auto; right:auto;">
+                                        <div class="tooltip-text">
+                                            Meetup.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="filter-music init-tooltip">
+                                    <div class="filter-logo filter-logo-music"></div>
+                                    <div class="tile-explanation exp-below" style="display:none; top:auto; left:0px; bottom:auto; right:auto;">
+                                        <div class="tooltip-text">
+                                            Music.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="filter-sport init-tooltip">
+                                    <div class="filter-logo filter-logo-sport"></div>
+                                    <div class="tile-explanation exp-below" style="display:none; top:auto; left:0px; bottom:auto; right:auto;">
+                                        <div class="tooltip-text">
+                                            Sport.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="sort-controls control-set">
+                                <div class="label">
+                                    Sort by:
+                                </div>
+                                <div class="sort-magic init-tooltip selected">
+                                    <div class="sort-logo sort-logo-magic"></div>
+                                    <div class="tile-explanation exp-below" style="display:none; top:auto; left:0px; bottom:auto; right:auto;">
+                                        <div class="tooltip-text">
+                                            Magic.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sort-price init-tooltip">
+                                    <div class="sort-logo sort-logo-price"></div>
+                                    <div class="tile-explanation exp-below" style="display:none; top:auto; left:0px; bottom:auto; right:auto;">
+                                        <div class="tooltip-text">
+                                            Price.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sort-start-time init-tooltip">
+                                    <div class="sort-logo sort-logo-start-time"></div>
+                                    <div class="tile-explanation exp-below" style="display:none; top:auto; left:0px; bottom:auto; right:auto;">
+                                        <div class="tooltip-text">
+                                            Start time.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sort-duration init-tooltip">
+                                    <div class="sort-logo sort-logo-duration"></div>
+                                    <div class="tile-explanation exp-below" style="display:none; top:auto; left:0px; bottom:auto; right:auto;">
+                                        <div class="tooltip-text">
+                                            Duration.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <table class="timeline-table" width="100%" cellspacing="0" cellpadding="0">
+                            <!-- Start/end time selection goes here -->
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="left-column-header">
+                                            <div class="main">
+                                                Arts & culture events for Wed Nov 14th
+                                            </div>
+                                        </div>
+                                        <div class="timeheader">
+                                            <div id="anchor-left" class="anchor left" style="left: 2.5%;">
+                                                <div class="hit-area left">
+                                                    <div class="time-flag right right-arrow">
+                                                        Start
+                                                        <div class="arrow"></div>
+                                                    </div>
+                                                    <div class="time-flag left left-border timebox" style="display: block;">
+                                                        8:45am
+                                                        <div class="day-month">
+                                                            , Nov 14
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="timeval" style="left: 12.5%; width: 25%;">
+                                                <div class="time light hour10">
+                                                    10am
+                                                </div>
+                                            </div>
+                                            <div class="timeval" style="left: 25%; width: 25%;">
+                                                <div class="time light hour12">
+                                                    12pm
+                                                </div>
+                                            </div>
+                                            <div class="timeval" style="left: 37.5%; width: 25%;">
+                                                <div class="time light hour14">
+                                                    2pm
+                                                </div>
+                                            </div>
+                                            <div class="timeval" style="left: 50%; width: 25%;">
+                                                <div class="time light hour16">
+                                                    4pm
+                                                </div>
+                                            </div>
+                                            <div class="timeval" style="left: 62.5%; width: 25%;">
+                                                <div class="time light hour18">
+                                                    6pm
+                                                </div>
+                                            </div>
+                                            <div class="timeval" style="left: 75%; width: 25%;">
+                                                <div class="time light hour20">
+                                                    8pm
+                                                </div>
+                                            </div>
+                                            <div class="timeval" style="left: 87.5%; width: 25%;">
+                                                <div class="time light hour22">
+                                                    10pm
+                                                </div>
+                                            </div>
+                                            <div id="anchor-right" class="anchor right" style="left: 97.5%;">
+                                                <div class="hit-area right">
+                                                    <div class="time-flag left left-arrow">
+                                                        End
+                                                        <div class="arrow"></div>
+                                                    </div>
+                                                    <div class="time-flag right right-border timebox" style="display: block;">
+                                                        11:45pm
+                                                        <div class="day-month">
+                                                            , Nov 14
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="events-table" style="left: 20px;">
+                        <div id="alllines">
+                            <div class="graydiv graydiv-left" style="width: 2.5%;"></div>
+                            <div class="graydiv graydiv-right" style="width: 2.5%;"></div>
+                            <div class=" line" style="left: 12.5%"></div>
+                            <div class=" line" style="left: 25%"></div>
+                            <div class=" line" style="left: 37.5%"></div>
+                            <div class=" line" style="left: 50%"></div>
+                            <div class=" line" style="left: 62.5%"></div>
+                            <div class=" line" style="left: 75%"></div>
+                            <div class=" line" style="left: 87.5%"></div>
+                        </div>
+                        <div id="sub-graph">
+                            <!-- TODO -->
+                            <div id="e-0-0" class="event c-0 r-0">
+                                <div class="event-info">
+                                    <div class="toggle-expand"></div>
+                                    <div class="category-column">
+                                        <div class="category-logos">
+                                            <div class="category-logo category-logo-sports"></div>
+                                        </div>
+                                        <div class="category-name">
+                                            Sports
+                                        </div>
+                                    </div>
+                                    <div class="title-column">
+                                        <div class="title-main">
+                                            UCF Homecoming Pres. Benny Benassi...
+                                        </div>
+                                        <div class="title-sub">
+                                            This is the event description...
+                                        </div>
+                                    </div>
+                                    <div class="price-column">
+                                        <div class="currency">
+                                            $
+                                        </div>
+                                        <div class="price">
+                                            75
+                                        </div>
+                                    </div>
+                                    <div class="lines">
+                                        <div class=" line" style="left: 12.5%"></div>
+                                        <div class=" line" style="left: 25%"></div>
+                                        <div class=" line" style="left: 37.5%"></div>
+                                        <div class=" line" style="left: 50%"></div>
+                                        <div class=" line" style="left: 62.5%"></div>
+                                        <div class=" line" style="left: 75%"></div>
+                                        <div class=" line" style="left: 87.5%"></div>
+                                    </div>
+                                    <div class="event-time-info">
+                                        <div class="graph">
+                                            <div class="box event" style="width: 15%; margin-left: 25%; border-left: 1px solid; border-right: 1px solid;">
+                                                <div class="duration-wrapper">
+                                                    <div class="duration">2h30</div>
+                                                </div>
+                                                <div class="timebox starts">
+                                                    12:30pm
+                                                    <span class="day-month">
+                                                        , Nov 14
+                                                    </span>
+                                                </div>
+                                                <div class="timebox ends">
+                                                    14:00pm
+                                                    <span class="day-month">
+                                                        , Nov 14
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="address-column">
+                                        <div class="address">
+                                            Campus drive @ Munger residences, Stanford University
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="event-details" style="display: none;"></div>
+                            </div>
+                            <div id="e-0-1" class="event c-0 r-1">
+                                <div class="event-info">
+                                    <div class="toggle-expand"></div>
+                                    <div class="category-column">
+                                        <div class="category-logos">
+                                            <div class="category-logo category-logo-sports"></div>
+                                        </div>
+                                        <div class="category-name">
+                                            Sports
+                                        </div>
+                                    </div>
+                                    <div class="title-column">
+                                        <div class="title-main">
+                                            UCF Homecoming Pres. Benny Benassi...
+                                        </div>
+                                        <div class="title-sub">
+                                            This is the event description...
+                                        </div>
+                                    </div>
+                                    <div class="price-column">
+                                        <div class="currency">
+                                            $
+                                        </div>
+                                        <div class="price">
+                                            75
+                                        </div>
+                                    </div>
+                                    <div class="lines">
+                                        <div class=" line" style="left: 12.5%"></div>
+                                        <div class=" line" style="left: 25%"></div>
+                                        <div class=" line" style="left: 37.5%"></div>
+                                        <div class=" line" style="left: 50%"></div>
+                                        <div class=" line" style="left: 62.5%"></div>
+                                        <div class=" line" style="left: 75%"></div>
+                                        <div class=" line" style="left: 87.5%"></div>
+                                    </div>
+                                    <div class="event-time-info">
+                                        <div class="graph">
+                                            <div class="box event" style="width: 15%; margin-left: 25%; border-left: 1px solid; border-right: 1px solid;">
+                                                <div class="duration-wrapper">
+                                                    <div class="duration">2h30</div>
+                                                </div>
+                                                <div class="timebox starts">
+                                                    12:30pm
+                                                    <span class="day-month">
+                                                        , Nov 14
+                                                    </span>
+                                                </div>
+                                                <div class="timebox ends">
+                                                    14:00pm
+                                                    <span class="day-month">
+                                                        , Nov 14
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="address-column">
+                                        <div class="address">
+                                            Campus drive @ Munger residences, Stanford University
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="event-details" style="display: none;"></div>
+                            </div>
+                            <div id="e-0-2" class="event c-0 r-2">
+                                <div class="event-info">
+                                    <div class="toggle-expand"></div>
+                                    <div class="category-column">
+                                        <div class="category-logos">
+                                            <div class="category-logo category-logo-sports"></div>
+                                        </div>
+                                        <div class="category-name">
+                                            Sports
+                                        </div>
+                                    </div>
+                                    <div class="title-column">
+                                        <div class="title-main">
+                                            UCF Homecoming Pres. Benny Benassi...
+                                        </div>
+                                        <div class="title-sub">
+                                            This is the event description...
+                                        </div>
+                                    </div>
+                                    <div class="price-column">
+                                        <div class="currency">
+                                            $
+                                        </div>
+                                        <div class="price">
+                                            75
+                                        </div>
+                                    </div>
+                                    <div class="lines">
+                                        <div class=" line" style="left: 12.5%"></div>
+                                        <div class=" line" style="left: 25%"></div>
+                                        <div class=" line" style="left: 37.5%"></div>
+                                        <div class=" line" style="left: 50%"></div>
+                                        <div class=" line" style="left: 62.5%"></div>
+                                        <div class=" line" style="left: 75%"></div>
+                                        <div class=" line" style="left: 87.5%"></div>
+                                    </div>
+                                    <div class="event-time-info">
+                                        <div class="graph">
+                                            <div class="box event" style="width: 15%; margin-left: 25%; border-left: 1px solid; border-right: 1px solid;">
+                                                <div class="duration-wrapper">
+                                                    <div class="duration">2h30</div>
+                                                </div>
+                                                <div class="timebox starts">
+                                                    12:30pm
+                                                    <span class="day-month">
+                                                        , Nov 14
+                                                    </span>
+                                                </div>
+                                                <div class="timebox ends">
+                                                    14:00pm
+                                                    <span class="day-month">
+                                                        , Nov 14
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="address-column">
+                                        <div class="address">
+                                            Campus drive @ Munger residences, Stanford University
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="event-details" style="display: none;"></div>
+                            </div>
+                            <div id="e-1-0" class="event c-1 r-0">
+                                                                <div class="event-info">
+                                    <div class="toggle-expand"></div>
+                                    <div class="category-column">
+                                        <div class="category-logos">
+                                            <div class="category-logo category-logo-sports"></div>
+                                        </div>
+                                        <div class="category-name">
+                                            Sports
+                                        </div>
+                                    </div>
+                                    <div class="title-column">
+                                        <div class="title-main">
+                                            UCF Homecoming Pres. Benny Benassi...
+                                        </div>
+                                        <div class="title-sub">
+                                            This is the event description...
+                                        </div>
+                                    </div>
+                                    <div class="price-column">
+                                        <div class="currency">
+                                            $
+                                        </div>
+                                        <div class="price">
+                                            75
+                                        </div>
+                                    </div>
+                                    <div class="lines">
+                                        <div class=" line" style="left: 12.5%"></div>
+                                        <div class=" line" style="left: 25%"></div>
+                                        <div class=" line" style="left: 37.5%"></div>
+                                        <div class=" line" style="left: 50%"></div>
+                                        <div class=" line" style="left: 62.5%"></div>
+                                        <div class=" line" style="left: 75%"></div>
+                                        <div class=" line" style="left: 87.5%"></div>
+                                    </div>
+                                    <div class="event-time-info">
+                                        <div class="graph">
+                                            <div class="box event" style="width: 15%; margin-left: 25%; border-left: 1px solid; border-right: 1px solid;">
+                                                <div class="duration-wrapper">
+                                                    <div class="duration">2h30</div>
+                                                </div>
+                                                <div class="timebox starts">
+                                                    12:30pm
+                                                    <span class="day-month">
+                                                        , Nov 14
+                                                    </span>
+                                                </div>
+                                                <div class="timebox ends">
+                                                    14:00pm
+                                                    <span class="day-month">
+                                                        , Nov 14
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="address-column">
+                                        <div class="address">
+                                            Campus drive @ Munger residences, Stanford University
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="event-details" style="display: none;"></div>
+                            </div>
+                            <div id="e-1-1" class="event c-1 r-1">
+                                                                <div class="event-info">
+                                    <div class="toggle-expand"></div>
+                                    <div class="category-column">
+                                        <div class="category-logos">
+                                            <div class="category-logo category-logo-sports"></div>
+                                        </div>
+                                        <div class="category-name">
+                                            Sports
+                                        </div>
+                                    </div>
+                                    <div class="title-column">
+                                        <div class="title-main">
+                                            UCF Homecoming Pres. Benny Benassi...
+                                        </div>
+                                        <div class="title-sub">
+                                            This is the event description...
+                                        </div>
+                                    </div>
+                                    <div class="price-column">
+                                        <div class="currency">
+                                            $
+                                        </div>
+                                        <div class="price">
+                                            75
+                                        </div>
+                                    </div>
+                                    <div class="lines">
+                                        <div class=" line" style="left: 12.5%"></div>
+                                        <div class=" line" style="left: 25%"></div>
+                                        <div class=" line" style="left: 37.5%"></div>
+                                        <div class=" line" style="left: 50%"></div>
+                                        <div class=" line" style="left: 62.5%"></div>
+                                        <div class=" line" style="left: 75%"></div>
+                                        <div class=" line" style="left: 87.5%"></div>
+                                    </div>
+                                    <div class="event-time-info">
+                                        <div class="graph">
+                                            <div class="box event" style="width: 15%; margin-left: 25%; border-left: 1px solid; border-right: 1px solid;">
+                                                <div class="duration-wrapper">
+                                                    <div class="duration">2h30</div>
+                                                </div>
+                                                <div class="timebox starts">
+                                                    12:30pm
+                                                    <span class="day-month">
+                                                        , Nov 14
+                                                    </span>
+                                                </div>
+                                                <div class="timebox ends">
+                                                    14:00pm
+                                                    <span class="day-month">
+                                                        , Nov 14
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="address-column">
+                                        <div class="address">
+                                            Campus drive @ Munger residences, Stanford University
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="event-details" style="display: none;"></div>
+                            </div>
+                            <div id="e-2-0" class="event c-2 r-0">
+                                                                <div class="event-info">
+                                    <div class="toggle-expand"></div>
+                                    <div class="category-column">
+                                        <div class="category-logos">
+                                            <div class="category-logo category-logo-sports"></div>
+                                        </div>
+                                        <div class="category-name">
+                                            Sports
+                                        </div>
+                                    </div>
+                                    <div class="title-column">
+                                        <div class="title-main">
+                                            UCF Homecoming Pres. Benny Benassi...
+                                        </div>
+                                        <div class="title-sub">
+                                            This is the event description...
+                                        </div>
+                                    </div>
+                                    <div class="price-column">
+                                        <div class="currency">
+                                            $
+                                        </div>
+                                        <div class="price">
+                                            75
+                                        </div>
+                                    </div>
+                                    <div class="lines">
+                                        <div class=" line" style="left: 12.5%"></div>
+                                        <div class=" line" style="left: 25%"></div>
+                                        <div class=" line" style="left: 37.5%"></div>
+                                        <div class=" line" style="left: 50%"></div>
+                                        <div class=" line" style="left: 62.5%"></div>
+                                        <div class=" line" style="left: 75%"></div>
+                                        <div class=" line" style="left: 87.5%"></div>
+                                    </div>
+                                    <div class="event-time-info">
+                                        <div class="graph">
+                                            <div class="box event" style="width: 15%; margin-left: 25%; border-left: 1px solid; border-right: 1px solid;">
+                                                <div class="duration-wrapper">
+                                                    <div class="duration">2h30</div>
+                                                </div>
+                                                <div class="timebox starts">
+                                                    12:30pm
+                                                    <span class="day-month">
+                                                        , Nov 14
+                                                    </span>
+                                                </div>
+                                                <div class="timebox ends">
+                                                    14:00pm
+                                                    <span class="day-month">
+                                                        , Nov 14
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="address-column">
+                                        <div class="address">
+                                            Campus drive @ Munger residences, Stanford University
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="event-details" style="display: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="no-event-found-warning" class="no-event-found-warning" style="display: none;">
+                    No events found with the filters you selected...
+                </div>
+                <div class="bottom-spacer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="sink"></div>
+</body>
+
+</html>
