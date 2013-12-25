@@ -137,11 +137,11 @@ class GdocsCrawlerController:
 
         """
         for i in range(0, len(self._event_id_list), 1):
-            e_id = self._event_id_list(i)
-            e_ind = self._event_index_list(i)
-            e_db = Event.objects.get(id=e_id)
-            e_db = e_db[0]
-            e_new = self._event_list(i)
+            e_id = self._event_id_list(i)       # DB ID
+            e_ind = self._event_index_list(i)   # Index of the event
+            e_db = Event.objects.get(id=e_id)   # Event as stored in the DB
+            e_db = e_db[0]                      # list to Event object
+            e_new = self._event_list(i)         # new Event object
 
             # Compare the old and the new event, detect which fields have
             # changed and update them in the old.
