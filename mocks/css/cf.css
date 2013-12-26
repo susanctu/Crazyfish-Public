@@ -199,6 +199,7 @@ body {
 .results-events .head-block {
     position: relative;
     height: 25px;
+    bottom: 5px;
 }
 
 .results-events .timeline-header .timeline-table td {
@@ -240,6 +241,16 @@ body {
     top: 0px;
     width: 12px;
     height: 12px;
+}
+
+.results-events .timeheader .timeval .time {
+    position: absolute;
+    top: 0px;
+    left: -30px;
+    width: 60px;
+    height: 10px;
+    text-align: center;
+    color: #11b1d3;
 }
 
 .results-events .timeheader .anchor {
@@ -337,6 +348,20 @@ body {
 
  /* Results table lines */
 
+.results-events .events-table {
+    position: relative;
+}
+
+.results-events .alllines {
+    top: 0px;
+    bottom: 0px;
+    position: absolute;
+}
+
+.results-events .events-table .alllines {
+    left: 400px;
+}
+
 .results-events .graydiv {
     position: absolute;
     width: 0px;
@@ -346,10 +371,19 @@ body {
     z-index: 11;
 }
 
-.results-events .alllines {
+.results-events .graydiv.graydiv-right {
+    float: right;
+    background-position: right top;
     top: 0px;
-    bottom: 0px;
+    right: 0px;
+}
+
+.results-events .alllines .line {
     position: absolute;
+    top: -7px;
+    height: 7px;
+    z-index: 10;
+    border-left: 1px solid #838383;
 }
 
 /* Events details */
