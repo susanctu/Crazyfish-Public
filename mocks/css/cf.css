@@ -454,7 +454,7 @@ body {
 .results-events .alllines .line {
     position: absolute;
     top: -7px;
-    height: 7px;
+    height: calc(100% + 7px);
     z-index: 10;
     border-left: 1px solid #838383;
 }
@@ -462,6 +462,12 @@ body {
 /* Events details */
 
 .results-events .event {
+    position: relative;
+    font-size: 12px;
+    height: 66px;
+}
+
+.results-events .event.selected {
     position: relative;
     font-size: 12px;
     height: 66px;
@@ -482,23 +488,27 @@ body {
     border: 1px solid #838383;
 }
 
+.results-events .event.selected .event-info {
+    background-color: #fff9e5;
+}
+
 .results-events .events-table .category-column {
     position: absolute;
     top: 0px;
     left: 0px;
     bottom: 0px;
     width: 50px;
-    background-color: #ffffff;
     color: #000000;
 }
 
 .results-events .events-table .category-column .category-logos {
     text-align: center;
-    padding: 10px 0px 0px;
+    padding: 10px 10px 0px;
 }
 
 .results-events .events-table .category-column .category-name {
     text-align: center;
+    padding-left: 8px;
 }
 
 .results-events .events-table .category-column .category-logos .category-logo {
@@ -512,23 +522,51 @@ body {
     width: 280px;
 }
 
+.results-events .events-table .title-column .title-main {
+    font-size: 13px;
+    font-weight: bold;
+    color: #000000;
+    padding-left: 10px;
+    padding-top: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.results-events .events-table .title-column .title-sub {
+    padding-left: 10px;
+    padding-top: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .results-events .events-table .price-column {
     position: absolute;
     top: 0px;
     left: 330px;
     width: 59px;
-    border-right: solid 1px #838383;
     height: 65px;
 }
 
-.results-events .events-table .lines, .results-events .events-table .event-time-info {
-    left: 390px;
-    right: 170px;
+.results-events .events-table .price-column .currency {
+    float: left;
+    font-size: 14px;
+    color: #000000;
+    padding-top: 26px;
+    padding-left: 5px;
 }
 
-.results-events .events-table .lines {
-    position: absolute;
-    top: 0px;
+.results-events .events-table .price-column .price {
+    float: left;
+    font-size: 24px;
+    color: #000000;
+    padding-top: 20px;
+}
+
+.results-events .events-table .lines, .results-events .events-table .event-time-info {
+    left: 389px;
+    right: 169px;
 }
 
 .results-events .events-table .event-time-info {
@@ -540,7 +578,6 @@ body {
     top: 0px;
     right: 0px;
     width: 159px;
-    border-left: solid 1px #838383;
     height: 65px;
     padding-left: 10px;
 }
@@ -548,4 +585,140 @@ body {
 .results-events .events-table .address-column .address {
     padding-top: 10px;
     line-height: 120%;
+}
+
+/* Graph plotting goes here */
+
+.graph {
+    margin: 19px 0px;
+    height: 26px
+}
+
+.graph .box {
+    position: relative;
+    float: left;
+    text-align: center;
+    background-color: #057f99;
+    color: #ffffff;
+    z-index: 40;
+    border: 1px solid #838383;
+    height: 26px;
+}
+
+.graph .duration-wrapper {
+    overflow: hidden;
+    height: 26px;
+}
+
+.graph .duration {
+    padding-top: 7px;
+    font-weight: bold;
+}
+
+.graph .timebox {
+    display: none;
+}
+
+/* Event detailed view */
+
+.results-events .event .event-details {
+    position: absolute;
+    top: 66px;
+    left: 10px;
+    right: 50%;
+    background-color: #fff9e5;
+    color: #838383;
+    border: 1px solid #838383;
+    z-index: 50;
+}
+
+.results-events .event-details .deselect {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    float: right;
+    z-index: 51;
+}
+
+.results-events .event-details .deselect .deselect-image {
+    background-image: url("../img/close.png");
+    background-repeat: no-repeat;
+    background-position: center center;
+    width: 20px;
+    height: 20px;
+}
+
+.results-events .event .event-details .event-title-field, .results-events .event .event-details .event-description-field, .results-events .event .event-details .event-misc-info {
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 15px;
+    color: #000000;
+}
+
+.results-events .event .event-details .event-title-field {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.results-events .event .event-details .event-all-other.container {
+    position: relative;
+}
+
+.results-events .event .event-details .event-misc-info {
+    padding-bottom: 5px;
+    float: left;
+    width: 55%;
+}
+
+.results-events .event .event-details .event-misc-info .event-misc-info-subtitle {
+    float: left;
+    font-weight: bold;
+    width: 50px;
+}
+
+.results-events .event .event-details .event-misc-info .event-misc-info-details {
+    padding-bottom: 10px;
+    padding-left: 30%;
+    position: relative;
+    width: 75%;
+}
+
+.results-events .event .event-details .event-external {
+    position: relative;
+    padding-right: 10px;
+    padding-left: 10px;
+    left: 55%;
+    width: 45%;
+}
+
+.results-events .event .event-details .event-external a {
+    text-decoration: none;
+    color: #ffffff;
+    background-color: #fe6e27;
+    position: absolute;
+    left: 25%;
+    top: 20px;
+    width: 50%;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.results-events .event .event-details .event-external .link-comment {
+    position: absolute;
+    left: 15%;
+    top: 55px;
+    text-align: center;
+    width: 70%;
+}
+
+/* Bottom of the page */
+
+.bottom-spacer {
+    position: relative;
+    height: 50px;
+    z-index: 40;
 }
