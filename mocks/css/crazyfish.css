@@ -25,9 +25,11 @@
   padding: 30px;
  }
 
- .search-comp {
-	float: left;
+ .error404 {
+  color: #8df0fb; 
+  font-family: "Quicksand";
  }
+
  .btn-search{
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
