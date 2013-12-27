@@ -596,6 +596,8 @@ body {
 .results-events .events-table .address-column .address {
     padding-top: 10px;
     line-height: 120%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* Graph plotting goes here */
