@@ -497,7 +497,7 @@ body {
     top: 0px;
     left: 0px;
     bottom: 0px;
-    width: 50px;
+    width: 60px;
     color: #000000;
 }
 
@@ -508,7 +508,10 @@ body {
 
 .results-events .events-table .category-column .category-name {
     text-align: center;
-    padding-left: 8px;
+    margin-left: 5px;
+    margin-right: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .results-events .events-table .category-column .category-logos .category-logo {
@@ -518,8 +521,8 @@ body {
 .results-events .events-table .title-column {
     position: absolute;
     top: 0px;
-    left: 50px;
-    width: 280px;
+    left: 60px;
+    width: 270px;
 }
 
 .results-events .events-table .title-column .title-main {
@@ -603,6 +606,38 @@ body {
     z-index: 40;
     border: 1px solid #838383;
     height: 26px;
+}
+
+.graph .no-duration {
+    position: relative;
+    float: left;
+    height: 26px;
+    color: #057f99;
+    z-index: 40;
+}
+
+.graph .no-duration .point {
+    position: absolute;
+    top: 3px;
+    left: -10px;
+    background-color: #057f99;
+    height: 20px;
+    width: 20px;
+    border-radius: 10px;
+    border: 1px solid #838383;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.graph .no-duration .warning-message {
+    position: absolute;
+    top: 0px;
+    left: 13px;
+    height: 26px;
+    width: 80px;
+    line-height: 26px;
+    padding-left: 3px;
 }
 
 .graph .duration-wrapper {
