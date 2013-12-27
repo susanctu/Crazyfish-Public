@@ -567,6 +567,14 @@ body {
     padding-top: 20px;
 }
 
+.results-events .events-table .price-column .price-free {
+    float: left;
+    font-size: 18px;
+    color: #000000;
+    padding-top: 22px;
+    padding-left: 10px;
+}
+
 .results-events .events-table .lines, .results-events .events-table .event-time-info {
     left: 389px;
     right: 169px;
