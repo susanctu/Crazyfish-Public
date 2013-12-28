@@ -4,6 +4,7 @@
 <head>
     <title>crazyfish :: all your events in one place</title>
     <link href="css/cf.css" rel="stylesheet">
+    <link href="css/cf-animations.css" rel="stylesheet">
     <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 </head>
@@ -49,95 +50,66 @@
                                 <div class="label">
                                     Filter by:
                                 </div>
-                                <div class="filter-arts-culture init-tooltip selected">
-                                    <div class="filter-logos">
-                                        <div class="spacer"></div>
-                                        <div class="filter-logo filter-logo-arts-culture selected"></div>
-                                    </div>
-                                    <div class="tile-explanation exp-below" style="display:none; top:auto; left:0px; bottom:auto; right:auto;">
-                                        <div class="tooltip-text">
-                                            Arts &amp; Culture.
+                                <ul class="filter-logos-wrapper">
+                                    <li>
+                                        <div class="filter-logos">
+                                            <div class="spacer"></div>
+                                            <div class="filter-logo filter-logo-arts-culture selected"></div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="filter-classes-workshops init-tooltip">
-                                    <div class="filter-logos">
-                                        <div class="spacer"></div>
-                                        <div class="filter-logo filter-logo-classes-workshops"></div>
-                                    </div>
-                                    <div class="tile-explanation exp-below" style="display:none; top:auto; left:0px; bottom:auto; right:auto;">
-                                        <div class="tooltip-text">
-                                            Classes &amp; Workshops.
+                                        <span class="tooltip-comment"><p>Arts &amp; Culture</p></span>
+                                    </li>
+                                    <li>
+                                        <div class="filter-logos">
+                                            <div class="spacer"></div>
+                                            <div class="filter-logo filter-logo-classes-workshops"></div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="filter-conference init-tooltip selected">
-                                    <div class="filter-logos">
-                                        <div class="spacer"></div>
-                                        <div class="filter-logo filter-logo-conference selected"></div>
-                                    </div>
-                                    <div class="tile-explanation exp-below" style="display:none; top:auto; left:0px; bottom:auto; right:auto;">
-                                        <div class="tooltip-text">
-                                            Conference.
+                                        <span class="tooltip-comment"><p>Classes &amp; W...</p></span>
+                                    </li>
+                                    <li>
+                                        <div class="filter-logos">
+                                            <div class="spacer"></div>
+                                            <div class="filter-logo filter-logo-conference selected"></div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="filter-family init-tooltip">
-                                    <div class="filter-logos">
-                                        <div class="spacer"></div>
-                                        <div class="filter-logo filter-logo-family"></div>
-                                    </div>
-                                    <div class="tile-explanation exp-below" style="display:none; top:auto; left:0px; bottom:auto; right:auto;">
-                                        <div class="tooltip-text">
-                                            Family.
+                                        <span class="tooltip-comment">Conference</span>
+                                    </li>
+                                    <li>
+                                        <div class="filter-logos">
+                                            <div class="spacer"></div>
+                                            <div class="filter-logo filter-logo-family"></div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="filter-food-wine init-tooltip">
-                                    <div class="filter-logos">
-                                        <div class="spacer"></div>
-                                        <div class="filter-logo filter-logo-food-wine"></div>
-                                    </div>
-                                    <div class="tile-explanation exp-below" style="display:none; top:auto; left:0px; bottom:auto; right:auto;">
-                                        <div class="tooltip-text">
-                                            Food &amp; Wine.
+                                        <span class="tooltip-comment">Family</span>
+                                    </li>
+                                    <li>
+                                        <div class="filter-logos">
+                                            <div class="spacer"></div>
+                                            <div class="filter-logo filter-logo-food-wine"></div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="filter-meetup init-tooltip">
-                                    <div class="filter-logos">
-                                        <div class="spacer"></div>
-                                        <div class="filter-logo filter-logo-meetup"></div>
-                                    </div>
-                                    <div class="tile-explanation exp-below" style="display:none; top:auto; left:0px; bottom:auto; right:auto;">
-                                        <div class="tooltip-text">
-                                            Meetup.
+                                        <span class="tooltip-comment">Food &amp; Wine</span>
+                                    </li>
+                                    <li>
+                                        <div class="filter-logos">
+                                            <div class="spacer"></div>
+                                            <div class="filter-logo filter-logo-meetup"></div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="filter-music init-tooltip">
-                                    <div class="filter-logos">
-                                        <div class="spacer"></div>
-                                        <div class="filter-logo filter-logo-music"></div>
-                                    </div>
-                                    <div class="tile-explanation exp-below" style="display:none; top:auto; left:0px; bottom:auto; right:auto;">
-                                        <div class="tooltip-text">
-                                            Music.
+                                        <span class="tooltip-comment">Meetup</span>
+                                    </li>
+                                    <li>
+                                        <div class="filter-logos">
+                                            <div class="spacer"></div>
+                                            <div class="filter-logo filter-logo-music"></div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="filter-sport init-tooltip">
-                                    <div class="filter-logos">
-                                        <div class="spacer"></div>
-                                        <div class="filter-logo filter-logo-sports"></div>
-                                    </div>
-                                    <div class="tile-explanation exp-below" style="display:none; top:auto; left:0px; bottom:auto; right:auto;">
-                                        <div class="tooltip-text">
-                                            Sport.
+                                        <span class="tooltip-comment">Music</span>
+                                    </li>
+                                    <li>
+                                        <div class="filter-logos">
+                                            <div class="spacer"></div>
+                                            <div class="filter-logo filter-logo-sports"></div>
                                         </div>
-                                    </div>
-                                </div>
+                                        <span class="tooltip-comment">Sport</span>
+                                    </li>
+                                </ul>
                             </div>
+
                             <div class="sort-controls control-set">
                                 <div class="label">
                                     Sort by:
