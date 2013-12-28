@@ -61,3 +61,39 @@
 
 /* Time bar animations */
 
+.results-events .timeheader .anchor .hit-area:hover .time-flag {
+    background-color: #fff9e5;
+    color: #fe6e27;
+    border-color: #fe6e27;
+}
+
+.results-events .timeheader .anchor .hit-area.left:hover {
+    border-left: 2px solid #fe6e27;
+}
+
+.results-events .timeheader .anchor .hit-area:hover .time-flag.left-arrow:before {
+    border-color: transparent #fe6e27 transparent transparent;
+}
+
+.results-events .timeheader .anchor .hit-area:hover .time-flag.left-arrow:after {
+    border-color: transparent #fff9e5 transparent transparent;
+}
+
+.results-events .timeheader .anchor .hit-area.right:hover {
+    border-right: 2px solid #fe6e27;
+}
+
+.results-events .timeheader .anchor .hit-area:hover .time-flag.right-arrow:before {
+    border-color: transparent transparent transparent #fe6e27;
+}
+
+.results-events .timeheader .anchor .hit-area:hover .time-flag.right-arrow:after {
+    border-color: transparent transparent transparent #fff9e5;
+}
+
+
+/* Graph display animations */
+
+.results-events .event .event-info:hover {
+    background-color: #fff9e5;
+}
