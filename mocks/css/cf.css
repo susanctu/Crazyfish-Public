@@ -105,6 +105,7 @@ body {
     display: inline-block;
     height: 60px;
     float: left;
+    cursor: pointer;
 }
 
 .filter-logos .spacer, .sort-logos .spacer {
@@ -474,6 +475,7 @@ body {
     color: #838383;
     border: 1px solid #838383;
     box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
 }
 
 .results-events .event.selected .event-info {
@@ -672,6 +674,7 @@ body {
     height: 20px;
     float: right;
     z-index: 51;
+    cursor: pointer;
 }
 
 .results-events .event-details .deselect .deselect-image {
