@@ -18,3 +18,46 @@
 .filter-logos-wrapper li:hover span, .sort-logos-wrapper li:hover span {
     opacity: 1;
 }
+
+/* Time bar pseudo elements */
+
+.results-events .timeheader .anchor .hit-area .time-flag.right-arrow:before, .results-events .timeheader .anchor .hit-area .time-flag.right-arrow:after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 100%;
+    width: 0px;
+    height: 0px;
+    border-width: 11px;
+    border-style: solid;
+    border-color: transparent transparent transparent #38afc8;
+}
+
+.results-events .timeheader .anchor .hit-area .time-flag.right-arrow:after {
+    bottom: 1px;
+    border-color: transparent transparent transparent #00e3fe;
+    border-width: 8px;
+}
+
+.results-events .timeheader .anchor .hit-area .time-flag.left-arrow:before, .results-events .timeheader .anchor .hit-area .time-flag.left-arrow:after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0%;
+    margin-left: -22px;
+    width: 0px;
+    height: 0px;
+    border-width: 11px;
+    border-style: solid;
+    border-color: transparent #38afc8 transparent transparent;
+}
+
+.results-events .timeheader .anchor .hit-area .time-flag.left-arrow:after {
+    bottom: 1px;
+    margin-left: -16px;
+    border-color: transparent #00e3fe transparent transparent;
+    border-width: 8px;
+}
+
+/* Time bar animations */
+
