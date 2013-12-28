@@ -78,20 +78,20 @@ body {
       padding-right-rtl-source: physical;
 }
 
-.filter-logo {
-    display: inline;
+.filter-logos, .sort-logos {
+    display: inline-block;
+    height: 60px;
     float: left;
-    width: 30px;
-    background-repeat: no-repeat;
-    background-position: center center;
-    margin-left: 5px;
-    margin-right: 5px;
 }
 
-.sort-logo {
-    display: inline;
-    float: left;
+.filter-logos .spacer, .sort-logos .spacer {
+    height: 15px;
     width: 30px;
+}
+
+.filter-logos .filter-logo, .sort-logos .sort-logo, .category-logos .category-logo {
+    width: 30px;
+    height: 30px;
     background-repeat: no-repeat;
     background-position: center center;
     margin-left: 5px;
@@ -154,11 +154,11 @@ body {
     background-image: url("../img/icons/icon-on-music.png");
 }
 
-.filter-logo-sport {
+.filter-logo-sports {
     background-image: url("../img/icons/icon-off-sports.png");
 }
 
-.filter-logo-sport.selected {
+.filter-logo-sports.selected {
     background-image: url("../img/icons/icon-on-sports.png");
 }
 
@@ -194,7 +194,44 @@ body {
     background-image: url("../img/icons/icon-on-end.png");
 }
 
+.category-logo-arts-culture {
+    background-image: url("../img/icons/icon-black-arts.png");
+}
+
+.category-logo-classes-workshops {
+    background-image: url("../img/icons/icon-black-classes.png");
+}
+
+.category-logo-conference {
+    background-image: url("../img/icons/icon-black-conferences.png");
+}
+
+.category-logo-family {
+    background-image: url("../img/icons/icon-black-family.png");
+}
+
+.category-logo-food-wine {
+    background-image: url("../img/icons/icon-black-food.png");
+}
+
+.category-logo-meetup {
+    background-image: url("../img/icons/icon-black-meetups.png");
+}
+
+.category-logo-music {
+    background-image: url("../img/icons/icon-black-music.png");
+}
+
+.category-logo-sports {
+    background-image: url("../img/icons/icon-black-sports.png");
+}
+
 /* Results table header */
+
+.results-events td {
+    padding-top: 10px;
+    padding-bottom: 5px;
+}
 
 .results-events .head-block {
     position: relative;
@@ -256,7 +293,7 @@ body {
 .results-events .timeheader .anchor {
     position: absolute;
     top: 0px;
-    height: 1500px;
+    height: 40px;
     width: 0px;
     z-index: 20;
     background-repeat: no-repeat;
@@ -348,6 +385,42 @@ body {
 
  /* Results table lines */
 
+ .results-events .events-table .anchor {
+    position: absolute;
+    top: 0px;
+    height: 100%;
+    width: 0px;
+    z-index: 20;
+    background-repeat: no-repeat;
+}
+
+.results-events .events-table .anchor.left {
+    left: 0px;
+}
+
+.results-events .events-table .anchor.right {
+    left: 100%;
+}
+
+.results-events .events-table .anchor .hit-area {
+    position: absolute;
+    width: 20px;
+    height: 100%;
+    cursor: col-resize;
+    top: 0px;
+    font-color: #000000;
+}
+
+.results-events .events-table .anchor .hit-area.left {
+    left: 0px;
+    border-left: 2px solid #38afc8;
+}
+
+.results-events .events-table .anchor .hit-area.right {
+    left: -22px;
+    border-right: 2px solid #38afc8;
+}
+
 .results-events .events-table {
     position: relative;
 }
@@ -387,3 +460,92 @@ body {
 }
 
 /* Events details */
+
+.results-events .event {
+    position: relative;
+    font-size: 12px;
+    height: 66px;
+}
+
+.results-events .separator {
+    position: relative;
+    height: 9px;
+}
+
+.results-events .event .event-info {
+    height: 65px;
+    left: 10px;
+    position: absolute;
+    right: 10px;
+    background-color: #ffffff;
+    color: #838383;
+    border: 1px solid #838383;
+}
+
+.results-events .events-table .category-column {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    width: 50px;
+    background-color: #ffffff;
+    color: #000000;
+}
+
+.results-events .events-table .category-column .category-logos {
+    text-align: center;
+    padding: 10px 0px 0px;
+}
+
+.results-events .events-table .category-column .category-name {
+    text-align: center;
+}
+
+.results-events .events-table .category-column .category-logos .category-logo {
+    display: inline-block;
+}
+
+.results-events .events-table .title-column {
+    position: absolute;
+    top: 0px;
+    left: 50px;
+    width: 280px;
+}
+
+.results-events .events-table .price-column {
+    position: absolute;
+    top: 0px;
+    left: 330px;
+    width: 59px;
+    border-right: solid 1px #838383;
+    height: 65px;
+}
+
+.results-events .events-table .lines, .results-events .events-table .event-time-info {
+    left: 390px;
+    right: 170px;
+}
+
+.results-events .events-table .lines {
+    position: absolute;
+    top: 0px;
+}
+
+.results-events .events-table .event-time-info {
+    position: absolute;
+}
+
+.results-events .events-table .address-column {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 159px;
+    border-left: solid 1px #838383;
+    height: 65px;
+    padding-left: 10px;
+}
+
+.results-events .events-table .address-column .address {
+    padding-top: 10px;
+    line-height: 120%;
+}
