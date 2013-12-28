@@ -6,10 +6,11 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  */
-.datepicker {
-  /*.dow {
-    border-top: 1px solid #ddd !important;
-  }*/
+.datepicker .dow {
+	font-family: Helvetica;
+	font-size: 15px;
+	color: white;
+    border-bottom: 1px solid white !important;
 }
 
 .datepicker > div {
@@ -22,13 +23,21 @@
 }
 .datepicker td {
   text-align: center;
-  height: 70px;
-  width: 70px;
+  font-size:12px;
+  color: white;
+  height: 40px;
+  width: 40px;
+  padding:0 !important;
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
   border-radius: 50%;
    border: solid 1px transparent;
 }
+
+.datepicker th {
+  text-align: center !important;
+}
+
 .datepicker td.day:hover {
   cursor: pointer;
   border: solid 1px white;
@@ -57,6 +66,7 @@
 .datepicker td.active:hover.disabled,
 .datepicker td.active[disabled],
 .datepicker td.active:hover[disabled] {
+  color: #35b2d2;
   background-color: white;
 }
 .datepicker td.active:active,
@@ -67,11 +77,10 @@
 }
 .datepicker td span {
   display: block;
-  width: 47px;
-  height: 54px;
-  line-height: 54px;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
   float: left;
-  margin: 2px;
   cursor: pointer;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -105,6 +114,7 @@
 .datepicker td span.active.active,
 .datepicker td span.active.disabled,
 .datepicker td span.active[disabled] {
+  color: #35b2d2;
   background-color: white;
 }
 .datepicker td span.active:active,
@@ -133,4 +143,10 @@
   cursor: pointer;
   width: 16px;
   height: 16px;
+}
+
+.datepicker .monthSwitch {
+	font-family: Helvetica;
+	color: white;
+	text-align:center;
 }

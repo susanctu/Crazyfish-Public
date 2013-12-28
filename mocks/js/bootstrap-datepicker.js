@@ -362,7 +362,7 @@
 		dates:{
 			days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
 			daysShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-			daysMin: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+			daysMin: ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
 			months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
 			monthsShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 		},
@@ -421,9 +421,9 @@
 			return format_as_day_month_date(date);
 		},
 		headTemplate: '<thead>'+
-							'<tr>'+
+							'<tr class="monthSwitch">'+
 								'<th class="prev">&lsaquo;</th>'+
-								'<th colspan="5" class="switch"></th>'+
+								'<th colspan="5"></th>'+
 								'<th class="next">&rsaquo;</th>'+
 							'</tr>'+
 						'</thead>',
