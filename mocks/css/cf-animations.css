@@ -1,6 +1,6 @@
 /* Filter / sort list pseudo elements */
 
-.filter-logos-wrapper li span:after {
+.filter-logos-wrapper li span:after, .sort-logos-wrapper li span:after {
     content: "";
     position: absolute;
     bottom: 20px;
@@ -15,6 +15,6 @@
 
 /* Filter / sort list tooltip animations */
 
-.filter-logos-wrapper li:hover span {
+.filter-logos-wrapper li:hover span, .sort-logos-wrapper li:hover span {
     opacity: 1;
 }
