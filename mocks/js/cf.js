@@ -8,6 +8,7 @@ $( '.filter-logos-wrapper .filter-logos' ).click( function() {
 
 // Toggle selection of sort controls
 $( '.sort-logos-wrapper .sort-logos' ).click( function() {
+    $( '.sort-logos-wrapper .sort-logos .sort-logo' ).toggleClass( 'selected', false );
     $( this ).children( '.sort-logo' ).toggleClass( 'selected' );
 });
 
