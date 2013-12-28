@@ -48,7 +48,7 @@ body {
 }
 
 .filter-controls.control-set {
-    width: 430px;
+    width: 400px;
     float: left;
     height: 60px;
     line-height: 60px;
@@ -87,7 +87,7 @@ body {
 }
 
 .sort-controls.control-set {
-    width: 300px;
+    width: 240px;
     float: left;
     height: 60px;
     line-height: 60px;
@@ -337,7 +337,6 @@ body {
     height: 100%;
     cursor: col-resize;
     top: -4px;
-    font-color: #000000;
 }
 
 .results-events .timeheader .anchor .hit-area.left {
@@ -627,7 +626,6 @@ body {
     border: 1px solid #838383;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
-    box-sizing: border-box;
 }
 
 .graph .no-duration .warning-message {
