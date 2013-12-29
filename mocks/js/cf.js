@@ -15,6 +15,7 @@ var categories = ['arts-culture',
 // Again, order matters.
 var categoriesVerbose = ['arts &amp; culture',
                          'classes &amp; workshops',
+                         'conference',
                          'family',
                          'food &amp; wine',
                          'meetup',
@@ -69,8 +70,11 @@ function getSelectedCategoriesNumId () {
 function getSelectedCategoriesString () {
     var selectedCategoriesId = getSelectedCategoriesNumId();
     var sumStr = '';
-    // TODO
-    return sumStr;
+    for ( var i=0; i < selectedCategoriesId.length-1; i++ ) {
+        sumStr += categoriesVerbose[i] + ', ';
+    }
+    sumStr += categoriesVerbose[selectedCategoriesId[selectedCategoriesId.length-1]] + ' events';
+    return sumStr.charAt(0).toUpperCase() + sumStr.slice(1);
 }
 
 /**
@@ -98,6 +102,9 @@ function getSelectedLogoNumId () {
 $( '.filter-logos-wrapper .filter-logos' ).click( function() {
     $( this ).children( '.filter-logo' ).toggleClass( 'selected' );
     // TODO: the text in .timeheader .left-column-header .col-header-cat should also be updated
+    $( '#' + getSelectedTabHtmlId() + ' .timeline-header .head-block .left-column-header .col-header-cat' ).html(
+        getSelectedCategoriesString()
+    )
 });
 
 // Toggle selection of sort controls
