@@ -74,6 +74,16 @@ function getTimeAnchorRight () {
 }
 
 /**
+ * Returns the jQuery object containing the time box child of an anchor object.
+ * @param: jQuery handle to an anchor
+ * @return: jQuery object corresponding to a time box
+ *
+ */
+function getTimeBoxChildOfAnchor ( anchor ) {
+    return anchor.children().children('.time-flag.timebox');
+}
+
+/**
  * Returns the jQuery object containing the left graydiv.
  * @return: jQuery object corresponding to left graydiv.
  *
@@ -283,6 +293,15 @@ $( '.head-block .hit-area' ).on( 'mousedown', function(e) {
             // Move anchor and resize stripe here.
             cAnchor.css('left', newWidthPercentAnchor);
             getGraydivLeft().css('width', newWidthPercentGrayDiv);
+
+            // Set time flag in time box
+            if ( newWidthPercentAnchor == '0%' ) {
+                getTimeBoxChildOfAnchor(cAnchor).css('display', 'none');
+            }
+            else {
+                getTimeBoxChildOfAnchor(cAnchor).css('display', 'block');
+                getTimeBoxChildOfAnchor(cAnchor).html( percentageToTimeString(newWidthPercentAnchor) );
+            }
         }
         else {
             // New width in percent...
@@ -298,9 +317,18 @@ $( '.head-block .hit-area' ).on( 'mousedown', function(e) {
             // Move anchor and resize stripe here.
             cAnchor.css('left', newWidthPercentAnchor);
             getGraydivRight().css('width', newWidthPercentGrayDiv);
+
+            // Set time flag in time box
+            if ( newWidthPercentAnchor == '100%' ) {
+                getTimeBoxChildOfAnchor(cAnchor).css('display', 'none');
+            }
+            else {
+                getTimeBoxChildOfAnchor(cAnchor).css('display', 'block');
+                getTimeBoxChildOfAnchor(cAnchor).html( percentageToTimeString(newWidthPercentAnchor) );
+            }
         }
 
-    // TODO: update the strings of the numeric time displays. Filter events by time.
+    // TODO: Filter events by time.
 
     });
 });
