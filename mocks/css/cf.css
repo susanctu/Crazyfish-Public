@@ -278,9 +278,12 @@ body {
     font-weight: bold;
     padding-left: 15px;
     padding-right: 15px;
-    overflow: hidden;
-    text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.results-events .timeline-header .left-column-header .main .col-header-cat {
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .results-events .timeheader, .results-events .alllines {
