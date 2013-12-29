@@ -115,6 +115,7 @@
 			$(window).off('resize', this.place);
 			this.viewMode = this.startViewMode;
 			this.showMode();
+			this.showMode();
 			if (!this.isInput) {
 				$(document).off('mousedown', this.hide);
 			}
@@ -181,8 +182,10 @@
 				year = d.getFullYear(),
 				month = d.getMonth(),
 				currentDate = this.date.valueOf();
-			this.picker.find('.datepicker-days th:eq(1)')
-						.text(DPGlobal.dates.months[month]+' '+year);
+			this.picker.find('.yearSwitch th:eq(1)')
+						.text(year);
+			this.picker.find('.monthSwitch th:eq(1)')
+						.text(DPGlobal.dates.months[month]);
 			var prevMonth = new Date(year, month-1, 28,0,0,0,0),
 				day = DPGlobal.getDaysInMonth(prevMonth.getFullYear(), prevMonth.getMonth());
 			prevMonth.setDate(day);
@@ -253,13 +256,22 @@
 							case 'switch':
 								this.showMode(1);
 								break;
-							case 'prev':
-							case 'next':
-								this.viewDate['set'+DPGlobal.modes[this.viewMode].navFnc].call(
+							case 'prev-month':
+							case 'next-month':
+								this.viewDate['setMonth'].call(
 									this.viewDate,
-									this.viewDate['get'+DPGlobal.modes[this.viewMode].navFnc].call(this.viewDate) + 
-									DPGlobal.modes[this.viewMode].navStep * (target[0].className === 'prev' ? -1 : 1)
+									this.viewDate['getMonth'].call(this.viewDate) + (target[0].className === 'prev-month' ? -1 : 1)
 								);
+								this.fill();
+								this.set();
+								break;
+							case 'prev-year':
+							case 'next-year':
+								this.viewDate['setFullYear'].call(
+									this.viewDate,
+									this.viewDate['getFullYear'].call(this.viewDate) + (target[0].className === 'prev-year' ? -1 : 1)
+								);
+								console.log(this.viewDate['getFullYear'].call(this.viewDate) + (target[0].className === 'prev-year' ? -1 : 1));
 								this.fill();
 								this.set();
 								break;
@@ -421,10 +433,15 @@
 			return format_as_day_month_date(date);
 		},
 		headTemplate: '<thead>'+
-							'<tr class="monthSwitch">'+
-								'<th class="prev">&lsaquo;</th>'+
+							'<tr class="yearSwitch">'+
+								'<th class="prev-year">&lsaquo;</th>'+
 								'<th colspan="5"></th>'+
-								'<th class="next">&rsaquo;</th>'+
+								'<th class="next-year">&rsaquo;</th>'+
+							'</tr>'+
+							'<tr class="monthSwitch">'+
+								'<th class="prev-month">&lsaquo;</th>'+
+								'<th colspan="5"></th>'+
+								'<th class="next-month">&rsaquo;</th>'+
 							'</tr>'+
 						'</thead>',
 		contTemplate: '<tbody><tr><td colspan="7"></td></tr></tbody>'
