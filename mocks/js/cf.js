@@ -71,7 +71,7 @@ function getSelectedCategoriesString () {
     var selectedCategoriesId = getSelectedCategoriesNumId();
     var sumStr = '';
     for ( var i=0; i < selectedCategoriesId.length-1; i++ ) {
-        sumStr += categoriesVerbose[i] + ', ';
+        sumStr += categoriesVerbose[selectedCategoriesId[i]] + ', ';
     }
     sumStr += categoriesVerbose[selectedCategoriesId[selectedCategoriesId.length-1]] + ' events';
     return sumStr.charAt(0).toUpperCase() + sumStr.slice(1);
