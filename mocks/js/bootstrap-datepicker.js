@@ -17,6 +17,17 @@
  * limitations under the License.
  * ========================================================= */
  
+ /* Options
+  * ========================================================
+  * name 			type	default 	description
+  * --------------------------------------------------------
+  * placeInside		string	body		element that the html for the datepicker should be placed at the end of
+  * 									(can use id's)
+  * 
+  * To use this datepicker, you also need to include js/cf_utils.js
+  * TODO (susanctu): diable options other than placeInside
+  */
+
 !function( $ ) {
 	
 	// Picker object
@@ -24,8 +35,9 @@
 	var Datepicker = function(element, options){
 		this.element = $(element);
 		this.format = DPGlobal.parseFormat(options.format||this.element.data('date-format')||'mm/dd/yyyy');
+		this.placeInside = options.placeInside || 'body';
 		this.picker = $(DPGlobal.template)
-							.appendTo('#DPLoc')
+							.appendTo(this.placeInside)
 							.on({
 								click: $.proxy(this.click, this)//,
 								//mousedown: $.proxy(this.mousedown, this)
@@ -430,7 +442,7 @@
 			return date;
 		},
 		formatDate: function(date, format){
-			return format_as_day_month_date(date);
+			return CfUtils.format_as_day_month_date(date);
 		},
 		headTemplate: '<thead>'+
 							'<tr class="yearSwitch">'+
