@@ -103,6 +103,12 @@ function getSelectedLogoNumId () {
 // TODO
 
 /**
+ * Returns the min and max time corresponding to 0% and 100% position
+ * of the sliders. Returned in string format: 'hh:mm am/pm'.
+ * @return {[str, str]} Start and end time of slider bar.
+ */
+
+/**
  * Converts a percentage position into an hour:min AM/PM string.
  * @param {str} A string describing a percentage (ex: '15.5%').
  * @return {str} A time string (ex: '8:55 am').
@@ -112,13 +118,18 @@ function getSelectedLogoNumId () {
 
 /**************************** Filter / sort list *****************************/
 
+/**
+ * Returns the jQuery object which holds the event description string
+ * @return {jQuery Object} Object which holds the event description string.
+ */
+ function getEventDescriptionHolder () {
+     return $( '#' + getSelectedTabHtmlId() + ' .timeline-header .head-block .left-column-header .col-header-cat' );
+ }
+
 // Toggle selection of filter controls
 $( '.filter-logos-wrapper .filter-logos' ).click( function() {
     $( this ).children( '.filter-logo' ).toggleClass( 'selected' );
-    // TODO: the text in .timeheader .left-column-header .col-header-cat should also be updated
-    $( '#' + getSelectedTabHtmlId() + ' .timeline-header .head-block .left-column-header .col-header-cat' ).html(
-        getSelectedCategoriesString()
-    )
+    getEventDescriptionHolder().html( getSelectedCategoriesString() )
 });
 
 // Toggle selection of sort controls
@@ -128,6 +139,42 @@ $( '.sort-logos-wrapper .sort-logos' ).click( function() {
 });
 
 /**************************** Times table        *****************************/
+
+/**
+ * Returns the jQuery object containing the left time anchor
+ * @return: jQuery object corresponding to left time anchor.
+ *
+ */
+function getTimeAnchorLeft () {
+    return $( '#' + getSelectedTabHtmlId() + ' .timeline-header .timeheader .anchor.left' );
+}
+
+/**
+ * Returns the jQuery object containing the right time anchor
+ * @return: jQuery object corresponding to right time anchor.
+ *
+ */
+function getTimeAnchorRight () {
+    return $( '#' + getSelectedTabHtmlId() + ' .timeline-header .timeheader .anchor.right' );
+}
+
+/**
+ * Returns the jQuery object containing the left graydiv.
+ * @return: jQuery object corresponding to left graydiv.
+ *
+ */
+function getGraydivLeft () {
+    return $( '#' + getSelectedTabHtmlId() + ' .events-table .graydiv-left' );
+}
+
+/**
+ * Returns the jQuery object containing the right graydiv.
+ * @return: jQuery object corresponding to right graydiv.
+ *
+ */
+function getGraydivRight () {
+    return $( '#' + getSelectedTabHtmlId() + ' .events-table .graydiv-right' );
+}
 
 // Set the height of the hit area
 $( '.event-holder .timeline-header .timeline-table .timeheader .hit-area' ).height( function() {
@@ -144,8 +191,8 @@ $( '.head-block .hit-area' ).on( 'mousedown', function(e) {
 
     var borderWidth = 2;
     var minXAnchorLeft = 0;
-    var minXAnchorRight = $( '#' + getSelectedTabHtmlId() + ' .timeline-header .timeheader .anchor.left' ).position().left + borderWidth;
-    var maxXAnchorLeft = $( '#' + getSelectedTabHtmlId() + ' .timeline-header .timeheader .anchor.right' ).position().left - borderWidth;
+    var minXAnchorRight = getTimeAnchorLeft().position().left + borderWidth;
+    var maxXAnchorLeft = getTimeAnchorRight().position().left - borderWidth;
     var maxXAnchorRight = $( this ).parents( '.timeheader' ).width();
     var maxWidth = maxXAnchorRight;
 
@@ -169,7 +216,7 @@ $( '.head-block .hit-area' ).on( 'mousedown', function(e) {
 
             // Move anchor and resize stripe here.
             cAnchor.css('left', newWidthPercentAnchor);
-            $( '#' + getSelectedTabHtmlId() + ' .events-table .graydiv-left' ).css('width', newWidthPercentGrayDiv);
+            getGraydivLeft().css('width', newWidthPercentGrayDiv);
         }
         else {
             // New width in percent...
@@ -184,8 +231,11 @@ $( '.head-block .hit-area' ).on( 'mousedown', function(e) {
 
             // Move anchor and resize stripe here.
             cAnchor.css('left', newWidthPercentAnchor);
-            $( '#' + getSelectedTabHtmlId() + ' .events-table .graydiv-right' ).css('width', newWidthPercentGrayDiv);
+            getGraydivRight().css('width', newWidthPercentGrayDiv);
         }
+
+    // TODO: update the strings of the numeric time displays. Filter events by time.
+
     });
 });
 
