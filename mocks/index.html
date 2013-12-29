@@ -6,6 +6,7 @@
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="css/datepicker.css" rel="stylesheet">
     <link href="css/crazyfish.css" rel="stylesheet">
     <link href='http://fonts.googleapis.com/css?family=Quicksand:300,400,700' rel='stylesheet' type='text/css'>
 
@@ -24,6 +25,7 @@
     <script src="https://code.jquery.com/jquery.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/cf_utils.js"></script>
 <br/><br/><br/>
 <div class="section-hero">
       <div class="container" align="center">
@@ -42,13 +44,14 @@
 <div class="main-search dropdown">
 	<div style="position:absolute;"> 
 		Show me <font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ </font> 
-		events on <font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _</font>
+		events on <font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _</font>
 		in <font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ _</font>
 	</div>
 	<form class="form-inline" role="form">
-		  <div class="form-group">
+		  <div class="form-group" id="DPLoc">
     <label class="sr-only" for="datePicker">Email address</label>
-    <input class="form-control" id="datePicker" placeholder="date" style="position:absolute; top:24px; left:615px; width: 200px;">
+    <input class="form-control datepicker" data-toggle="dropdown" id="datePicker" placeholder="date" style="position:absolute; top:24px; left:615px; width: 230px;">
+	<script src="js/bootstrap-datepicker.js"></script>
   </div>
 		<div class="form-group">
 			<label class="sr-only" for="categoryPicker"  style="position:absolute; top:24px; left:196px;">Category</label>
@@ -78,7 +81,7 @@
 		</div>
 	</form>
 	<div>
-		<font color="#00e3fe" data-toggle="dropdown"  class="dropdown-toggle" style="position:absolute; top:31px; left:875px; width:250px">Palo Alto, CA</font>
+		<font color="#00e3fe" data-toggle="dropdown"  class="dropdown-toggle" style="position:absolute; top:31px; left:900px; width:250px">Palo Alto, CA</font>
 		<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
 			<li>We're only available in Palo Alto, CA for now!
 		</ul>
@@ -91,42 +94,15 @@
 </div>
 
 </div>
-
+	
     <script> 
-    $(document).ready( function() {
+    $(document).ready( function() { //set today's date as the default
 		var now = new Date();
-		var weekday=new Array(7);
-		weekday[0]="Sun";
-		weekday[1]="Mon";
-		weekday[2]="Tue";
-		weekday[3]="Wed";
-		weekday[4]="Thur";
-		weekday[5]="Frid";
-		weekday[6]="Sat";
-		var day = weekday[now.getDay()];
-		var monthNames=new Array(12);
-		monthNames[0]="Jan";
-		monthNames[1]="Feb";
-		monthNames[2]="Mar";
-		monthNames[3]="Apr";
-		monthNames[4]="May";
-		monthNames[5]="Jun";
-		monthNames[6]="Jul";
-		monthNames[7]="Aug";
-		monthNames[8]="Sept";
-		monthNames[9]="Oct";
-		monthNames[10]="Nov";
-		monthNames[11]="Dec";
-		var month = monthNames[now.getMonth()];               
-		var date = now.getDate();
-		if(date < 10) 
-			date = "0" + date;
-		var today = day + ' ' + month + ' ' + date;
-		$('#datePicker').val(today);
+		$('#datePicker').val(CfUtils.format_as_day_month_date(now));
 	});
-    
+	
     $('.dropdown-toggle').dropdown();
-    
+    $('.datepicker').datepicker({placeInside:'#DPLoc'});
     function set_selection(element_id) {
 		$('#categoryPicker').val(document.getElementById(element_id).firstChild.nodeValue);
 	}
