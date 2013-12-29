@@ -95,6 +95,20 @@ function getSelectedLogoNumId () {
     }
 }
 
+/**
+ * Returns the start and end positions of the time sliders.
+ * @return {[int, int]} Start and End time in percentage.
+ *
+ */
+// TODO
+
+/**
+ * Converts a percentage position into an hour:min AM/PM string.
+ * @param {str} A string describing a percentage (ex: '15.5%').
+ * @return {str} A time string (ex: '8:55 am').
+ */
+// TODO
+
 
 /**************************** Filter / sort list *****************************/
 
@@ -120,6 +134,59 @@ $( '.event-holder .timeline-header .timeline-table .timeheader .hit-area' ).heig
     // Height of the event table should usually be 40px...
     var c_height = 40;
     return 40 + $( '.event-holder .events-table' ).height();
+});
+
+// Drag the sliders
+$( '.head-block .hit-area' ).on( 'mousedown', function(e) {
+    var cAnchor = $( this ).parents( '.anchor' );
+    var startWidth = cAnchor.position().left;
+    var startX = e.pageX;
+
+    var borderWidth = 2;
+    var minXAnchorLeft = 0;
+    var minXAnchorRight = $( '#' + getSelectedTabHtmlId() + ' .timeline-header .timeheader .anchor.left' ).position().left + borderWidth;
+    var maxXAnchorLeft = $( '#' + getSelectedTabHtmlId() + ' .timeline-header .timeheader .anchor.right' ).position().left - borderWidth;
+    var maxXAnchorRight = $( this ).parents( '.timeheader' ).width();
+    var maxWidth = maxXAnchorRight;
+
+    // Reset mouse events on mouse up so that things stop moving
+    $( document ).on( 'mouseup', function(e) {
+        $( document ).off( 'mouseup' ).off( 'mousemove' );
+    });
+
+    // Resize here, as the mouse moves
+    $( document ).on( 'mousemove', function(me) {
+        if ( cAnchor.attr('class').indexOf('left') != -1 ) {
+            // New width in percent...
+            var newWidth = Math.min(Math.max(startWidth + me.pageX - startX, minXAnchorLeft), maxXAnchorLeft);
+            var newWidthPercentAnchor = Math.round(1000*newWidth/maxWidth)/10;
+
+            // graydiv should be 1 px wider to avoid aliasing effects in some browsers
+            var newWidthPercentGrayDiv = Math.round((1000*newWidth+1)/maxWidth)/10;
+
+            newWidthPercentAnchor = newWidthPercentAnchor.toString() + '%';
+            newWidthPercentGrayDiv = newWidthPercentGrayDiv.toString() + '%';
+
+            // Move anchor and resize stripe here.
+            cAnchor.css('left', newWidthPercentAnchor);
+            $( '#' + getSelectedTabHtmlId() + ' .events-table .graydiv-left' ).css('width', newWidthPercentGrayDiv);
+        }
+        else {
+            // New width in percent...
+            var newWidth = Math.min(Math.max(startWidth + me.pageX - startX, minXAnchorRight), maxXAnchorRight);
+            var newWidthPercentAnchor = Math.round(1000*newWidth/maxWidth)/10;
+
+            // graydiv should be 1 px wider to avoid aliasing effects in some browsers
+            var newWidthPercentGrayDiv = 100 - Math.round((1000*newWidth+1)/maxWidth)/10;
+
+            newWidthPercentAnchor = newWidthPercentAnchor.toString() + '%';
+            newWidthPercentGrayDiv = newWidthPercentGrayDiv.toString() + '%';
+
+            // Move anchor and resize stripe here.
+            cAnchor.css('left', newWidthPercentAnchor);
+            $( '#' + getSelectedTabHtmlId() + ' .events-table .graydiv-right' ).css('width', newWidthPercentGrayDiv);
+        }
+    });
 });
 
 /**************************** Event table        *****************************/
