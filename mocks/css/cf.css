@@ -252,12 +252,9 @@ body {
 
 /* Results table header */
 
-.results-events td {
-    padding-top: 10px;
-    padding-bottom: 5px;
-}
-
 .results-events .head-block {
+    margin-top: 20px;
+    padding-bottom: 5px;
     position: relative;
     height: 25px;
     bottom: 5px;
