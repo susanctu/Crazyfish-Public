@@ -239,9 +239,10 @@ function getMinAndMaxTimes () {
  *         array composed of the following fields:
  *             [0]: position of the events with the current sorting
  *             [1]: list of categories the event belongs to (array of ints)
- *             [2]: price of the events, 0 if the event is free
- *             [3]: start time of the event as a percentage of the time slider
- *             [4]: duration of the event as a percentage of the time slider (ex: 15.5 for 15.5%)
+ *             [2]: magic rating of the event (float)
+ *             [3]: price of the events, 0 if the event is free
+ *             [4]: start time of the event as a percentage of the time slider
+ *             [5]: duration of the event as a percentage of the time slider (ex: 15.5 for 15.5%)
  *
  */
 function getEventArray () {
@@ -259,6 +260,8 @@ function getEventArray () {
             return parseInt(x);
         });
 
+        var cMagic = parseFloat( cEventHelper.children( '.event-helper-magic' ).html() );
+
         var cPrice = parseFloat( cEventHelper.children( '.event-helper-price' ).html() );
 
         var cStartTime = cEventHelper.children( '.event-helper-start-time ' ).html();
@@ -267,10 +270,32 @@ function getEventArray () {
         var cDuration = cEventHelper.children( '.event-helper-duration-minutes ' ).html();
         cDuration = durationInMinutesToPercentage(cDuration);
 
-        eventArr.push([i, cCategory, cPrice, cStartTime, cDuration]);
+        eventArr.push([i, cCategory, cMagic, cPrice, cStartTime, cDuration]);
     }
     return eventArr;
 };
+
+/**
+ * Compares two events represented by their array, using the comparison method
+ * specified by the user. 
+ * @param {array} An array representing a single event (see getEventArray()
+ *        for format)
+ * @param {array} An array representing a single event.
+ * @param {int} Optional, the type of comparison run on your event. 0 will
+ *        compare by magic, 1 by price, 2 by start time and 3 by duration.
+ *        Defaults to magic, if no comparison mode is specified.
+ * @return {float} negative is event1 is smaller than event2, positive 
+ *        otherwise.
+ *
+ */
+function compareEvents ( event1, event2, mode ) {
+    //TODO
+    if ( typeof(mode) === "undefined" || mode === null ) {
+        mode = 0;
+    }
+
+    return event1[2+mode] - event2[2+mode];
+}
 
 /**************************** Get/Set properties *****************************/
 
@@ -278,7 +303,7 @@ function getEventArray () {
  * Returns the height of the event table in pixels
  * @ return {int} height of the event table
  */
-function getEventTableHeight() {
+function getEventTableHeight () {
     return $( '.event-holder .events-table' ).height()
 }
 
