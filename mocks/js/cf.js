@@ -1,3 +1,8 @@
+/****************************     Constants      *****************************/
+
+// Default height of the hit area
+HIT_AREA_DEFAULT_HEIGHT = 40;
+
 /**************************** Global variables   *****************************/
 
 // Warning: order of these categories matter, and should match the order
@@ -28,7 +33,6 @@ var sortType = ['magic',
                 'price',
                 'start-time',
                 'duration'];
-
 
 /**************************** Misc function      *****************************/
 
@@ -180,6 +184,65 @@ function getSelectedLogoNumId () {
 };
 
 /**
+ * Returns the height in pixels of the event-info child of an event jQuery
+ * object. If called with more than one object, returns an array of heights
+ * with as many elements as there were jQuery objects.
+ * @return {int} a height (or an array of heights) in pixels.
+ */
+function getEventInfoChildHeight ( eventObj ) {
+    allHeights = [];
+    for ( var i = 0; i < eventObj.length; i++ ) {
+        allHeights.push( eventObj.eq(i).children( '.event-info' ).height() )
+    }
+    if ( allHeights.length == 1 ) {
+        allHeights = allHeights[0];
+    }
+    return allHeights;
+}
+
+
+/**
+ * Returns the height in pixels of the event-details child of an event jQuery
+ * object. If more than one element are passed in, then returns an array of
+ * heights with as many elements as there were jQuery objects.
+ * @return {int} a height (or an array of heights) in pixels.
+ *
+ */
+function getEventDetailsChildHeight ( eventObj ) {
+    allHeights = [];
+    for ( var i = 0; i < eventObj.length; i++ ) {
+        allHeights.push( eventObj.eq(i).children( '.event-details' ).height() )
+    }
+    if ( allHeights.length == 1 ) {
+        allHeights = allHeights[0];
+    }
+    return allHeights;
+}
+
+/**
+ * Returns the min and max time corresponding to 0% and 100% position
+ * of the sliders. Returned in 24h string format: 'Thh:mm:ss'.
+ * The seconds field is optional and will appear only if it was specified in
+ % the html in the first place.
+ % Note: this function only fetches data from the html.
+ * @return {[str, str]} Start and end time of slider bar.
+ */
+function getMinAndMaxTimes () {
+    return ['T' + $( '#' + getSelectedTabHtmlId() + ' .timeline-header .head-block .time-helper-min-value' ).html(),
+            'T' + $( '#' + getSelectedTabHtmlId() + ' .timeline-header .head-block .time-helper-max-value' ).html()]
+}
+
+/**************************** Get/Set properties *****************************/
+
+/**
+ * Returns the height of the event table in pixels
+ * @ return {int} height of the event table
+ */
+function getEventTableHeight() {
+    return $( '.event-holder .events-table' ).height()
+}
+
+/**
  * Returns the start and end positions of the time sliders.
  * @return {[int, int]} Start and End time in percentage.
  *
@@ -196,17 +259,15 @@ function getTimeSlidersPosition () {
 };
 
 /**
- * Returns the min and max time corresponding to 0% and 100% position
- * of the sliders. Returned in 24h string format: 'Thh:mm:ss'.
- * The seconds field is optional and will appear only if it was specified in
- % the html in the first place.
- % Note: this function only fetches data from the html.
- * @return {[str, str]} Start and end time of slider bar.
+ * Sets the height of the hit-area to a user-defined value.
+ * @param {int} Height of the hit-area in pixels
+ *
  */
-function getMinAndMaxTimes () {
-    return ['T' + $( '#' + getSelectedTabHtmlId() + ' .timeline-header .head-block .time-helper-min-value' ).html(),
-            'T' + $( '#' + getSelectedTabHtmlId() + ' .timeline-header .head-block .time-helper-max-value' ).html()]
+function setHitAreaHeight ( newHeight ) {
+    $( '.event-holder .timeline-header .timeline-table .timeheader .hit-area' ).height(newHeight);
 }
+
+/****************************     Utilities      *****************************/
 
 /**
  * Converts a percentage position into an hour:min AM/PM string.
@@ -242,7 +303,6 @@ function percentageToTimeString ( percentStr ) {
     return newTimeStr[0] + ":" + newTimeStr[1] + " AM";
 }
 
-
 /**************************** Filter / sort list *****************************/
 
 // Toggle selection of filter controls
@@ -263,9 +323,7 @@ $( '.sort-logos-wrapper .sort-logos' ).click( function() {
 
 // Set the height of the hit area
 $( '.event-holder .timeline-header .timeline-table .timeheader .hit-area' ).height( function() {
-    // Height of the event table should usually be 40px...
-    var c_height = 40;
-    return 40 + $( '.event-holder .events-table' ).height();
+    return HIT_AREA_DEFAULT_HEIGHT + getEventTableHeight();
 });
 
 // Drag the sliders
@@ -345,42 +403,6 @@ $( '.head-block .hit-area' ).on( 'mousedown', function(e) {
 
 /**************************** Event table        *****************************/
 
-/**
- * Returns the height in pixels of the event-info child of an event jQuery
- * object. If called with more than one object, returns an array of heights
- * with as many elements as there were jQuery objects.
- * @return {int} a height (or an array of heights) in pixels.
- */
-function getEventInfoChildHeight ( eventObj ) {
-    allHeights = [];
-    for ( var i = 0; i < eventObj.length; i++ ) {
-        allHeights.push( eventObj.eq(i).children( '.event-info' ).height() )
-    }
-    if ( allHeights.length == 1 ) {
-        allHeights = allHeights[0];
-    }
-    return allHeights;
-}
-
-
-/**
- * Returns the height in pixels of the event-details child of an event jQuery
- * object. If more than one element are passed in, then returns an array of
- * heights with as many elements as there were jQuery objects.
- * @return {int} a height (or an array of heights) in pixels.
- *
- */
-function getEventDetailsChildHeight ( eventObj ) {
-    allHeights = [];
-    for ( var i = 0; i < eventObj.length; i++ ) {
-        allHeights.push( eventObj.eq(i).children( '.event-details' ).height() )
-    }
-    if ( allHeights.length == 1 ) {
-        allHeights = allHeights[0];
-    }
-    return allHeights;
-}
-
 // Show event details when event is clicked
 $( '.results .events-table .event' ).click( function() {
     $( this ).toggleClass( 'selected' );
@@ -392,6 +414,9 @@ $( '.results .events-table .event' ).click( function() {
     else {
         $( this ).height( getEventInfoChildHeight($( this )) );
     }
+
+    // Rescale the time sliders hit area
+    setHitAreaHeight( HIT_AREA_DEFAULT_HEIGHT + getEventTableHeight() );
 });
 
 // Close event details when click on collapse
