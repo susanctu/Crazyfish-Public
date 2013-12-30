@@ -238,15 +238,38 @@ function getMinAndMaxTimes () {
  *         of events for the current tab, and each element of the array is an
  *         array composed of the following fields:
  *             [0]: position of the events with the current sorting
- *             [1]: list of categories the event belongs to
+ *             [1]: list of categories the event belongs to (array of ints)
  *             [2]: price of the events, 0 if the event is free
  *             [3]: start time of the event as a percentage of the time slider
- *             [4]: duration of the event, as a percentage of the time slider
+ *             [4]: duration of the event as a percentage of the time slider (ex: 15.5 for 15.5%)
  *
  */
 function getEventArray () {
- // TODO
-    return [];
+    var eventArr = [];
+    var allEvents = $( '#' + getSelectedTabHtmlId() + ' .results-content .events-table .event ' );
+
+    for ( var i = 0; i < allEvents.length; i++ ) {
+        // Each event should have a event-helper field in which this information is stored
+        // and only needs to be retrieved from there.
+        var cEventHelper = allEvents.eq(i).children( '.event-helper' );
+
+        var cCategory = cEventHelper.children( '.event-helper-category' ).html();
+        cCategory = cCategory.split(',');
+        cCategory = cCategory.map( function (x) {
+            return parseInt(x);
+        });
+
+        var cPrice = parseFloat( cEventHelper.children( '.event-helper-price' ).html() );
+
+        var cStartTime = cEventHelper.children( '.event-helper-start-time ' ).html();
+        cStartTime = timeStringToPercentage(cStartTime);
+
+        var cDuration = cEventHelper.children( '.event-helper-duration-minutes ' ).html();
+        cDuration = durationInMinutesToPercentage(cDuration);
+
+        eventArr.push([i, cCategory, cPrice, cStartTime, cDuration]);
+    }
+    return eventArr;
 };
 
 /**************************** Get/Set properties *****************************/
