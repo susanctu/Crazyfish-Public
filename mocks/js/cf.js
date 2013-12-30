@@ -385,7 +385,7 @@ function timeStringToPercentage ( timeStr ) {
     tMax = timeStringToMilliseconds(tMax);
     var tNew = timeStringToMilliseconds(timeStr);
 
-    return Math.round(1000*(tNew-tMin)/(tMax-tMin))/10);
+    return Math.round(1000*(tNew-tMin)/(tMax-tMin))/10;
 }
 
 /**
@@ -408,7 +408,7 @@ function durationInMinutesToPercentage ( duration ) {
     tMax = timeStringToMilliseconds(tMax);
     duration = duration*60*1000;
 
-    return Math.round(1000*duration/(tMax-tMin))/10).toString();
+    return Math.round(1000*duration/(tMax-tMin))/10;
 }
 
 /**************************** Filter / sort list *****************************/
