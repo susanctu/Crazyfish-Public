@@ -289,13 +289,38 @@ function getEventArray () {
  *
  */
 function compareEvents ( event1, event2, mode ) {
-    //TODO
     if ( typeof(mode) === "undefined" || mode === null ) {
         mode = 0;
     }
 
-    return event1[2+mode] - event2[2+mode];
+    return event2[2+mode] - event1[2+mode];
 }
+
+/**
+ * Sorts the event array according to the sorting mode specified by the user
+ * and returns an array of indices representing in which order the events 
+ * should be displayed.
+ * @param {array} An array of events (as returned by getEventArray())
+ * @return {array} An array of indices.
+ *
+ */
+function sortEventArray ( eventArray, mode ) {
+    if ( typeof(mode) === "undefined" || mode === null ) {
+        mode = 0;
+    }
+
+    eventArray = eventArray.sort( function(a,b) { 
+        return compareEvents(a,b,mode) 
+    });
+
+    var result = [];
+    for ( var i = 0; i < eventArray.length; i++ ) {
+        result.push(eventArray[i][0]);
+    }
+
+    return result;
+}
+
 
 /**************************** Get/Set properties *****************************/
 
