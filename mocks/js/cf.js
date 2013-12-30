@@ -345,12 +345,56 @@ $( '.head-block .hit-area' ).on( 'mousedown', function(e) {
 
 /**************************** Event table        *****************************/
 
+/**
+ * Returns the height in pixels of the event-info child of an event jQuery
+ * object. If called with more than one object, returns an array of heights
+ * with as many elements as there were jQuery objects.
+ * @return {int} a height (or an array of heights) in pixels.
+ */
+function getEventInfoChildHeight ( eventObj ) {
+    allHeights = [];
+    for ( var i = 0; i < eventObj.length; i++ ) {
+        allHeights.push( eventObj.eq(i).children( '.event-info' ).height() )
+    }
+    if ( allHeights.length == 1 ) {
+        allHeights = allHeights[0];
+    }
+    return allHeights;
+}
+
+
+/**
+ * Returns the height in pixels of the event-details child of an event jQuery
+ * object. If more than one element are passed in, then returns an array of
+ * heights with as many elements as there were jQuery objects.
+ * @return {int} a height (or an array of heights) in pixels.
+ *
+ */
+function getEventDetailsChildHeight ( eventObj ) {
+    allHeights = [];
+    for ( var i = 0; i < eventObj.length; i++ ) {
+        allHeights.push( eventObj.eq(i).children( '.event-details' ).height() )
+    }
+    if ( allHeights.length == 1 ) {
+        allHeights = allHeights[0];
+    }
+    return allHeights;
+}
+
 // Show event details when event is clicked
 $( '.results .events-table .event' ).click( function() {
     $( this ).toggleClass( 'selected' );
+
+    // Rescale the size of the event
+    if ( $( this ).attr( 'class' ).indexOf( 'selected' ) != -1 ) {
+        $( this ).height( getEventInfoChildHeight($( this )) + getEventDetailsChildHeight($( this )) );
+    }
+    else {
+        $( this ).height( getEventInfoChildHeight($( this )) );
+    }
 });
 
-// Close event details when click on arrow
+// Close event details when click on collapse
 $( '.results .events-table .event .event-details .deselect' ).click( function() {
     // Click will propagate to parent event and call toggle function there...
     // so toggleClass is actually called twice, and to make the window disappear
