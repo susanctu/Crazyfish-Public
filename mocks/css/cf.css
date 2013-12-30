@@ -661,9 +661,9 @@ body {
 
 .results-events .event .event-details {
     position: absolute;
-    top: 62px;
-    left: 14px;
-    right: 50%;
+    top: 65px;
+    left: 10px;
+    right: 10px;
     background-color: #fff9e5;
     color: #838383;
     border: 1px solid #838383;
@@ -676,24 +676,39 @@ body {
     display: block;
 }
 
-.results-events .event-details .deselect {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
+.results-events .event .event-details .event-details-column-left, .results-events .event .event-details .event-details-column-middle {
+    position: relative;
+    float: left;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 10px;
+}
+
+.results-events .event .event-details .event-details-column-left {
+    width: 45%;
+}
+
+.results-events .event .event-details .event-details-column-middle {
+    width: 40%;
+}
+
+.results-events .event .event-details .event-details-column-right {
+    position: relative;
     float: right;
-    z-index: 51;
-    cursor: pointer;
+    width: 1%;
+    height: 100%;
 }
 
-.results-events .event-details .deselect .deselect-image {
-    background-image: url("../img/close.png");
-    background-repeat: no-repeat;
-    background-position: center center;
-    width: 20px;
-    height: 20px;
+.results-events .event .event-details .event-title-field, .results-events .event .event-details .event-description-field {
+    padding-top: 10px;
+    color: #000000;
 }
 
-.results-events .event .event-details .event-title-field, .results-events .event .event-details .event-description-field, .results-events .event .event-details .event-misc-info {
+.results-events .event .event-details .event-description-field {
+    padding-bottom: 10px;
+}
+
+.results-events .event .event-details .event-misc-info {
     padding-left: 15px;
     padding-right: 15px;
     padding-top: 15px;
@@ -712,7 +727,6 @@ body {
 .results-events .event .event-details .event-misc-info {
     padding-bottom: 5px;
     float: left;
-    width: 55%;
 }
 
 .results-events .event .event-details .event-misc-info .event-misc-info-subtitle {
@@ -722,42 +736,42 @@ body {
 }
 
 .results-events .event .event-details .event-misc-info .event-misc-info-details {
-    padding-bottom: 10px;
-    padding-left: 30%;
-    position: relative;
-    width: 75%;
+    padding-bottom: 15px;
+    padding-left: calc(50px + 10%);
 }
 
 .results-events .event .event-details .event-external {
     position: relative;
-    padding-right: 10px;
-    padding-left: 10px;
-    left: 55%;
-    width: 45%;
+    padding-top: 15px;
+    padding-bottom: 15px;
 }
 
 .results-events .event .event-details .event-external a {
-    text-decoration: none;
     color: #ffffff;
     background-color: #fe6e27;
-    position: absolute;
-    left: 25%;
-    top: 20px;
-    width: 50%;
-    height: 30px;
-    line-height: 30px;
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-top: 6px;
+    padding-bottom: 6px;
     text-align: center;
-    font-size: 15px;
+    font-size: 18px;
     font-weight: bold;
-    border-radius: 5px;
+    border-radius: 3px;
 }
 
 .results-events .event .event-details .event-external .link-comment {
-    position: absolute;
-    left: 15%;
-    top: 55px;
-    text-align: center;
-    width: 70%;
+    padding-top: 13px;
+}
+
+.results-events .event-details .deselect {
+    padding-left: 15px;
+    padding-right: 15px;
+    float: right;
+    z-index: 51;
+    background-color: #000000;
+    color: #ffffff;
+    cursor: pointer;
+    line-height: 25px;
 }
 
 /* Bottom of the page */
