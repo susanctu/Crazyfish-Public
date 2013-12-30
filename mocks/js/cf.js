@@ -277,6 +277,27 @@ function getEventArray () {
 
 /**
  * Compares two events represented by their array, using the comparison method
+ * specified by the user.
+ * @param {array} An array representing a single event (see getEventArray()
+ *        for format)
+ * @param {array} An array representing a single event.
+ * @param {int} Optional, the type of comparison run on your event. 0 will
+ *        compare by magic, 1 by price, 2 by start time and 3 by duration.
+ *        Defaults to magic, if no comparison mode is specified.
+ * @return {float} negative is event1 is smaller than event2, positive
+ *        otherwise.
+ *
+ */
+function compareEventsAscending ( event1, event2, mode ) {
+    if ( typeof(mode) === "undefined" || mode === null ) {
+        mode = 0;
+    }
+
+    return event1[2+mode] - event2[2+mode];
+}
+
+/**
+ * Compares two events represented by their array, using the comparison method
  * specified by the user. 
  * @param {array} An array representing a single event (see getEventArray()
  *        for format)
@@ -288,12 +309,37 @@ function getEventArray () {
  *        otherwise.
  *
  */
-function compareEvents ( event1, event2, mode ) {
+function compareEventsDescending ( event1, event2, mode ) {
     if ( typeof(mode) === "undefined" || mode === null ) {
         mode = 0;
     }
 
     return event2[2+mode] - event1[2+mode];
+}
+
+/**
+ * Sorts the event array according to the sorting mode specified by the user
+ * and returns an array of indices representing in which order the events
+ * should be displayed.
+ * @param {array} An array of events (as returned by getEventArray())
+ * @return {array} An array of indices.
+ *
+ */
+function sortEventArrayAscending ( eventArray, mode ) {
+    if ( typeof(mode) === "undefined" || mode === null ) {
+        mode = 0;
+    }
+
+    eventArray = eventArray.sort( function(a,b) {
+        return compareEventsAscending(a,b,mode)
+    });
+
+    var result = [];
+    for ( var i = 0; i < eventArray.length; i++ ) {
+        result.push(eventArray[i][0]);
+    }
+
+    return result;
 }
 
 /**
@@ -304,13 +350,13 @@ function compareEvents ( event1, event2, mode ) {
  * @return {array} An array of indices.
  *
  */
-function sortEventArray ( eventArray, mode ) {
+function sortEventArrayDescending ( eventArray, mode ) {
     if ( typeof(mode) === "undefined" || mode === null ) {
         mode = 0;
     }
 
     eventArray = eventArray.sort( function(a,b) { 
-        return compareEvents(a,b,mode) 
+        return compareEventsDescending(a,b,mode)
     });
 
     var result = [];
