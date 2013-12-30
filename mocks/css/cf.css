@@ -451,13 +451,13 @@ body {
 .results-events .event {
     position: relative;
     font-size: 12px;
-    height: 65px;
+    height: 66px;
 }
 
 .results-events .event.selected {
     position: relative;
     font-size: 12px;
-    height: 65px;
+    height: 66px;
 }
 
 .results-events .separator {

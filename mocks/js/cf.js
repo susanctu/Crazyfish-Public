@@ -416,6 +416,7 @@ $( '.results .events-table .event' ).click( function() {
     }
 
     // Rescale the time sliders hit area
+    // +1 is to account for 1px bottom border
     setHitAreaHeight( HIT_AREA_DEFAULT_HEIGHT + getEventTableHeight() );
 });
 
