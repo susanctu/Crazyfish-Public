@@ -505,6 +505,7 @@ body {
     margin-left: 5px;
     margin-right: 5px;
     overflow: hidden;
+    white-space: nowrap;
     text-overflow: ellipsis;
 }
 
@@ -650,7 +651,6 @@ body {
 
 .graph .duration {
     padding-top: 7px;
-    font-weight: bold;
 }
 
 .graph .timebox {

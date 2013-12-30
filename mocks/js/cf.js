@@ -147,10 +147,17 @@ function getSelectedCategoriesNumId () {
 function getSelectedCategoriesString () {
     var selectedCategoriesId = getSelectedCategoriesNumId();
     var sumStr = '';
-    for ( var i=0; i < selectedCategoriesId.length-1; i++ ) {
-        sumStr += categoriesVerbose[selectedCategoriesId[i]] + ', ';
+
+    if ( selectedCategoriesId.length == categoriesVerbose.length ) {
+        sumStr = 'All events';
     }
-    sumStr += categoriesVerbose[selectedCategoriesId[selectedCategoriesId.length-1]] + ' events';
+    else {
+        for ( var i=0; i < selectedCategoriesId.length-1; i++ ) {
+            sumStr += categoriesVerbose[selectedCategoriesId[i]] + ', ';
+        }
+        sumStr += categoriesVerbose[selectedCategoriesId[selectedCategoriesId.length-1]] + ' events';
+    }
+
     return sumStr.charAt(0).toUpperCase() + sumStr.slice(1);
 };
 
@@ -242,12 +249,14 @@ function percentageToTimeString ( percentStr ) {
 $( '.filter-logos-wrapper .filter-logos' ).click( function() {
     $( this ).children( '.filter-logo' ).toggleClass( 'selected' );
     getEventDescriptionHolder().html( getSelectedCategoriesString() )
+    // TODO: filter the events as things get toggled
 });
 
 // Toggle selection of sort controls
 $( '.sort-logos-wrapper .sort-logos' ).click( function() {
     $( '.sort-logos-wrapper .sort-logos .sort-logo' ).toggleClass( 'selected', false );
     $( this ).children( '.sort-logo' ).toggleClass( 'selected' );
+    // TODO: sort as things get toggled
 });
 
 /**************************** Times table        *****************************/
@@ -260,6 +269,7 @@ $( '.event-holder .timeline-header .timeline-table .timeheader .hit-area' ).heig
 });
 
 // Drag the sliders
+// Note: this function also deals with all of the event filtering by date!
 $( '.head-block .hit-area' ).on( 'mousedown', function(e) {
     var cAnchor = $( this ).parents( '.anchor' );
     var startWidth = cAnchor.position().left;
