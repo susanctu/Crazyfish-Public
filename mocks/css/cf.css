@@ -540,29 +540,45 @@ body {
     left: 330px;
     width: 59px;
     height: 65px;
+    color: #000000;
 }
 
 .results-events .events-table .price-column .currency {
     float: left;
     font-size: 14px;
-    color: #000000;
     padding-top: 26px;
-    padding-left: 5px;
+    padding-left: 7px;
+}
+
+.results-events .events-table .price-column .currency.from {
+    padding-top: 8px;
 }
 
 .results-events .events-table .price-column .price {
     float: left;
     font-size: 24px;
-    color: #000000;
     padding-top: 20px;
+}
+
+.results-events .events-table .price-column .price.from {
+    padding-top: 2px;
+}
+
+.results-events .events-table .price-column .from-flag {
+    padding-top: 15px;
+    font-size: 12px;
+    padding-left: 15px;
 }
 
 .results-events .events-table .price-column .price-free {
     float: left;
     font-size: 18px;
-    color: #000000;
     padding-top: 22px;
     padding-left: 10px;
+}
+
+.results-events .events-table .price-column .price-free.from {
+    padding-top: 5px;
 }
 
 .results-events .events-table .lines, .results-events .events-table .event-time-info {
