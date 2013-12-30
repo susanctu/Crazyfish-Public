@@ -198,7 +198,7 @@ function getEventInfoChildHeight ( eventObj ) {
         allHeights = allHeights[0];
     }
     return allHeights;
-}
+};
 
 
 /**
@@ -217,20 +217,37 @@ function getEventDetailsChildHeight ( eventObj ) {
         allHeights = allHeights[0];
     }
     return allHeights;
-}
+};
 
 /**
  * Returns the min and max time corresponding to 0% and 100% position
- * of the sliders. Returned in 24h string format: 'Thh:mm:ss'.
+ * of the sliders. Returned in 24h string format: 'hh:mm:ss'.
  * The seconds field is optional and will appear only if it was specified in
  % the html in the first place.
  % Note: this function only fetches data from the html.
  * @return {[str, str]} Start and end time of slider bar.
  */
 function getMinAndMaxTimes () {
-    return ['T' + $( '#' + getSelectedTabHtmlId() + ' .timeline-header .head-block .time-helper-min-value' ).html(),
-            'T' + $( '#' + getSelectedTabHtmlId() + ' .timeline-header .head-block .time-helper-max-value' ).html()]
-}
+    return [$( '#' + getSelectedTabHtmlId() + ' .timeline-header .head-block .time-helper-min-value' ).html(),
+            $( '#' + getSelectedTabHtmlId() + ' .timeline-header .head-block .time-helper-max-value' ).html()]
+};
+
+/**
+ * Builds the event array for the current event tab. 
+ * @return {array} An event array with n elements, where n is the total number
+ *         of events for the current tab, and each element of the array is an
+ *         array composed of the following fields:
+ *             [0]: position of the events with the current sorting
+ *             [1]: list of categories the event belongs to
+ *             [2]: price of the events, 0 if the event is free
+ *             [3]: start time of the event as a percentage of the time slider
+ *             [4]: duration of the event, as a percentage of the time slider
+ *
+ */
+function getEventArray () {
+ // TODO
+    return [];
+};
 
 /**************************** Get/Set properties *****************************/
 
@@ -279,8 +296,8 @@ function percentageToTimeString ( percentStr ) {
     var dNew = new Date();
 
     // Converting min and max strings to milliseconds
-    tMin = Date.parse(tMin);
-    tMax = Date.parse(tMax);
+    tMin = timeStringToMilliseconds(tMin);
+    tMax = timeStringToMilliseconds(tMax);
 
     // Calculating milliseconds corresponding to percentage
     var newTime = percentStr.slice(0, percentStr.lastIndexOf("%"));
@@ -303,6 +320,97 @@ function percentageToTimeString ( percentStr ) {
     return newTimeStr[0] + ":" + newTimeStr[1] + " AM";
 }
 
+/**
+ * Converts a time string (ex: '8:55 AM') into a number of millisecconds, which
+ * can then be used to set a Date object.
+ * @param {str} A time string
+ * @return {float} number of milliseconds representing the time.
+ *
+ */
+function timeStringToMilliseconds ( timeStr ) {
+    timeStr = timeStr.toLowerCase();
+
+    // Remove potential leading white spaces
+    timeStr = timeStr.trim();
+
+    // If time string is 'T...' need to drop the leading T.
+    if ( timeStr[0] == 't' ) {
+        timeStr = timeStr.slice(1);
+    }
+
+    // Then, need to determine if the time string is in AM/PM format. 
+    // If so we'll need to convert it to 24 hours format.
+    var amPmPos = timeStr.indexOf('m');
+    if ( amPmPos != -1 ) {
+        // If it is, split hours and minutes, find if am or pm and format.
+        var amPm = timeStr.substr(amPmPos-1, amPmPos+1);
+        timeStr = timeStr.substr(0, amPmPos-1);
+        timeStr = timeStr.split(':');
+
+        // Remove any potential leading or trailing white spaces here
+        timeStr[0] = timeStr[0].trim();
+        timeStr[1] = timeStr[1].trim();
+
+        // Various formatting rules here...
+        if ( timeStr[0].length == 1 ) {
+            timeStr[0] = '0' + timeStr[0];
+        }
+        if ( timeStr[0] == '12') { 
+            if ( amPm == 'am' ) {
+                timeStr[0] = '00';
+            }
+        }
+        else {
+            if ( amPm == 'pm' ) {
+                timeStr[0] = (parseInt(timeStr[0]) + 12).toString();
+            }
+        }
+        timeStr = timeStr[0] + ':' + timeStr[1];
+    }
+
+    // Parse the date string 
+    return Date.parse('T' + timeStr);
+}
+
+/**
+ * Converts a time string (ex: '8:55 AM') into a percentage of the time slider.
+ * @param {str} A time string
+ * @return {float} A percentage (ex: 15.5 is 15.5%, NOT 15500%).
+ *
+ */
+function timeStringToPercentage ( timeStr ) {
+    var [tMin, tMax] = getMinAndMaxTimes();
+
+    tMin = timeStringToMilliseconds(tMin);
+    tMax = timeStringToMilliseconds(tMax);
+    var tNew = timeStringToMilliseconds(timeStr);
+
+    return Math.round(1000*(tNew-tMin)/(tMax-tMin))/10);
+}
+
+/**
+ * Converts a duration into a percentage of the time slider. 
+ * The duration should be in minutes, and should be an int, float, or a string 
+ * representing an int or float. 
+ * @param {int or float or str} A duration in minutes
+ * @return {float} A percentage string (ex: 15.5 for 15.5%)
+ *
+ */
+function durationInMinutesToPercentage ( duration ) {
+    // Check if string
+    if ( typeof(duration) == 'string' ) {
+        duration = parseFloat(duration.trim());
+    }
+
+    // Convert
+    var [tMin, tMax] = getMinAndMaxTimes();
+    tMin = timeStringToMilliseconds(tMin);
+    tMax = timeStringToMilliseconds(tMax);
+    duration = duration*60*1000;
+
+    return Math.round(1000*duration/(tMax-tMin))/10).toString();
+}
+
 /**************************** Filter / sort list *****************************/
 
 // Toggle selection of filter controls
@@ -319,7 +427,7 @@ $( '.sort-logos-wrapper .sort-logos' ).click( function() {
     // TODO: sort as things get toggled
 });
 
-/**************************** Times table        *****************************/
+/****************************    Times table     *****************************/
 
 // Set the height of the hit area
 $( '.event-holder .timeline-header .timeline-table .timeheader .hit-area' ).height( function() {
@@ -401,7 +509,7 @@ $( '.head-block .hit-area' ).on( 'mousedown', function(e) {
     });
 });
 
-/**************************** Event table        *****************************/
+/****************************     Event table    *****************************/
 
 // Show event details when event is clicked
 $( '.results .events-table .event' ).click( function() {
