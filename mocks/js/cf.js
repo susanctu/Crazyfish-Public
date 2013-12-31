@@ -575,6 +575,8 @@ function updateEventGraphOrder ( eventIndexList ) {
 
     // Setting the event table to the new data.
     setActiveTabEventsGraphFromDOM( newEventsDOM );
+
+    // Updating rules for exanding events, because page objects changed
 }
 
 /**
@@ -811,9 +813,9 @@ $( '.event-holder .timeline-header .timeline-table .timeheader .hit-area' ).heig
     return HIT_AREA_DEFAULT_HEIGHT + getEventTableHeight();
 });
 
-// Drag the sliders
-// Note: this function also deals with all of the event filtering by date!
-$( '.head-block .hit-area' ).on( 'mousedown', function(e) {
+// Drag the sliders. Bind event to document, not sliders!
+// Note: this function also deals with all of the event filtering by date.
+$( document ).on('mousedown', '.head-block .hit-area', function(e) {
     var cAnchor = $( this ).parents( '.anchor' );
     var startWidth = cAnchor.position().left;
     var startX = e.pageX;
@@ -889,7 +891,7 @@ $( '.head-block .hit-area' ).on( 'mousedown', function(e) {
 /****************************     Event table    *****************************/
 
 // Show event details when event is clicked
-$( '.results .events-table .event' ).click( function() {
+$(document).on('click', '.results .events-table .event', function() {
     $( this ).toggleClass( 'selected' );
 
     // Rescale the size of the event
@@ -906,7 +908,7 @@ $( '.results .events-table .event' ).click( function() {
 });
 
 // Close event details when click on collapse
-$( '.results .events-table .event .event-details .deselect' ).click( function() {
+$(document).on('click', '.results .events-table .event .event-details .deselect', function() {
     // Click will propagate to parent event and call toggle function there...
     // so toggleClass is actually called twice, and to make the window disappear
     // we have to set toggleClass to true manually here.

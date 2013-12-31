@@ -406,7 +406,7 @@ body {
     display: none;
  }
 
- /* Results table lines */
+ /************************* Results table lines ******************************/
 
 .results-events .events-table {
     position: relative;
@@ -446,12 +446,25 @@ body {
     border-left: 1px solid #838383;
 }
 
-/* Events details */
+/****************************** Events details *******************************/
 
 .results-events .event {
     position: relative;
     font-size: 12px;
     height: 66px;
+}
+
+.results-events .no-event-found-warning {
+    background-color: #ffffff;
+    color: #fe6e27;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    margin-left: 10px;
+    margin-right: 10px;
+    border: 1px solid #838383;
+    height: 66px;
+    line-height: 66px;
 }
 
 .results-events .event.selected {
