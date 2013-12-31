@@ -589,8 +589,8 @@ function updateEventGraphVisibility ( eventIndexList ) {
             // There is 1 fewer active separator than events shown
             if ( i < allEvents.length - 1 ) {
                 separator.eq(i).toggle( true );
-                indexLastSeparator = i;
             }
+            indexLastSeparator = i;
         }
         // Toggle off the others
         else {
@@ -603,8 +603,10 @@ function updateEventGraphVisibility ( eventIndexList ) {
     }
 
     // Making sure last separator is off
-    separator.eq(indexLastSeparator).toggle( false );
-
+    if ( indexLastSeparator < allEvents.length - 1) {
+        separator.eq(indexLastSeparator).toggle( false );
+    }
+    
     // Updating the height of the hit area
     SetHitAreaHeight( HIT_AREA_DEFAULT_HEIGHT + getEventTableHeight() );
 }
@@ -848,8 +850,8 @@ $( '.head-block .hit-area' ).on( 'mousedown', function(e) {
             }
         }
 
-    // TODO: Filter events by time.
-
+        // Filter the events as things get toggled
+        updateEventGraphVisibility( getIdEventsMatchingFilters() );
     });
 });
 
