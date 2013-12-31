@@ -152,6 +152,9 @@ function getSelectedCategoriesString () {
     var selectedCategoriesId = getSelectedCategoriesNumId();
     var sumStr = '';
 
+    if ( selectedCategoriesId.length == 0 ) {
+        return 'No events';
+    }
     if ( selectedCategoriesId.length == categoriesVerbose.length ) {
         sumStr = 'All events';
     }
@@ -171,7 +174,7 @@ function getSelectedCategoriesString () {
  * @return {int} numerical ID of the sorting logo selected.
  *
  */
-function getSelectedLogoNumId () {
+function getSelectedSortLogoNumId () {
     var selectedLogos = $( '#' + getSelectedTabHtmlId() + ' .sort-logos-wrapper .sort-logos .selected' );
     for ( var i = 0; i < selectedLogos.length; i++ ) {
         var cLogoClass = selectedLogos.eq(i).attr('class');
@@ -275,98 +278,6 @@ function getEventArray () {
     return eventArr;
 };
 
-/**
- * Compares two events represented by their array, using the comparison method
- * specified by the user.
- * @param {array} An array representing a single event (see getEventArray()
- *        for format)
- * @param {array} An array representing a single event.
- * @param {int} Optional, the type of comparison run on your event. 0 will
- *        compare by magic, 1 by price, 2 by start time and 3 by duration.
- *        Defaults to magic, if no comparison mode is specified.
- * @return {float} negative is event1 is smaller than event2, positive
- *        otherwise.
- *
- */
-function compareEventsAscending ( event1, event2, mode ) {
-    if ( typeof(mode) === "undefined" || mode === null ) {
-        mode = 0;
-    }
-
-    return event1[2+mode] - event2[2+mode];
-}
-
-/**
- * Compares two events represented by their array, using the comparison method
- * specified by the user. 
- * @param {array} An array representing a single event (see getEventArray()
- *        for format)
- * @param {array} An array representing a single event.
- * @param {int} Optional, the type of comparison run on your event. 0 will
- *        compare by magic, 1 by price, 2 by start time and 3 by duration.
- *        Defaults to magic, if no comparison mode is specified.
- * @return {float} negative is event1 is smaller than event2, positive 
- *        otherwise.
- *
- */
-function compareEventsDescending ( event1, event2, mode ) {
-    if ( typeof(mode) === "undefined" || mode === null ) {
-        mode = 0;
-    }
-
-    return event2[2+mode] - event1[2+mode];
-}
-
-/**
- * Sorts the event array according to the sorting mode specified by the user
- * and returns an array of indices representing in which order the events
- * should be displayed.
- * @param {array} An array of events (as returned by getEventArray())
- * @return {array} An array of indices.
- *
- */
-function sortEventArrayAscending ( eventArray, mode ) {
-    if ( typeof(mode) === "undefined" || mode === null ) {
-        mode = 0;
-    }
-
-    eventArray = eventArray.sort( function(a,b) {
-        return compareEventsAscending(a,b,mode)
-    });
-
-    var result = [];
-    for ( var i = 0; i < eventArray.length; i++ ) {
-        result.push(eventArray[i][0]);
-    }
-
-    return result;
-}
-
-/**
- * Sorts the event array according to the sorting mode specified by the user
- * and returns an array of indices representing in which order the events 
- * should be displayed.
- * @param {array} An array of events (as returned by getEventArray())
- * @return {array} An array of indices.
- *
- */
-function sortEventArrayDescending ( eventArray, mode ) {
-    if ( typeof(mode) === "undefined" || mode === null ) {
-        mode = 0;
-    }
-
-    eventArray = eventArray.sort( function(a,b) { 
-        return compareEventsDescending(a,b,mode)
-    });
-
-    var result = [];
-    for ( var i = 0; i < eventArray.length; i++ ) {
-        result.push(eventArray[i][0]);
-    }
-
-    return result;
-}
-
 
 /**************************** Get/Set properties *****************************/
 
@@ -428,6 +339,15 @@ function getActiveTabSeparators () {
  */
 function getActiveTabEventsGraph () {
     return $( '#' + getSelectedTabHtmlId() + ' .results-content .events-table .events-graph ' );
+}
+
+/**
+ * Returns a jQuery object containing the active tab no event found warning 
+ * element.
+ *
+ */
+function getActiveTabNoEventWarningDiv () {
+    return $( '#' + getSelectedTabHtmlId() + ' .results-content .no-event-found-warning ' );
 }
 
 /**
@@ -652,6 +572,13 @@ function updateEventGraphVisibility ( eventIndexList ) {
     var allEvents = getActiveTabEvents(); 
     var separator = getActiveTabSeparators();
 
+    if ( eventIndexList.length == 0 ) {
+        getActiveTabNoEventWarningDiv().toggle( true );
+    }
+    else {
+        getActiveTabNoEventWarningDiv().toggle( false );
+    }
+
     for ( var i = 0; i < allEvents.length; i++ ) {
         // Toggle on elements in the eventIndex list
         if ( eventIndexList.indexOf(i) != -1 ) {
@@ -674,6 +601,150 @@ function updateEventGraphVisibility ( eventIndexList ) {
     // Updating the height of the hit area
     SetHitAreaHeight( HIT_AREA_DEFAULT_HEIGHT + getEventTableHeight() );
 }
+
+/**
+ * Compares two events represented by their array, using the comparison method
+ * specified by the user.
+ * @param {array} An array representing a single event (see getEventArray()
+ *        for format)
+ * @param {array} An array representing a single event.
+ * @param {int} Optional, the type of comparison run on your event. 0 will
+ *        compare by magic, 1 by price, 2 by start time and 3 by duration.
+ *        Defaults to magic, if no comparison mode is specified.
+ * @return {float} negative is event1 is smaller than event2, positive
+ *        otherwise.
+ *
+ */
+function compareEventsAscending ( event1, event2, mode ) {
+    if ( typeof(mode) === "undefined" || mode === null ) {
+        mode = 0;
+    }
+
+    return event1[2+mode] - event2[2+mode];
+}
+
+/**
+ * Compares two events represented by their array, using the comparison method
+ * specified by the user. 
+ * @param {array} An array representing a single event (see getEventArray()
+ *        for format)
+ * @param {array} An array representing a single event.
+ * @param {int} Optional, the type of comparison run on your event. 0 will
+ *        compare by magic, 1 by price, 2 by start time and 3 by duration.
+ *        Defaults to magic, if no comparison mode is specified.
+ * @return {float} negative is event1 is smaller than event2, positive 
+ *        otherwise.
+ *
+ */
+function compareEventsDescending ( event1, event2, mode ) {
+    if ( typeof(mode) === "undefined" || mode === null ) {
+        mode = 0;
+    }
+
+    return event2[2+mode] - event1[2+mode];
+}
+
+/**
+ * Sorts the event array according to the sorting mode specified by the user
+ * and returns an array of indices representing in which order the events
+ * should be displayed.
+ * @param {array} An array of events (as returned by getEventArray())
+ * @return {array} An array of indices.
+ *
+ */
+function sortEventArrayAscending ( eventArray, mode ) {
+    if ( typeof(mode) === "undefined" || mode === null ) {
+        mode = 0;
+    }
+
+    eventArray = eventArray.sort( function(a,b) {
+        return compareEventsAscending(a,b,mode)
+    });
+
+    var result = [];
+    for ( var i = 0; i < eventArray.length; i++ ) {
+        result.push(eventArray[i][0]);
+    }
+
+    return result;
+}
+
+/**
+ * Sorts the event array according to the sorting mode specified by the user
+ * and returns an array of indices representing in which order the events 
+ * should be displayed.
+ * @param {array} An array of events (as returned by getEventArray())
+ * @return {array} An array of indices.
+ *
+ */
+function sortEventArrayDescending ( eventArray, mode ) {
+    if ( typeof(mode) === "undefined" || mode === null ) {
+        mode = 0;
+    }
+
+    eventArray = eventArray.sort( function(a,b) { 
+        return compareEventsDescending(a,b,mode)
+    });
+
+    var result = [];
+    for ( var i = 0; i < eventArray.length; i++ ) {
+        result.push(eventArray[i][0]);
+    }
+
+    return result;
+}
+
+/**
+ * Get the IDs of elements matching the current filters (categories, start
+ * and end time)
+ * @return {[int]} An array of element IDs, possibly empty, matching the filters
+ *         chosen by the user.
+ *
+ */ 
+function getIdEventsMatchingFilters () {
+    // Get the set of filters entered by the user
+    var catSelected = getSelectedCategoriesNumId();
+    var tMinAllowed;
+    var tMaxAllowed;
+    [tMinAllowed, tMaxAllowed] = getTimeSlidersPosition();
+
+    // Get the events
+    // Category is supposed to be in [1], start time in [4] and
+    // duration in [5], with start time and duration in percentages.
+    var allEvents = getEventArray();
+
+    // Filter
+    var eventsToDisplay = [];
+    for ( var i = 0; i < allEvents.length; i++ ) {
+        var shouldBeDisplayed = true;
+        
+        // Check if categories match
+        var hasCorrectCategory = false;
+        var cCategory = allEvents[i][1];
+        for ( var k = 0; k < cCategory.length; k++ ) {
+            if ( catSelected.indexOf(cCategory[k]) != -1 ) {
+                hasCorrectCategory = true;
+                break;
+            }
+        }
+        shouldBeDisplayed = shouldBeDisplayed && hasCorrectCategory;
+
+        // Check if start time matches
+        var cStartTime = allEvents[i][4];
+        shouldBeDisplayed = shouldBeDisplayed && ( cStartTime >= tMinAllowed );
+
+        // Check if end time matches
+        var cEndTime = allEvents[i][5] + cStartTime;
+        shouldBeDisplayed = shouldBeDisplayed && ( cEndTime <= tMaxAllowed );
+
+        if ( shouldBeDisplayed ) {
+            eventsToDisplay.push(allEvents[i][0]);
+        }
+    }
+
+    return eventsToDisplay;
+}
+
 
 /**************************** Filter / sort list *****************************/
 
