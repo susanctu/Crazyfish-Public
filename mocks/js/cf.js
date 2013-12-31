@@ -542,17 +542,33 @@ function updateEventGraphOrder ( eventIndexList ) {
     for ( var i = 0; i < eventIndexList.length; i++ ) {
         // Not using eq because we want DOM
         newEventsDOM.push( allEvents[eventIndexList[i]] );
-        // There are only nEvents-1 separators
+        // There are only nEvents-1 separators, and their visibility 
+        // should be set to that of the parent event.
         if ( nSeparatorsUsed < nEvents-1 ) {
-            newEventsDOM.push( separators[nSeparatorsUsed] );
+            var cSeparator = separators.eq(nSeparatorsUsed);
+            if ( allEvents.eq(eventIndexList[i]).is(":visible") ) {
+                cSeparator.toggle( true );
+            }
+            else {
+                cSeparator.toggle( false );
+            }
+            newEventsDOM.push( cSeparator[0] );
             nSeparatorsUsed += 1;
         }
     }
     for ( var i = 0; i < missingFromEventIndexList.length; i++ ) {
         newEventsDOM.push( allEvents[missingFromEventIndexList[i]] );
-        // There are only nEvents-1 separators
+        // There are only nEvents-1 separators. Adjust visibility 
+        // before pushing on DOM array.
         if ( nSeparatorsUsed < nEvents-1 ) {
-            newEventsDOM.push( separators[nSeparatorsUsed] );
+            var cSeparator = separators.eq(nSeparatorsUsed);
+            if ( allEvents.eq(missingFromEventIndexList[i]).is(":visible") ) {
+                cSeparator.toggle( true );
+            }
+            else {
+                cSeparator.toggle( false );
+            }
+            newEventsDOM.push( cSeparator[0] );
             nSeparatorsUsed += 1;
         }
     }
