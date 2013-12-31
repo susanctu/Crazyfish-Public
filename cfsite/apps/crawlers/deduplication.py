@@ -56,9 +56,10 @@ class SimpleDeduplicator:
         # Parameters we'll filter against
         e_date = event.event_start_date
         e_time = event.event_start_time
+        e_date_and_time = datetime.datetime.combine(e_date, e_time)
         e_name = event.name.strip()
-        e_cat_ids = [c.id for c in event.category]
-        time_window = datetime.time(0, 30)
+        e_cat_ids = [c.id for c in event.category.all()]
+        time_window = datetime.timedelta(minutes=30)
 
         # Simple de duplication starts by looking for events that happen on
         # the same date, inside a +/- 30 minutes time window, with at least
@@ -66,9 +67,9 @@ class SimpleDeduplicator:
         matching_events_queryset = Event.objects.filter(
             event_start_date__exact=e_date
         ).exclude(
-            event_start_time__lt=e_time - time_window
+            event_start_time__lt=e_date_and_time - time_window
         ).exclude(
-            event_start_time__gt=e_time + time_window
+            event_start_time__gt=e_date_and_time + time_window
         ).filter(
             category__id__in=e_cat_ids
         )
