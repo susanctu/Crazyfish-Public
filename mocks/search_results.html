@@ -4,6 +4,7 @@
 <head>
     <title>crazyfish :: all your events in one place</title>
     <link href="css/cf.css" rel="stylesheet">
+    <link href="css/cf-animations.css" rel="stylesheet">
     <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 </head>
@@ -29,7 +30,7 @@
     </div>
 </div>
 <div id="results-area">
-    <div id="results" class="results results-events">
+    <div id="results-0" class="results results-events selected">
         <div class="results-over-content">
             <div class="results-over-content__error-container" style="display: none;">
                 <div class="search-results-tab-error">
@@ -40,676 +41,911 @@
             </div>
         </div>
         <div class="results-content">
-            <div id="event-holder" class="event-holder border-filter border-timesabove">
-                <div id="etable" class="clip-children">
-                    <div id="timeline-header" class="timeline-header" style="left: 0px;">
-                        <div class="controls-header">
-                            <!-- FILTERS GO HERE (Category and Sort by) -->
-                            <div class="filter-controls control-set">
-                                <div class="label">
-                                    Filter by:
-                                </div>
-                                <div class="filter-arts-culture init-tooltip selected">
+            <div class="event-holder">
+                <div class="timeline-header" style="left: 0px;">
+                    <div class="controls-header">
+                        <!-- FILTERS GO HERE (Category and Sort by) -->
+                        <div class="filter-controls control-set">
+                            <div class="label">
+                                Filter by:
+                            </div>
+                            <ul class="filter-logos-wrapper">
+                                <li>
                                     <div class="filter-logos">
                                         <div class="spacer"></div>
                                         <div class="filter-logo filter-logo-arts-culture selected"></div>
                                     </div>
-                                    <div class="tile-explanation exp-below" style="display:none; top:auto; left:0px; bottom:auto; right:auto;">
-                                        <div class="tooltip-text">
-                                            Arts &amp; Culture.
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="filter-classes-workshops init-tooltip">
+                                    <span class="tooltip-comment"><p>arts &amp; culture</p></span>
+                                </li>
+                                <li>
                                     <div class="filter-logos">
                                         <div class="spacer"></div>
-                                        <div class="filter-logo filter-logo-classes-workshops"></div>
+                                        <div class="filter-logo filter-logo-classes-workshops selected"></div>
                                     </div>
-                                    <div class="tile-explanation exp-below" style="display:none; top:auto; left:0px; bottom:auto; right:auto;">
-                                        <div class="tooltip-text">
-                                            Classes &amp; Workshops.
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="filter-conference init-tooltip selected">
+                                    <span class="tooltip-comment"><p>classes &amp; w...</p></span>
+                                </li>
+                                <li>
                                     <div class="filter-logos">
                                         <div class="spacer"></div>
                                         <div class="filter-logo filter-logo-conference selected"></div>
                                     </div>
-                                    <div class="tile-explanation exp-below" style="display:none; top:auto; left:0px; bottom:auto; right:auto;">
-                                        <div class="tooltip-text">
-                                            Conference.
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="filter-family init-tooltip">
+                                    <span class="tooltip-comment">conference</span>
+                                </li>
+                                <li>
                                     <div class="filter-logos">
                                         <div class="spacer"></div>
-                                        <div class="filter-logo filter-logo-family"></div>
+                                        <div class="filter-logo filter-logo-family selected"></div>
                                     </div>
-                                    <div class="tile-explanation exp-below" style="display:none; top:auto; left:0px; bottom:auto; right:auto;">
-                                        <div class="tooltip-text">
-                                            Family.
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="filter-food-wine init-tooltip">
+                                    <span class="tooltip-comment">family</span>
+                                </li>
+                                <li>
                                     <div class="filter-logos">
                                         <div class="spacer"></div>
-                                        <div class="filter-logo filter-logo-food-wine"></div>
+                                        <div class="filter-logo filter-logo-food-wine selected"></div>
                                     </div>
-                                    <div class="tile-explanation exp-below" style="display:none; top:auto; left:0px; bottom:auto; right:auto;">
-                                        <div class="tooltip-text">
-                                            Food &amp; Wine.
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="filter-meetup init-tooltip">
+                                    <span class="tooltip-comment">food &amp; wine</span>
+                                </li>
+                                <li>
                                     <div class="filter-logos">
                                         <div class="spacer"></div>
-                                        <div class="filter-logo filter-logo-meetup"></div>
+                                        <div class="filter-logo filter-logo-meetup selected"></div>
                                     </div>
-                                    <div class="tile-explanation exp-below" style="display:none; top:auto; left:0px; bottom:auto; right:auto;">
-                                        <div class="tooltip-text">
-                                            Meetup.
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="filter-music init-tooltip">
+                                    <span class="tooltip-comment">meetup</span>
+                                </li>
+                                <li>
                                     <div class="filter-logos">
                                         <div class="spacer"></div>
-                                        <div class="filter-logo filter-logo-music"></div>
+                                        <div class="filter-logo filter-logo-music selected"></div>
                                     </div>
-                                    <div class="tile-explanation exp-below" style="display:none; top:auto; left:0px; bottom:auto; right:auto;">
-                                        <div class="tooltip-text">
-                                            Music.
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="filter-sport init-tooltip">
+                                    <span class="tooltip-comment">music</span>
+                                </li>
+                                <li>
                                     <div class="filter-logos">
                                         <div class="spacer"></div>
-                                        <div class="filter-logo filter-logo-sports"></div>
+                                        <div class="filter-logo filter-logo-sports selected"></div>
                                     </div>
-                                    <div class="tile-explanation exp-below" style="display:none; top:auto; left:0px; bottom:auto; right:auto;">
-                                        <div class="tooltip-text">
-                                            Sport.
-                                        </div>
-                                    </div>
-                                </div>
+                                    <span class="tooltip-comment">sport</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="sort-controls control-set">
+                            <div class="label">
+                                Sort by:
                             </div>
-                            <div class="sort-controls control-set">
-                                <div class="label">
-                                    Sort by:
-                                </div>
-                                <div class="sort-magic init-tooltip selected">
+                            <ul class="sort-logos-wrapper">
+                                <li>
                                     <div class="sort-logos">
                                         <div class="spacer"></div>
                                         <div class="sort-logo sort-logo-magic selected"></div>
                                     </div>
-                                    <div class="tile-explanation exp-below" style="display:none; top:auto; left:0px; bottom:auto; right:auto;">
-                                        <div class="tooltip-text">
-                                            Magic.
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="sort-price init-tooltip">
+                                    <span class="tooltip-comment">magic</span>
+                                </li>
+                                <li>
                                     <div class="sort-logos">
                                         <div class="spacer"></div>
                                         <div class="sort-logo sort-logo-price"></div>
                                     </div>
-                                    <div class="tile-explanation exp-below" style="display:none; top:auto; left:0px; bottom:auto; right:auto;">
-                                        <div class="tooltip-text">
-                                            Price.
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="sort-start-time init-tooltip">
+                                    <span class="tooltip-comment">price</span>
+                                </li>
+                                <li>
                                     <div class="sort-logos">
                                         <div class="spacer"></div>
                                         <div class="sort-logo sort-logo-start-time"></div>
                                     </div>
-                                    <div class="tile-explanation exp-below" style="display:none; top:auto; left:0px; bottom:auto; right:auto;">
-                                        <div class="tooltip-text">
-                                            Start time.
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="sort-duration init-tooltip">
+                                    <span class="tooltip-comment">start time</span>
+                                </li>
+                                <li>
                                     <div class="sort-logos">
                                         <div class="spacer"></div>
                                         <div class="sort-logo sort-logo-duration"></div>
                                     </div>
-                                    <div class="tile-explanation exp-below" style="display:none; top:auto; left:0px; bottom:auto; right:auto;">
-                                        <div class="tooltip-text">
-                                            Duration.
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                                    <span class="tooltip-comment">duration</span>
+                                </li>
+                            </ul>
+
                         </div>
-                        <table class="timeline-table" width="100%" cellspacing="0" cellpadding="0">
-                            <!-- Start/end time selection goes here -->
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="head-block">
-                                            <div class="timeheader">
-                                                <div id="anchor-left" class="anchor left" style="left: 2.5%;">
-                                                    <div class="hit-area left">
-                                                        <div class="time-flag right right-arrow">
-                                                            Start
-                                                            <div class="arrow"></div>
-                                                        </div>
-                                                        <div class="time-flag left left-border timebox" style="display: block;">
-                                                            8:45 AM
-                                                            <div class="day-month">
-                                                                , Nov 14
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="timeval" style="left: 12.5%; width: 25%;">
-                                                    <div class="time light hour10">
-                                                        10am
-                                                    </div>
-                                                </div>
-                                                <div class="timeval" style="left: 25%; width: 25%;">
-                                                    <div class="time light hour12">
-                                                        12pm
-                                                    </div>
-                                                </div>
-                                                <div class="timeval" style="left: 37.5%; width: 25%;">
-                                                    <div class="time light hour14">
-                                                        2pm
-                                                    </div>
-                                                </div>
-                                                <div class="timeval" style="left: 50%; width: 25%;">
-                                                    <div class="time light hour16">
-                                                        4pm
-                                                    </div>
-                                                </div>
-                                                <div class="timeval" style="left: 62.5%; width: 25%;">
-                                                    <div class="time light hour18">
-                                                        6pm
-                                                    </div>
-                                                </div>
-                                                <div class="timeval" style="left: 75%; width: 25%;">
-                                                    <div class="time light hour20">
-                                                        8pm
-                                                    </div>
-                                                </div>
-                                                <div class="timeval" style="left: 87.5%; width: 25%;">
-                                                    <div class="time light hour22">
-                                                        10pm
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="timeheader timeheader-right">
-                                                <div id="anchor-right" class="anchor right" style="left: 97.5%;">
-                                                    <div class="hit-area right">
-                                                        <div class="time-flag left left-arrow">
-                                                            End
-                                                            <div class="arrow"></div>
-                                                        </div>
-                                                        <div class="time-flag right right-border timebox" style="display: block;">
-                                                            11:45 PM
-                                                            <div class="day-month">
-                                                                , Nov 14
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="left-column-header">
-                                                <div class="main">
-                                                    Arts &amp; culture, conference events<br>
-                                                    for Wed Nov 14th
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
                     </div>
-                    <div class="events-table">
 
-                        <div class="alllines">
-                            <div id="anchor-left-table" class="anchor left" style="left: 2.5%;">
-                                <div class="hit-area left">
+                    <div class="timeline-table">
+                        <!-- Start/end time selection goes here -->
+                        <div class="head-block">
+                            <div class="timeheader">
+                                <div class="time-helper" style="display: none;">
+                                    <span class="time-helper-min-value">08:00</span>
+                                    <span class="time-helper-max-value">24:00</span>
                                 </div>
-                            </div>
-                            <div class="graydiv graydiv-left" style="width: 2.5%;"></div>
 
-                            <div id="anchor-right-table" class="anchor right" style="left: 97.5%;">
-                                <div class="hit-area right">
-                                </div>
-                            </div>
-                            <div class="graydiv graydiv-right" style="width: 2.5%;"></div>
-
-                            <div class=" line" style="left: 12.5%"></div>
-                            <div class=" line" style="left: 25%"></div>
-                            <div class=" line" style="left: 37.5%"></div>
-                            <div class=" line" style="left: 50%"></div>
-                            <div class=" line" style="left: 62.5%"></div>
-                            <div class=" line" style="left: 75%"></div>
-                            <div class=" line" style="left: 87.5%"></div>
-                        </div>
-                        <div id="sub-graph">
-                            <!-- TODO -->
-
-                            <div id="e-0-0" class="event c-0 r-0">
-                                <div class="event-info">
-                                    <div class="toggle-expand"></div>
-                                    <div class="category-column">
-                                        <div class="category-logos">
-                                            <div class="category-logo category-logo-sports"></div>
+                                <div class="anchor left">
+                                    <div class="hit-area left">
+                                        <div class="time-flag right right-arrow">
+                                            Start
+                                            <div class="arrow"></div>
                                         </div>
-                                        <div class="category-name">
-                                            Sports
-                                        </div>
-                                    </div>
-                                    <div class="title-column">
-                                        <div class="title-main">
-                                            UCF Homecoming Pres. Benny Benassi...
-                                        </div>
-                                        <div class="title-sub">
-                                            This is the event description...
-                                        </div>
-                                    </div>
-                                    <div class="price-column">
-                                        <div class="currency">
-                                            $
-                                        </div>
-                                        <div class="price">
-                                            75
-                                        </div>
-                                    </div>
-                                    <div class="lines">
-                                        <div class=" line" style="left: 12.5%"></div>
-                                        <div class=" line" style="left: 25%"></div>
-                                        <div class=" line" style="left: 37.5%"></div>
-                                        <div class=" line" style="left: 50%"></div>
-                                        <div class=" line" style="left: 62.5%"></div>
-                                        <div class=" line" style="left: 75%"></div>
-                                        <div class=" line" style="left: 87.5%"></div>
-                                    </div>
-                                    <div class="event-time-info">
-                                        <div class="graph">
-                                            <div class="box event" style="width: 15%; margin-left: 25%; border-left: 1px solid; border-right: 1px solid;">
-                                                <div class="duration-wrapper">
-                                                    <div class="duration">2h30</div>
-                                                </div>
-                                                <div class="timebox starts">
-                                                    12:30pm
-                                                    <span class="day-month">
-                                                        , Nov 14
-                                                    </span>
-                                                </div>
-                                                <div class="timebox ends">
-                                                    14:00pm
-                                                    <span class="day-month">
-                                                        , Nov 14
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="address-column">
-                                        <div class="address">
-                                            Campus drive @ Munger residences, Stanford University
+                                        <div class="time-flag left left-border timebox">
+                                            8:45 AM
                                         </div>
                                     </div>
                                 </div>
-                                <div class="event-details" style="display: none;"></div>
+                                <div class="timeval" style="left: 12.5%; width: 25%;">
+                                    <div class="time light hour10">
+                                        10am
+                                    </div>
+                                </div>
+                                <div class="timeval" style="left: 25%; width: 25%;">
+                                    <div class="time light hour12">
+                                        12pm
+                                    </div>
+                                </div>
+                                <div class="timeval" style="left: 37.5%; width: 25%;">
+                                    <div class="time light hour14">
+                                        2pm
+                                    </div>
+                                </div>
+                                <div class="timeval" style="left: 50%; width: 25%;">
+                                    <div class="time light hour16">
+                                        4pm
+                                    </div>
+                                </div>
+                                <div class="timeval" style="left: 62.5%; width: 25%;">
+                                    <div class="time light hour18">
+                                        6pm
+                                    </div>
+                                </div>
+                                <div class="timeval" style="left: 75%; width: 25%;">
+                                    <div class="time light hour20">
+                                        8pm
+                                    </div>
+                                </div>
+                                <div class="timeval" style="left: 87.5%; width: 25%;">
+                                    <div class="time light hour22">
+                                        10pm
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="separator"></div>
-
-                            <div id="e-0-1" class="event c-0 r-1">
-                                <div class="event-info">
-                                    <div class="toggle-expand"></div>
-                                    <div class="category-column">
-                                        <div class="category-logos">
-                                            <div class="category-logo category-logo-sports"></div>
+                            <div class="timeheader timeheader-right">
+                                <div class="anchor right" style="left: 100%;">
+                                    <div class="hit-area right">
+                                        <div class="time-flag left left-arrow">
+                                            End
+                                            <div class="arrow"></div>
                                         </div>
-                                        <div class="category-name">
-                                            Sports
-                                        </div>
-                                    </div>
-                                    <div class="title-column">
-                                        <div class="title-main">
-                                            UCF Homecoming Pres. Benny Benassi...
-                                        </div>
-                                        <div class="title-sub">
-                                            This is the event description...
-                                        </div>
-                                    </div>
-                                    <div class="price-column">
-                                        <div class="currency">
-                                            $
-                                        </div>
-                                        <div class="price">
-                                            75
-                                        </div>
-                                    </div>
-                                    <div class="lines">
-                                        <div class=" line" style="left: 12.5%"></div>
-                                        <div class=" line" style="left: 25%"></div>
-                                        <div class=" line" style="left: 37.5%"></div>
-                                        <div class=" line" style="left: 50%"></div>
-                                        <div class=" line" style="left: 62.5%"></div>
-                                        <div class=" line" style="left: 75%"></div>
-                                        <div class=" line" style="left: 87.5%"></div>
-                                    </div>
-                                    <div class="event-time-info">
-                                        <div class="graph">
-                                            <div class="box event" style="width: 15%; margin-left: 25%; border-left: 1px solid; border-right: 1px solid;">
-                                                <div class="duration-wrapper">
-                                                    <div class="duration">2h30</div>
-                                                </div>
-                                                <div class="timebox starts">
-                                                    12:30pm
-                                                    <span class="day-month">
-                                                        , Nov 14
-                                                    </span>
-                                                </div>
-                                                <div class="timebox ends">
-                                                    14:00pm
-                                                    <span class="day-month">
-                                                        , Nov 14
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="address-column">
-                                        <div class="address">
-                                            Campus drive @ Munger residences, Stanford University
+                                        <div class="time-flag right right-border timebox">
+                                            11:45 PM
                                         </div>
                                     </div>
                                 </div>
-                                <div class="event-details" style="display: none;"></div>
                             </div>
 
-                            <!--
-                            <div class="separator"></div>
-                            <div id="e-0-2" class="event c-0 r-2">
-                                <div class="event-info">
-                                    <div class="toggle-expand"></div>
-                                    <div class="category-column">
-                                        <div class="category-logos">
-                                            <div class="category-logo category-logo-sports"></div>
-                                        </div>
-                                        <div class="category-name">
-                                            Sports
-                                        </div>
-                                    </div>
-                                    <div class="title-column">
-                                        <div class="title-main">
-                                            UCF Homecoming Pres. Benny Benassi...
-                                        </div>
-                                        <div class="title-sub">
-                                            This is the event description...
-                                        </div>
-                                    </div>
-                                    <div class="price-column">
-                                        <div class="currency">
-                                            $
-                                        </div>
-                                        <div class="price">
-                                            75
-                                        </div>
-                                    </div>
-                                    <div class="lines">
-                                        <div class=" line" style="left: 12.5%"></div>
-                                        <div class=" line" style="left: 25%"></div>
-                                        <div class=" line" style="left: 37.5%"></div>
-                                        <div class=" line" style="left: 50%"></div>
-                                        <div class=" line" style="left: 62.5%"></div>
-                                        <div class=" line" style="left: 75%"></div>
-                                        <div class=" line" style="left: 87.5%"></div>
-                                    </div>
-                                    <div class="event-time-info">
-                                        <div class="graph">
-                                            <div class="box event" style="width: 15%; margin-left: 25%; border-left: 1px solid; border-right: 1px solid;">
-                                                <div class="duration-wrapper">
-                                                    <div class="duration">2h30</div>
-                                                </div>
-                                                <div class="timebox starts">
-                                                    12:30pm
-                                                    <span class="day-month">
-                                                        , Nov 14
-                                                    </span>
-                                                </div>
-                                                <div class="timebox ends">
-                                                    14:00pm
-                                                    <span class="day-month">
-                                                        , Nov 14
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="address-column">
-                                        <div class="address">
-                                            Campus drive @ Munger residences, Stanford University
-                                        </div>
-                                    </div>
+                            <div class="left-column-header">
+                                <div class="main">
+                                    <p class="col-header-cat">Arts &amp; culture, conference events</p>
+                                    <p class="col-header-date">for Wed Nov 14th</p>
                                 </div>
-                                <div class="event-details" style="display: none;"></div>
                             </div>
-                            <div id="e-1-0" class="event c-1 r-0">
-                                                                <div class="event-info">
-                                    <div class="toggle-expand"></div>
-                                    <div class="category-column">
-                                        <div class="category-logos">
-                                            <div class="category-logo category-logo-sports"></div>
-                                        </div>
-                                        <div class="category-name">
-                                            Sports
-                                        </div>
-                                    </div>
-                                    <div class="title-column">
-                                        <div class="title-main">
-                                            UCF Homecoming Pres. Benny Benassi...
-                                        </div>
-                                        <div class="title-sub">
-                                            This is the event description...
-                                        </div>
-                                    </div>
-                                    <div class="price-column">
-                                        <div class="currency">
-                                            $
-                                        </div>
-                                        <div class="price">
-                                            75
-                                        </div>
-                                    </div>
-                                    <div class="lines">
-                                        <div class=" line" style="left: 12.5%"></div>
-                                        <div class=" line" style="left: 25%"></div>
-                                        <div class=" line" style="left: 37.5%"></div>
-                                        <div class=" line" style="left: 50%"></div>
-                                        <div class=" line" style="left: 62.5%"></div>
-                                        <div class=" line" style="left: 75%"></div>
-                                        <div class=" line" style="left: 87.5%"></div>
-                                    </div>
-                                    <div class="event-time-info">
-                                        <div class="graph">
-                                            <div class="box event" style="width: 15%; margin-left: 25%; border-left: 1px solid; border-right: 1px solid;">
-                                                <div class="duration-wrapper">
-                                                    <div class="duration">2h30</div>
-                                                </div>
-                                                <div class="timebox starts">
-                                                    12:30pm
-                                                    <span class="day-month">
-                                                        , Nov 14
-                                                    </span>
-                                                </div>
-                                                <div class="timebox ends">
-                                                    14:00pm
-                                                    <span class="day-month">
-                                                        , Nov 14
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="address-column">
-                                        <div class="address">
-                                            Campus drive @ Munger residences, Stanford University
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="event-details" style="display: none;"></div>
-                            </div>
-                            <div id="e-1-1" class="event c-1 r-1">
-                                                                <div class="event-info">
-                                    <div class="toggle-expand"></div>
-                                    <div class="category-column">
-                                        <div class="category-logos">
-                                            <div class="category-logo category-logo-sports"></div>
-                                        </div>
-                                        <div class="category-name">
-                                            Sports
-                                        </div>
-                                    </div>
-                                    <div class="title-column">
-                                        <div class="title-main">
-                                            UCF Homecoming Pres. Benny Benassi...
-                                        </div>
-                                        <div class="title-sub">
-                                            This is the event description...
-                                        </div>
-                                    </div>
-                                    <div class="price-column">
-                                        <div class="currency">
-                                            $
-                                        </div>
-                                        <div class="price">
-                                            75
-                                        </div>
-                                    </div>
-                                    <div class="lines">
-                                        <div class=" line" style="left: 12.5%"></div>
-                                        <div class=" line" style="left: 25%"></div>
-                                        <div class=" line" style="left: 37.5%"></div>
-                                        <div class=" line" style="left: 50%"></div>
-                                        <div class=" line" style="left: 62.5%"></div>
-                                        <div class=" line" style="left: 75%"></div>
-                                        <div class=" line" style="left: 87.5%"></div>
-                                    </div>
-                                    <div class="event-time-info">
-                                        <div class="graph">
-                                            <div class="box event" style="width: 15%; margin-left: 25%; border-left: 1px solid; border-right: 1px solid;">
-                                                <div class="duration-wrapper">
-                                                    <div class="duration">2h30</div>
-                                                </div>
-                                                <div class="timebox starts">
-                                                    12:30pm
-                                                    <span class="day-month">
-                                                        , Nov 14
-                                                    </span>
-                                                </div>
-                                                <div class="timebox ends">
-                                                    14:00pm
-                                                    <span class="day-month">
-                                                        , Nov 14
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="address-column">
-                                        <div class="address">
-                                            Campus drive @ Munger residences, Stanford University
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="event-details" style="display: none;"></div>
-                            </div>
-                            <div id="e-2-0" class="event c-2 r-0">
-                                                                <div class="event-info">
-                                    <div class="toggle-expand"></div>
-                                    <div class="category-column">
-                                        <div class="category-logos">
-                                            <div class="category-logo category-logo-sports"></div>
-                                        </div>
-                                        <div class="category-name">
-                                            Sports
-                                        </div>
-                                    </div>
-                                    <div class="title-column">
-                                        <div class="title-main">
-                                            UCF Homecoming Pres. Benny Benassi...
-                                        </div>
-                                        <div class="title-sub">
-                                            This is the event description...
-                                        </div>
-                                    </div>
-                                    <div class="price-column">
-                                        <div class="currency">
-                                            $
-                                        </div>
-                                        <div class="price">
-                                            75
-                                        </div>
-                                    </div>
-                                    <div class="lines">
-                                        <div class=" line" style="left: 12.5%"></div>
-                                        <div class=" line" style="left: 25%"></div>
-                                        <div class=" line" style="left: 37.5%"></div>
-                                        <div class=" line" style="left: 50%"></div>
-                                        <div class=" line" style="left: 62.5%"></div>
-                                        <div class=" line" style="left: 75%"></div>
-                                        <div class=" line" style="left: 87.5%"></div>
-                                    </div>
-                                    <div class="event-time-info">
-                                        <div class="graph">
-                                            <div class="box event" style="width: 15%; margin-left: 25%; border-left: 1px solid; border-right: 1px solid;">
-                                                <div class="duration-wrapper">
-                                                    <div class="duration">2h30</div>
-                                                </div>
-                                                <div class="timebox starts">
-                                                    12:30pm
-                                                    <span class="day-month">
-                                                        , Nov 14
-                                                    </span>
-                                                </div>
-                                                <div class="timebox ends">
-                                                    14:00pm
-                                                    <span class="day-month">
-                                                        , Nov 14
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="address-column">
-                                        <div class="address">
-                                            Campus drive @ Munger residences, Stanford University
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="event-details" style="display: none;"></div>
-                            </div>
-                            -->
                         </div>
                     </div>
                 </div>
-                <div id="no-event-found-warning" class="no-event-found-warning" style="display: none;">
-                    No events found with the filters you selected...
+                <div class="events-table">
+
+                    <div class="alllines">
+                        <div class="graydiv graydiv-left"></div>
+                        <div class="graydiv graydiv-right"></div>
+
+                        <div class="line" style="left: 0%"></div>
+                        <div class="line" style="left: 12.5%"></div>
+                        <div class="line" style="left: 25%"></div>
+                        <div class="line" style="left: 37.5%"></div>
+                        <div class="line" style="left: 50%"></div>
+                        <div class="line" style="left: 62.5%"></div>
+                        <div class="line" style="left: 75%"></div>
+                        <div class="line" style="left: 87.5%"></div>
+                        <div class="line" style="left: calc(100% - 1px)"></div>
+                    </div>
+
+                    <div class="events-graph">
+                        <div id="e-0-0" class="event c-0 r-0">
+                            <div class="event-helper" style="display: none;">
+                                <div class="event-helper-category">0</div>
+                                <div class="event-helper-magic">5</div>
+                                <div class="event-helper-price">15</div>
+                                <div class="event-helper-start-time">10:00 AM</div>
+                                <div class="event-helper-duration-minutes">60</div>
+                            </div>
+
+                            <div class="event-info">
+                                <div class="toggle-expand"></div>
+                                <div class="category-column">
+                                    <div class="category-logos">
+                                        <div class="category-logo category-logo-arts-culture"></div>
+                                    </div>
+                                    <div class="category-name">
+                                        Arts &amp; Culture
+                                    </div>
+                                </div>
+                                <div class="title-column">
+                                    <div class="title-main">
+                                        UCF Homecoming Pres. Benny Benassi...
+                                    </div>
+                                    <div class="title-sub">
+                                        This is the event description...
+                                    </div>
+                                </div>
+                                <div class="price-column">
+                                    <div class="currency">
+                                        $
+                                    </div>
+                                    <div class="price">
+                                        15
+                                    </div>
+                                </div>
+                                <div class="event-time-info">
+                                    <div class="graph">
+                                        <div class="box event-box" style="width: 6.3%; margin-left: 12.5%;">
+                                            <div class="duration-wrapper">
+                                                <div class="duration">1h</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="address-column">
+                                    <div class="address">
+                                        Campus drive @ Munger residences, Stanford University
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="event-details">
+
+                                <div class="event-details-column-left">
+                                    <div class="event-title-field">
+                                        <div class="event-title">Halloween Concert: Stanford Symphony Orchestra and Stanford Wind Ensemble</div>
+                                    </div>
+
+                                    <div class="event-description-field">
+                                        <div class="event-description">The Stanford Symphony Orchestra and Stanford Wind Ensemble each perform in a program featuring Music from Movies and other selections in the Halloween spirit.</div>
+                                    </div>
+
+                                    <div class="event-external">
+                                        <div class="link-external">
+                                            <a href="/">View Event</a>
+                                            <div class="link-comment">(Opens organizer's page in a new window)</div>
+                                        </div>
+                                        <div class="calendar-integration"></div>
+                                        <div class="share-widgets"></div>
+                                    </div>
+
+                                </div>
+
+                                <div class="event-details-column-middle">
+
+                                    <div class="event-all-other container">
+                                        <div class="event-misc-info">
+                                            <div class="event-misc-info-when">
+                                                <div class="event-misc-info-subtitle">When:</div>
+                                                <div class="event-misc-info-details">Thursday, October 31st, 7:30 PM</div>
+                                            </div>
+                                            <div class="event-misc-info-where">
+                                                <div class="event-misc-info-subtitle">Where:</div>
+                                                <div class="event-misc-info-details">Dinkelspiel Auditorium </div>
+                                            </div>
+                                            <div class="event-misc-info-price">
+                                                <div class="event-misc-info-subtitle">Price:</div>
+                                                <div class="event-misc-info-details">$10</div>
+                                            </div>
+                                            <div class="event-misc-info-admission">
+                                                <div class="event-misc-info-subtitle">Admission:</div>
+                                                <div class="event-misc-info-details">general $15 | student $10 | free for Stanford students with SUID | senior $10</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="event-details-column-right">
+                                    <div class="deselect">
+                                        Collapse
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="separator"></div>
+
+                        <div id="e-0-1" class="event c-0 r-1">
+                            <div class="event-helper" style="display: none;">
+                                <div class="event-helper-category">6</div>
+                                <div class="event-helper-magic">5</div>
+                                <div class="event-helper-price">25</div>
+                                <div class="event-helper-start-time">10:30 AM</div>
+                                <div class="event-helper-duration-minutes">120</div>
+                            </div>
+
+                            <div class="event-info">
+                                <div class="toggle-expand"></div>
+                                <div class="category-column">
+                                    <div class="category-logos">
+                                        <div class="category-logo category-logo-music"></div>
+                                    </div>
+                                    <div class="category-name">
+                                        Music
+                                    </div>
+                                </div>
+                                <div class="title-column">
+                                    <div class="title-main">
+                                        Halloween Concert: Stanford Symphony Orchestra and Stanford Wind Ensemble
+                                    </div>
+                                    <div class="title-sub">
+                                        The Stanford Symphony Orchestra and Stanford Wind Ensemble each perform in a program featuring Music from Movies and other selections in the Halloween spirit.
+                                    </div>
+                                </div>
+                                <div class="price-column">
+                                    <div class="from-flag">
+                                        from
+                                    </div>
+                                    <div class="currency from">
+                                        $
+                                    </div>
+                                    <div class="price from">
+                                        25
+                                    </div>
+                                </div>
+                                <div class="event-time-info">
+                                    <div class="graph">
+                                        <div class="box event-box" style="width: 12.5%; margin-left: 15.6%;">
+                                            <div class="duration-wrapper">
+                                                <div class="duration">2h</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="address-column">
+                                    <div class="address">
+                                        Campus drive @ Munger residences, Stanford University
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="event-details">
+
+                                <div class="event-details-column-left">
+                                    <div class="event-title-field">
+                                        <div class="event-title">Halloween Concert: Stanford Symphony Orchestra and Stanford Wind Ensemble</div>
+                                    </div>
+
+                                    <div class="event-description-field">
+                                        <div class="event-description">The Stanford Symphony Orchestra and Stanford Wind Ensemble each perform in a program featuring Music from Movies and other selections in the Halloween spirit.</div>
+                                    </div>
+
+                                    <div class="event-external">
+                                        <div class="link-external">
+                                            <a href="/">View Event</a>
+                                            <div class="link-comment">(Opens organizer's page in a new window)</div>
+                                        </div>
+                                        <div class="calendar-integration"></div>
+                                        <div class="share-widgets"></div>
+                                    </div>
+
+                                </div>
+
+                                <div class="event-details-column-middle">
+
+                                    <div class="event-all-other container">
+                                        <div class="event-misc-info">
+                                            <div class="event-misc-info-when">
+                                                <div class="event-misc-info-subtitle">When:</div>
+                                                <div class="event-misc-info-details">Thursday, October 31st, 7:30 PM</div>
+                                            </div>
+                                            <div class="event-misc-info-where">
+                                                <div class="event-misc-info-subtitle">Where:</div>
+                                                <div class="event-misc-info-details">Dinkelspiel Auditorium </div>
+                                            </div>
+                                            <div class="event-misc-info-price">
+                                                <div class="event-misc-info-subtitle">Price:</div>
+                                                <div class="event-misc-info-details">$10</div>
+                                            </div>
+                                            <div class="event-misc-info-admission">
+                                                <div class="event-misc-info-subtitle">Admission:</div>
+                                                <div class="event-misc-info-details">general $15 | student $10 | free for Stanford students with SUID | senior $10</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="event-details-column-right">
+                                    <div class="deselect">
+                                        Collapse
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="separator"></div>
+
+                        <div id="e-0-2" class="event c-0 r-2">
+                            <div class="event-helper" style="display: none;">
+                                <div class="event-helper-category">7</div>
+                                <div class="event-helper-magic">2.5</div>
+                                <div class="event-helper-price">125</div>
+                                <div class="event-helper-start-time">8:30 PM</div>
+                                <div class="event-helper-duration-minutes">180</div>
+                            </div>
+
+                            <div class="event-info">
+                                <div class="toggle-expand"></div>
+                                <div class="category-column">
+                                    <div class="category-logos">
+                                        <div class="category-logo category-logo-sports"></div>
+                                    </div>
+                                    <div class="category-name">
+                                        Sports
+                                    </div>
+                                </div>
+                                <div class="title-column">
+                                    <div class="title-main">
+                                        UCF Homecoming Pres. Benny Benassi...
+                                    </div>
+                                    <div class="title-sub">
+                                        This is the event description...
+                                    </div>
+                                </div>
+                                <div class="price-column">
+                                    <div class="currency">
+                                        $
+                                    </div>
+                                    <div class="price">
+                                        125
+                                    </div>
+                                </div>
+                                <div class="lines">
+                                    <div class=" line" style="left: 12.5%"></div>
+                                    <div class=" line" style="left: 25%"></div>
+                                    <div class=" line" style="left: 37.5%"></div>
+                                    <div class=" line" style="left: 50%"></div>
+                                    <div class=" line" style="left: 62.5%"></div>
+                                    <div class=" line" style="left: 75%"></div>
+                                    <div class=" line" style="left: 87.5%"></div>
+                                </div>
+                                <div class="event-time-info">
+                                    <div class="graph">
+                                        <div class="box event-box" style="width: 18.5%; margin-left: 78.1%;">
+                                            <div class="duration-wrapper">
+                                                <div class="duration">3h</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="address-column">
+                                    <div class="address">
+                                        Campus drive @ Munger residences, Stanford University
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="event-details">
+
+                                <div class="event-details-column-left">
+                                    <div class="event-title-field">
+                                        <div class="event-title">Halloween Concert: Stanford Symphony Orchestra and Stanford Wind Ensemble</div>
+                                    </div>
+
+                                    <div class="event-description-field">
+                                        <div class="event-description">The Stanford Symphony Orchestra and Stanford Wind Ensemble each perform in a program featuring Music from Movies and other selections in the Halloween spirit.</div>
+                                    </div>
+
+                                    <div class="event-external">
+                                        <div class="link-external">
+                                            <a href="/">View Event</a>
+                                            <div class="link-comment">(Opens organizer's page in a new window)</div>
+                                        </div>
+                                        <div class="calendar-integration"></div>
+                                        <div class="share-widgets"></div>
+                                    </div>
+
+                                </div>
+
+                                <div class="event-details-column-middle">
+
+                                    <div class="event-all-other container">
+                                        <div class="event-misc-info">
+                                            <div class="event-misc-info-when">
+                                                <div class="event-misc-info-subtitle">When:</div>
+                                                <div class="event-misc-info-details">Thursday, October 31st, 7:30 PM</div>
+                                            </div>
+                                            <div class="event-misc-info-where">
+                                                <div class="event-misc-info-subtitle">Where:</div>
+                                                <div class="event-misc-info-details">Dinkelspiel Auditorium </div>
+                                            </div>
+                                            <div class="event-misc-info-price">
+                                                <div class="event-misc-info-subtitle">Price:</div>
+                                                <div class="event-misc-info-details">$10</div>
+                                            </div>
+                                            <div class="event-misc-info-admission">
+                                                <div class="event-misc-info-subtitle">Admission:</div>
+                                                <div class="event-misc-info-details">general $15 | student $10 | free for Stanford students with SUID | senior $10</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="event-details-column-right">
+                                    <div class="deselect">
+                                        Collapse
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="separator"></div>
+
+                        <div id="e-1-0" class="event c-1 r-0">
+                            <div class="event-helper" style="display: none;">
+                                <div class="event-helper-category">4</div>
+                                <div class="event-helper-magic">1</div>
+                                <div class="event-helper-price">75</div>
+                                <div class="event-helper-start-time">12:00 PM</div>
+                                <div class="event-helper-duration-minutes">150</div>
+                            </div>
+
+                            <div class="event-info">
+                                <div class="toggle-expand"></div>
+                                <div class="category-column">
+                                    <div class="category-logos">
+                                        <div class="category-logo category-logo-food-wine"></div>
+                                    </div>
+                                    <div class="category-name">
+                                        Food &amp; Wine
+                                    </div>
+                                </div>
+                                <div class="title-column">
+                                    <div class="title-main">
+                                        UCF Homecoming Pres. Benny Benassi...
+                                    </div>
+                                    <div class="title-sub">
+                                        This is the event description...
+                                    </div>
+                                </div>
+                                <div class="price-column">
+                                    <div class="currency">
+                                        $
+                                    </div>
+                                    <div class="price">
+                                        75
+                                    </div>
+                                </div>
+                                <div class="lines">
+                                    <div class=" line" style="left: 12.5%"></div>
+                                    <div class=" line" style="left: 25%"></div>
+                                    <div class=" line" style="left: 37.5%"></div>
+                                    <div class=" line" style="left: 50%"></div>
+                                    <div class=" line" style="left: 62.5%"></div>
+                                    <div class=" line" style="left: 75%"></div>
+                                    <div class=" line" style="left: 87.5%"></div>
+                                </div>
+                                <div class="event-time-info">
+                                    <div class="graph">
+                                        <div class="box event-box" style="width: 15%; margin-left: 25%;">
+                                            <div class="duration-wrapper">
+                                                <div class="duration">2h30</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="address-column">
+                                    <div class="address">
+                                        Campus drive @ Munger residences, Stanford University
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="event-details">
+
+                                <div class="event-details-column-left">
+                                    <div class="event-title-field">
+                                        <div class="event-title">Halloween Concert: Stanford Symphony Orchestra and Stanford Wind Ensemble</div>
+                                    </div>
+
+                                    <div class="event-description-field">
+                                        <div class="event-description">The Stanford Symphony Orchestra and Stanford Wind Ensemble each perform in a program featuring Music from Movies and other selections in the Halloween spirit.</div>
+                                    </div>
+
+                                    <div class="event-external">
+                                        <div class="link-external">
+                                            <a href="/">View Event</a>
+                                            <div class="link-comment">(Opens organizer's page in a new window)</div>
+                                        </div>
+                                        <div class="calendar-integration"></div>
+                                        <div class="share-widgets"></div>
+                                    </div>
+
+                                </div>
+
+                                <div class="event-details-column-middle">
+
+                                    <div class="event-all-other container">
+                                        <div class="event-misc-info">
+                                            <div class="event-misc-info-when">
+                                                <div class="event-misc-info-subtitle">When:</div>
+                                                <div class="event-misc-info-details">Thursday, October 31st, 7:30 PM</div>
+                                            </div>
+                                            <div class="event-misc-info-where">
+                                                <div class="event-misc-info-subtitle">Where:</div>
+                                                <div class="event-misc-info-details">Dinkelspiel Auditorium </div>
+                                            </div>
+                                            <div class="event-misc-info-price">
+                                                <div class="event-misc-info-subtitle">Price:</div>
+                                                <div class="event-misc-info-details">$10</div>
+                                            </div>
+                                            <div class="event-misc-info-admission">
+                                                <div class="event-misc-info-subtitle">Admission:</div>
+                                                <div class="event-misc-info-details">general $15 | student $10 | free for Stanford students with SUID | senior $10</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="event-details-column-right">
+                                    <div class="deselect">
+                                        Collapse
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="separator"></div>
+
+                        <div id="e-1-1" class="event c-1 r-1">
+                            <div class="event-helper" style="display: none;">
+                                <div class="event-helper-category">1</div>
+                                <div class="event-helper-magic">1.2</div>
+                                <div class="event-helper-price">75</div>
+                                <div class="event-helper-start-time">12:00 PM</div>
+                                <div class="event-helper-duration-minutes">150</div>
+                            </div>
+
+                            <div class="event-info">
+                                <div class="toggle-expand"></div>
+                                <div class="category-column">
+                                    <div class="category-logos">
+                                        <div class="category-logo category-logo-classes-workshops"></div>
+                                    </div>
+                                    <div class="category-name">
+                                        Classes &amp; Workshops
+                                    </div>
+                                </div>
+                                <div class="title-column">
+                                    <div class="title-main">
+                                        UCF Homecoming Pres. Benny Benassi...
+                                    </div>
+                                    <div class="title-sub">
+                                        This is the event description...
+                                    </div>
+                                </div>
+                                <div class="price-column">
+                                    <div class="currency">
+                                        $
+                                    </div>
+                                    <div class="price">
+                                        75
+                                    </div>
+                                </div>
+                                <div class="lines">
+                                    <div class=" line" style="left: 12.5%"></div>
+                                    <div class=" line" style="left: 25%"></div>
+                                    <div class=" line" style="left: 37.5%"></div>
+                                    <div class=" line" style="left: 50%"></div>
+                                    <div class=" line" style="left: 62.5%"></div>
+                                    <div class=" line" style="left: 75%"></div>
+                                    <div class=" line" style="left: 87.5%"></div>
+                                </div>
+                                <div class="event-time-info">
+                                    <div class="graph">
+                                        <div class="box event-box" style="width: 15%; margin-left: 25%;">
+                                            <div class="duration-wrapper">
+                                                <div class="duration">2h30</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="address-column">
+                                    <div class="address">
+                                        Campus drive @ Munger residences, Stanford University
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="event-details">
+
+                                <div class="event-details-column-left">
+                                    <div class="event-title-field">
+                                        <div class="event-title">Halloween Concert: Stanford Symphony Orchestra and Stanford Wind Ensemble</div>
+                                    </div>
+
+                                    <div class="event-description-field">
+                                        <div class="event-description">The Stanford Symphony Orchestra and Stanford Wind Ensemble each perform in a program featuring Music from Movies and other selections in the Halloween spirit.</div>
+                                    </div>
+
+                                    <div class="event-external">
+                                        <div class="link-external">
+                                            <a href="/">View Event</a>
+                                            <div class="link-comment">(Opens organizer's page in a new window)</div>
+                                        </div>
+                                        <div class="calendar-integration"></div>
+                                        <div class="share-widgets"></div>
+                                    </div>
+
+                                </div>
+
+                                <div class="event-details-column-middle">
+
+                                    <div class="event-all-other container">
+                                        <div class="event-misc-info">
+                                            <div class="event-misc-info-when">
+                                                <div class="event-misc-info-subtitle">When:</div>
+                                                <div class="event-misc-info-details">Thursday, October 31st, 7:30 PM</div>
+                                            </div>
+                                            <div class="event-misc-info-where">
+                                                <div class="event-misc-info-subtitle">Where:</div>
+                                                <div class="event-misc-info-details">Dinkelspiel Auditorium </div>
+                                            </div>
+                                            <div class="event-misc-info-price">
+                                                <div class="event-misc-info-subtitle">Price:</div>
+                                                <div class="event-misc-info-details">$10</div>
+                                            </div>
+                                            <div class="event-misc-info-admission">
+                                                <div class="event-misc-info-subtitle">Admission:</div>
+                                                <div class="event-misc-info-details">general $15 | student $10 | free for Stanford students with SUID | senior $10</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="event-details-column-right">
+                                    <div class="deselect">
+                                        Collapse
+                                    </div>
+                                </div>
+
+                                                        </div>
+
+                        </div>
+
+                        <div class="separator"></div>
+
+                        <div id="e-2-0" class="event c-2 r-0">
+                            <div class="event-helper" style="display: none;">
+                                <div class="event-helper-category">3</div>
+                                <div class="event-helper-magic">4.3</div>
+                                <div class="event-helper-price">0</div>
+                                <div class="event-helper-start-time">12:30 PM</div>
+                                <div class="event-helper-duration-minutes">0</div>
+                            </div>
+
+                            <div class="event-info">
+                                <div class="toggle-expand"></div>
+                                <div class="category-column">
+                                    <div class="category-logos">
+                                        <div class="category-logo category-logo-family"></div>
+                                    </div>
+                                    <div class="category-name">
+                                        Family
+                                    </div>
+                                </div>
+                                <div class="title-column">
+                                    <div class="title-main">
+                                        UCF Homecoming Pres. Benny Benassi...
+                                    </div>
+                                    <div class="title-sub">
+                                        This is the event description...
+                                    </div>
+                                </div>
+                                <div class="price-column">
+                                    <div class="price-free">
+                                        free
+                                    </div>
+                                </div>
+                                <div class="lines">
+                                    <div class=" line" style="left: 12.5%"></div>
+                                    <div class=" line" style="left: 25%"></div>
+                                    <div class=" line" style="left: 37.5%"></div>
+                                    <div class=" line" style="left: 50%"></div>
+                                    <div class=" line" style="left: 62.5%"></div>
+                                    <div class=" line" style="left: 75%"></div>
+                                    <div class=" line" style="left: 87.5%"></div>
+                                </div>
+                                <div class="event-time-info">
+                                    <div class="graph">
+                                        <div class="event-box no-duration" style="margin-left: 28.1%">
+                                            <div class="point warning"></div>
+                                            <div class="warning-message">missing info</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="address-column">
+                                    <div class="address">
+                                        Campus drive @ Munger residences, Stanford University
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="event-details">
+
+                                <div class="event-details-column-left">
+                                    <div class="event-title-field">
+                                        <div class="event-title">Halloween Concert: Stanford Symphony Orchestra and Stanford Wind Ensemble</div>
+                                    </div>
+
+                                    <div class="event-description-field">
+                                        <div class="event-description">The Stanford Symphony Orchestra and Stanford Wind Ensemble each perform in a program featuring Music from Movies and other selections in the Halloween spirit.</div>
+                                    </div>
+
+                                    <div class="event-external">
+                                        <div class="link-external">
+                                            <a href="/">View Event</a>
+                                            <div class="link-comment">(Opens organizer's page in a new window)</div>
+                                        </div>
+                                        <div class="calendar-integration"></div>
+                                        <div class="share-widgets"></div>
+                                    </div>
+
+                                </div>
+
+                                <div class="event-details-column-middle">
+
+                                    <div class="event-all-other container">
+                                        <div class="event-misc-info">
+                                            <div class="event-misc-info-when">
+                                                <div class="event-misc-info-subtitle">When:</div>
+                                                <div class="event-misc-info-details">Thursday, October 31st, 7:30 PM</div>
+                                            </div>
+                                            <div class="event-misc-info-where">
+                                                <div class="event-misc-info-subtitle">Where:</div>
+                                                <div class="event-misc-info-details">Dinkelspiel Auditorium </div>
+                                            </div>
+                                            <div class="event-misc-info-price">
+                                                <div class="event-misc-info-subtitle">Price:</div>
+                                                <div class="event-misc-info-details">$10</div>
+                                            </div>
+                                            <div class="event-misc-info-admission">
+                                                <div class="event-misc-info-subtitle">Admission:</div>
+                                                <div class="event-misc-info-details">general $15 | student $10 | free for Stanford students with SUID | senior $10</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="event-details-column-right">
+                                    <div class="deselect">
+                                        Collapse
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+                <div class="no-event-found-warning" style="display: none;">
+                    No event found with the filters you selected...
                 </div>
                 <div class="bottom-spacer"></div>
             </div>
         </div>
     </div>
 </div>
+
 <div class="sink"></div>
+
+<script src="js/cf.js"></script>
+
 </body>
 
 </html>
