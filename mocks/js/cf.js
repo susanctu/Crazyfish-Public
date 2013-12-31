@@ -571,21 +571,25 @@ function updateEventGraphVisibility ( eventIndexList ) {
     // Note: will have to be converted to DOM representation as they are used!
     var allEvents = getActiveTabEvents(); 
     var separator = getActiveTabSeparators();
+    var maxIndDisplayed
 
     if ( eventIndexList.length == 0 ) {
         getActiveTabNoEventWarningDiv().toggle( true );
     }
     else {
         getActiveTabNoEventWarningDiv().toggle( false );
+        maxIndDisplayed = Math.max.apply(null, eventIndexList);
     }
 
+    var indexLastSeparator;
     for ( var i = 0; i < allEvents.length; i++ ) {
         // Toggle on elements in the eventIndex list
         if ( eventIndexList.indexOf(i) != -1 ) {
             allEvents.eq(i).toggle( true );
-            // There is 1 fewer separator than events
+            // There is 1 fewer active separator than events shown
             if ( i < allEvents.length - 1 ) {
                 separator.eq(i).toggle( true );
+                indexLastSeparator = i;
             }
         }
         // Toggle off the others
@@ -597,6 +601,9 @@ function updateEventGraphVisibility ( eventIndexList ) {
             }
         }
     }
+
+    // Making sure last separator is off
+    separator.eq(indexLastSeparator).toggle( false );
 
     // Updating the height of the hit area
     SetHitAreaHeight( HIT_AREA_DEFAULT_HEIGHT + getEventTableHeight() );
@@ -752,7 +759,9 @@ function getIdEventsMatchingFilters () {
 $( '.filter-logos-wrapper .filter-logos' ).click( function() {
     $( this ).children( '.filter-logo' ).toggleClass( 'selected' );
     getEventDescriptionHolder().html( getSelectedCategoriesString() )
-    // TODO: filter the events as things get toggled
+    
+    // Filter the events as things get toggled
+    updateEventGraphVisibility( getIdEventsMatchingFilters() );
 });
 
 // Toggle selection of sort controls
