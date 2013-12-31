@@ -247,7 +247,7 @@ function getMinAndMaxTimes () {
  */
 function getEventArray () {
     var eventArr = [];
-    var allEvents = $( '#' + getSelectedTabHtmlId() + ' .results-content .events-table .event ' );
+    var allEvents = getActiveTabEvents();
 
     for ( var i = 0; i < allEvents.length; i++ ) {
         // Each event should have a event-helper field in which this information is stored
@@ -395,6 +395,42 @@ function getTimeSlidersPosition () {
 };
 
 /**
+ * Get the list of all events in the active tab event graph.
+ * @return {[jQuery]} An array of event objects. 
+ * 
+ */
+function getActiveTabEvents () {
+    return $( '#' + getSelectedTabHtmlId() + ' .results-content .events-table .event ' );
+}
+
+/**
+ * Get a single separator jQuery object for the active tab.
+ * @return {]jQuery]} An separator
+ *
+ */
+function getActiveTabSeparators () {
+    return separator = $( '#' + getSelectedTabHtmlId() + ' .results-content .events-table .separator ' );
+}
+
+/**
+ * Get the list of separators in the table of events from the active tab.  
+ * @return {[jQuery]} An array of separator jQuery objects.
+ *
+ */
+function getActiveTabSeparators () {
+    return $( '#' + getSelectedTabHtmlId() + ' .results-content .events-table .separator ' );
+}
+
+/**
+ * Returns a jQuery object containing the active tab event graph.
+ * @return {[jQuery]} A jQuery object containing the active tab event graph.
+ *
+ */
+function getActiveTabEventsGraph () {
+    return $( '#' + getSelectedTabHtmlId() + ' .results-content .events-table .events-graph ' );
+}
+
+/**
  * Sets the height of the hit-area to a user-defined value.
  * @param {int} Height of the hit-area in pixels
  *
@@ -402,6 +438,31 @@ function getTimeSlidersPosition () {
 function setHitAreaHeight ( newHeight ) {
     $( '.event-holder .timeline-header .timeline-table .timeheader .hit-area' ).height(newHeight);
 }
+
+/**
+ * Sets the events table graph data from a DOM array.
+ * @param {[DOM]} An array of DOM elements which will go on the event graph.
+ *
+ */
+function setActiveTabEventsGraphFromDOM ( domArray ) {
+    // Get raw html from the DOM array
+    var newHtml = '';
+    for ( var i = 0; i < domArray.length; i++ ) {
+        newHtml += domArray[i].outerHTML;
+    }
+
+    // Set the html inside the events graph
+    getActiveTabEventsGraph().html( newHtml );
+}
+
+/**
+ * Sets the height of the hit area to a user-defined value specified in pixels.
+ * @param {int} Hit area height in pixels.
+ *
+ */
+function SetHitAreaHeight ( newHeight ) {
+    $( '.event-holder .timeline-header .timeline-table .timeheader .hit-area' ).height( newHeight );
+};
 
 /****************************     Utilities      *****************************/
 
@@ -528,6 +589,90 @@ function durationInMinutesToPercentage ( duration ) {
     duration = duration*60*1000;
 
     return Math.round(1000*duration/(tMax-tMin))/10;
+}
+
+/**
+ * Puts all the events specified in the index list on top of the event list,
+ * and puts all the others on the bottom of the list. 
+ * This method does not affect event visibility.
+ * @param {[int]} An array of event indices.
+ *
+ */
+function updateEventGraphOrder ( eventIndexList ) {
+    // Getting jQuery representation of events. 
+    // Note: will have to be converted to DOM representation as they are used!
+    var allEvents = getActiveTabEvents();
+    var nEvents = allEvents.length;
+    if ( nEvents == 0 ) {
+        return;
+    }
+    var separators = getActiveTabSeparators();
+
+    // Get index of events missing from event list
+    var missingFromEventIndexList = [];
+    for ( var i = 0; i < allEvents.length; i++ ) {
+        if ( eventIndexList.indexOf(i) == -1 ) {
+            missingFromEventIndexList.push(i);
+        }
+    }
+
+    // Building the updated DOM data array
+    var newEventsDOM = [];
+    var nSeparatorsUsed = 0;
+    for ( var i = 0; i < eventIndexList.length; i++ ) {
+        // Not using eq because we want DOM
+        newEventsDOM.push( allEvents[eventIndexList[i]] );
+        // There are only nEvents-1 separators
+        if ( nSeparatorsUsed < nEvents-1 ) {
+            newEventsDOM.push( separators[nSeparatorsUsed] );
+            nSeparatorsUsed += 1;
+        }
+    }
+    for ( var i = 0; i < missingFromEventIndexList.length; i++ ) {
+        newEventsDOM.push( allEvents[missingFromEventIndexList[i]] );
+        // There are only nEvents-1 separators
+        if ( nSeparatorsUsed < nEvents-1 ) {
+            newEventsDOM.push( separators[nSeparatorsUsed] );
+            nSeparatorsUsed += 1;
+        }
+    }
+
+    // Setting the event table to the new data.
+    setActiveTabEventsGraphFromDOM( newEventsDOM );
+}
+
+/**
+ * Shows all the events specified in the index list. Hides all other events.
+ * @param {[int]} An array of event indices.
+ *
+ */
+function updateEventGraphVisibility ( eventIndexList ) {
+    // Getting jQuery representation of events. 
+    // Note: will have to be converted to DOM representation as they are used!
+    var allEvents = getActiveTabEvents(); 
+    var separator = getActiveTabSeparators();
+
+    for ( var i = 0; i < allEvents.length; i++ ) {
+        // Toggle on elements in the eventIndex list
+        if ( eventIndexList.indexOf(i) != -1 ) {
+            allEvents.eq(i).toggle( true );
+            // There is 1 fewer separator than events
+            if ( i < allEvents.length - 1 ) {
+                separator.eq(i).toggle( true );
+            }
+        }
+        // Toggle off the others
+        else {
+            allEvents.eq(i).toggle( false );
+            // There is 1 fewer separator than events
+            if ( i < allEvents.length - 1 ) {
+                separator.eq(i).toggle( false );
+            }
+        }
+    }
+
+    // Updating the height of the hit area
+    SetHitAreaHeight( HIT_AREA_DEFAULT_HEIGHT + getEventTableHeight() );
 }
 
 /**************************** Filter / sort list *****************************/
