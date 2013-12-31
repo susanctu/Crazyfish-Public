@@ -768,9 +768,24 @@ $( '.filter-logos-wrapper .filter-logos' ).click( function() {
 
 // Toggle selection of sort controls
 $( '.sort-logos-wrapper .sort-logos' ).click( function() {
+    // Check if we just clicked on the logo that was already selected
+    var toggledSelected = ( $( this ).children( '.sort-logo' ).attr('class').indexOf('selected') != -1 );
+
     $( '.sort-logos-wrapper .sort-logos .sort-logo' ).toggleClass( 'selected', false );
     $( this ).children( '.sort-logo' ).toggleClass( 'selected' );
+    // If we clicked on the logo previously selected, change sorting order
+    if ( toggledSelected ) {
+        $( this ).children( '.sort-logo' ).toggleClass( 'descending' );
+    }
+
     // TODO: sort as things get toggled
+    var cSortMode = getSelectedSortLogoNumId();
+    if ( $( this ).children( '.sort-logo' ).attr('class').indexOf('descending') != -1 ) {
+        updateEventGraphOrder( sortEventArrayDescending( getEventArray(), cSortMode) );
+    }
+    else {
+        updateEventGraphOrder( sortEventArrayAscending( getEventArray(), cSortMode) );
+    }
 });
 
 /****************************    Times table     *****************************/
