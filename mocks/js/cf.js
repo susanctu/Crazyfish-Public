@@ -376,6 +376,22 @@ function setActiveTabEventsGraphFromDOM ( domArray ) {
 }
 
 /**
+ * Sets the events table graph data from an array of jQuery objects.
+ * @param {[jQuery]} An array of jQuery elements which will go on the event graph.
+ *
+ */
+function setActiveTabEventsGraphFromJQObj ( jqObjArray ) {
+    // Get raw html from the DOM array
+    var newHtml = '';
+    for ( var i = 0; i < jqObjArray.length; i++ ) {
+        newHtml += jqObjArray[i][0].outerHTML;
+    }
+
+    // Set the html inside the events graph
+    getActiveTabEventsGraph().html( newHtml );
+}
+
+/**
  * Sets the height of the hit area to a user-defined value specified in pixels.
  * @param {int} Hit area height in pixels.
  *
@@ -520,7 +536,6 @@ function durationInMinutesToPercentage ( duration ) {
  */
 function updateEventGraphOrder ( eventIndexList ) {
     // Getting jQuery representation of events. 
-    // Note: will have to be converted to DOM representation as they are used!
     var allEvents = getActiveTabEvents();
     var nEvents = allEvents.length;
     if ( nEvents == 0 ) {
@@ -536,12 +551,15 @@ function updateEventGraphOrder ( eventIndexList ) {
         }
     }
 
-    // Building the updated DOM data array
-    var newEventsDOM = [];
+    // Building the updated array of jQuery
+    var newEventsJQ = [];
     var nSeparatorsUsed = 0;
+    var maxIndVis = -1;
+
+    // Start with events that were specified
     for ( var i = 0; i < eventIndexList.length; i++ ) {
-        // Not using eq because we want DOM
-        newEventsDOM.push( allEvents[eventIndexList[i]] );
+        newEventsJQ.push( allEvents.eq(eventIndexList[i]) );
+
         // There are only nEvents-1 separators, and their visibility 
         // should be set to that of the parent event.
         if ( nSeparatorsUsed < nEvents-1 ) {
@@ -552,14 +570,25 @@ function updateEventGraphOrder ( eventIndexList ) {
             else {
                 cSeparator.toggle( false );
             }
-            newEventsDOM.push( cSeparator[0] );
+            newEventsJQ.push( cSeparator );
             nSeparatorsUsed += 1;
         }
+
+        // Also looking for last visible element
+        if ( allEvents.eq(eventIndexList[i]).is(":visible") ) {
+            if ( eventIndexList[i] > maxIndVis ) {
+                maxIndVis = eventIndexList[i];
+            }
+        }
     }
+
+    // Put all other events at the end
     for ( var i = 0; i < missingFromEventIndexList.length; i++ ) {
-        newEventsDOM.push( allEvents[missingFromEventIndexList[i]] );
+
+        newEventsJQ.push( allEvents.eq(missingFromEventIndexList[i]) );
+
         // There are only nEvents-1 separators. Adjust visibility 
-        // before pushing on DOM array.
+        // before pushing on JQ array.
         if ( nSeparatorsUsed < nEvents-1 ) {
             var cSeparator = separators.eq(nSeparatorsUsed);
             if ( allEvents.eq(missingFromEventIndexList[i]).is(":visible") ) {
@@ -568,15 +597,26 @@ function updateEventGraphOrder ( eventIndexList ) {
             else {
                 cSeparator.toggle( false );
             }
-            newEventsDOM.push( cSeparator[0] );
+            newEventsJQ.push( cSeparator );
             nSeparatorsUsed += 1;
+        }
+
+        // Also looking for last visible element
+        if ( allEvents.eq(missingFromEventIndexList[i]).is(":visible") ) {
+            if ( eventIndexList[i] > maxIndVis ) {
+                maxIndVis = missingFromEventIndexList[i];
+            }
         }
     }
 
-    // Setting the event table to the new data.
-    setActiveTabEventsGraphFromDOM( newEventsDOM );
+    // Making sure the separator after the last element visible is off
+    // if the last visible element is not the last in the list.
+    if ( maxIndVis != nEvents - 1 ) {
+        newEventsJQ[maxIndVis*2+1].toggle( false );
+    }
 
-    // Updating rules for exanding events, because page objects changed
+    // Setting the event table to the new data.
+    setActiveTabEventsGraphFromJQObj( newEventsJQ );
 }
 
 /**
