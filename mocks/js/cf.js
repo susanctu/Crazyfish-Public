@@ -576,8 +576,8 @@ function updateEventGraphOrder ( eventIndexList ) {
 
         // Also looking for last visible element
         if ( allEvents.eq(eventIndexList[i]).is(":visible") ) {
-            if ( eventIndexList[i] > maxIndVis ) {
-                maxIndVis = eventIndexList[i];
+            if ( i > maxIndVis ) {
+                maxIndVis = i;
             }
         }
     }
@@ -603,8 +603,8 @@ function updateEventGraphOrder ( eventIndexList ) {
 
         // Also looking for last visible element
         if ( allEvents.eq(missingFromEventIndexList[i]).is(":visible") ) {
-            if ( eventIndexList[i] > maxIndVis ) {
-                maxIndVis = missingFromEventIndexList[i];
+            if ( i + eventIndexList.length > maxIndVis ) {
+                maxIndVis = i + eventIndexList.length;
             }
         }
     }
