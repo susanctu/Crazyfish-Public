@@ -55,6 +55,7 @@
 .datepicker td.active:hover {
  
 }
+
 .datepicker td.active:hover,
 .datepicker td.active:hover:hover,
 .datepicker td.active:focus,
@@ -66,9 +67,7 @@
 .datepicker td.active.disabled,
 .datepicker td.active:hover.disabled,
 .datepicker td.active[disabled],
-.datepicker td.active:hover[disabled],
-.datepicker th.next:hover,
-.datepicker th.prev:hover  {
+.datepicker td.active:hover[disabled] {
   color: #35b2d2;
   background-color: white;
 }
@@ -79,6 +78,8 @@
   background-color: #003399 \9;
 }
 
+.datepicker th.next-month,
+.datepicker th.prev-month,
 .datepicker th.next-year,
 .datepicker th.prev-year {
   font-size: 15px;
