@@ -83,10 +83,6 @@ class GdocsCrawlerController:
         self._event_list = []
         for i in self._event_index_list:
             c_event = self.gdc.get_nth_event(i)
-            c_cat_list = self.gdc.get_categories_nth_element(i)
-            for cat in c_cat_list:
-                assert isinstance(cat, Category)
-                c_event.category.add(cat)
             self._event_list.append(c_event)
 
     def cleanup_event_list(self):
@@ -124,6 +120,13 @@ class GdocsCrawlerController:
                 e.save()
                 self.gdc.write_id_nth_event(e_ind, e.id)
                 self._event_id_list.append(e.id)
+            # Add categories whether it is a duplicate or not.
+            # ManyToMany relationships work like sets, so there won't be a
+            # problem with categories appearing more than once if added twice.
+            c_cat_list = self.gdc.get_categories_nth_element(e_ind)
+            for cat in c_cat_list:
+                assert isinstance(cat, Category)
+                e.category.add(cat)
 
     def update_events_in_database(self):
         """ GdocsCrawlerController.update_events_in_database()
