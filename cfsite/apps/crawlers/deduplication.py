@@ -58,7 +58,6 @@ class SimpleDeduplicator:
         e_time = event.event_start_time
         e_date_and_time = datetime.datetime.combine(e_date, e_time)
         e_name = event.name.strip()
-        e_cat_ids = [c.id for c in event.category.all()]
         time_window = datetime.timedelta(minutes=30)
 
         # Simple de duplication starts by looking for events that happen on
@@ -70,14 +69,12 @@ class SimpleDeduplicator:
             event_start_time__lt=e_date_and_time - time_window
         ).exclude(
             event_start_time__gt=e_date_and_time + time_window
-        ).filter(
-            category__id__in=e_cat_ids
         )
 
         # Then, look for events whose name matches the name of the new event
         matching_events_queryset.filter(name__icontains=e_name)
 
-        # If name, categories, start date match and start time is very close,
+        # If name, start date match and start time is very close,
         # then we very probably have a duplicate here. Flag it as such!
         if matching_events_queryset.all():
             return True
