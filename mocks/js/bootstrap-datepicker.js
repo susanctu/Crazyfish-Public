@@ -265,49 +265,25 @@
 				switch(target[0].nodeName.toLowerCase()) {
 					case 'th':
 						switch(target[0].className) {
-							case 'switch':
-								this.showMode(1);
-								break;
-							case 'prev-month':
-							case 'next-month':
+							case 'prev-month glyphicon glyphicon-circle-arrow-left':
+							case 'next-month glyphicon glyphicon-circle-arrow-right':
 								this.viewDate['setMonth'].call(
 									this.viewDate,
-									this.viewDate['getMonth'].call(this.viewDate) + (target[0].className === 'prev-month' ? -1 : 1)
+									this.viewDate['getMonth'].call(this.viewDate) + (target[0].className.indexOf('prev-month')!=-1 ? -1 : 1)
 								);
 								this.fill();
 								this.set();
 								break;
-							case 'prev-year':
-							case 'next-year':
+							case 'prev-year glyphicon glyphicon-chevron-left':
+							case 'next-year glyphicon glyphicon-chevron-right':
 								this.viewDate['setFullYear'].call(
 									this.viewDate,
-									this.viewDate['getFullYear'].call(this.viewDate) + (target[0].className === 'prev-year' ? -1 : 1)
+									this.viewDate['getFullYear'].call(this.viewDate) + (target[0].className.indexOf('prev-year')!=-1 ? -1 : 1)
 								);
-								console.log(this.viewDate['getFullYear'].call(this.viewDate) + (target[0].className === 'prev-year' ? -1 : 1));
 								this.fill();
 								this.set();
 								break;
 						}
-						break;
-					case 'span':
-						if (target.is('.month')) {
-							var month = target.parent().find('span').index(target);
-							this.viewDate.setMonth(month);
-						} else {
-							var year = parseInt(target.text(), 10)||0;
-							this.viewDate.setFullYear(year);
-						}
-						if (this.viewMode !== 0) {
-							this.date = new Date(this.viewDate);
-							this.element.trigger({
-								type: 'changeDate',
-								date: this.date,
-								viewMode: DPGlobal.modes[this.viewMode].clsName
-							});
-						}
-						this.showMode(-1);
-						this.fill();
-						this.set();
 						break;
 					case 'td':
 						if (target.is('.day') && !target.is('.disabled')){
@@ -446,14 +422,14 @@
 		},
 		headTemplate: '<thead>'+
 							'<tr class="yearSwitch">'+
-								'<th class="prev-year">&lsaquo;</th>'+
+								'<th class="prev-year glyphicon glyphicon-chevron-left"></th>'+
 								'<th colspan="5"></th>'+
-								'<th class="next-year">&rsaquo;</th>'+
+								'<th class="next-year glyphicon glyphicon-chevron-right"></th>'+
 							'</tr>'+
 							'<tr class="monthSwitch">'+
-								'<th class="prev-month">&lsaquo;</th>'+
+								'<th class="prev-month glyphicon glyphicon-circle-arrow-left"></th>'+
 								'<th colspan="5"></th>'+
-								'<th class="next-month">&rsaquo;</th>'+
+								'<th class="next-month glyphicon glyphicon-circle-arrow-right"></th>'+
 							'</tr>'+
 						'</thead>',
 		contTemplate: '<tbody><tr><td colspan="7"></td></tr></tbody>'

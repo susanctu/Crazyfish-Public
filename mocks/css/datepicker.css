@@ -106,3 +106,7 @@
 	color: white;
 	text-align:center;
 }
+
+.glyphicon:empty {
+	width: auto;
+}

@@ -50,12 +50,40 @@
 	<form class="form-inline" role="form">
 		<div class="form-group" id="DPLoc">
 		<label class="sr-only" for="datePicker">Email address</label>
-		<input class="form-control datepicker" data-toggle="dropdown" id="datePicker" placeholder="date" style="position:absolute; top:24px; left:615px; width: 230px;">
+		<input class="form-control datepicker" data-toggle="dropdown" id="datePicker" placeholder="date" style="position:absolute; top:24px; left:615px; width: 230px;" readonly>
 		<script src="js/bootstrap-datepicker.js"></script>
 		</div>
 		<div class="form-group">
 			<label class="sr-only" for="categoryPicker"  style="position:absolute; top:24px; left:196px;">Category</label>
-			<input class="form-control" data-toggle="dropdown" id="categoryPicker"  style="position:absolute; top:24px; left:196px; width: 240px;" placeholder="category">
+			
+      <input id="categoryPicker" class="form-control dropdown-toggle" data-toggle="dropdown" style="position:absolute; top:24px; left:196px; width: 240px;" placeholder="category" readonly>
+       <div class="dropdown-menu" role="menu" aria-labelledby="dLabel" width="100%"> 
+       <table align='center'>
+         <colgroup>
+          <col width="400px">
+           <col width="200px"> <!--FIXME (centering)-->
+         </colgroup>
+         <tr>
+           <td id="arts-opt" class="icon arts-icon hover-white dropdown-toggle" data-toggle="dropdown"  onClick="set_selection(this.id)">arts &amp; culture</td>
+           <td id="food-opt" class="icon food-icon hover-white dropdown-toggle" data-toggle="dropdown"  onClick="set_selection(this.id)">food &amp; wine</td>
+         </tr>
+         <tr>
+           <td id="classes-opt" class="icon classes-icon hover-white dropdown-toggle" data-toggle="dropdown" onClick="set_selection(this.id)">classes &amp; workshops</td>
+          <td id="meetups-opt" class="icon meetups-icon hover-white dropdown-toggle" data-toggle="dropdown" onClick="set_selection(this.id)">meetup</td>
+         </tr>
+         <tr>
+           <td id="conferences-opt" class="icon conferences-icon hover-white dropdown-toggle" data-toggle="dropdown" onClick="set_selection(this.id)">conference</td>
+           <td id="music-opt" class="icon music-icon hover-white dropdown-toggle" data-toggle="dropdown" onClick="set_selection(this.id)">music</td>
+         </tr>
+         <tr>
+          <td id="family-opt" class="icon family-icon hover-white dropdown-toggle" data-toggle="dropdown" onClick="set_selection(this.id)">family</td>
+           <td id="sport-opt" class="icon sport-icon hover-white dropdown-toggle" data-toggle="dropdown" onClick="set_selection(this.id)">sport</td>
+         </tr>
+       </table>
+       <div align="center">
+       <button id="all-opt" type="button" class="btn btn-default" data-toggle="dropdown" onClick="set_selection(this.id)">select all events</button>
+       </div>
+       </div>
 		</div>
 	</form>
 	<div>
@@ -77,12 +105,17 @@
     $(document).ready( function() { //set today's date as the default
 		var now = new Date();
 		$('#datePicker').val(CfUtils.format_as_day_month_date(now));
+		$('#categoryPicker').val('all');
 	});
 	
     $('.dropdown-toggle').dropdown();
     $('.datepicker').datepicker({placeInside:'#DPLoc'});
     function set_selection(element_id) {
-		$('#categoryPicker').val(document.getElementById(element_id).firstChild.nodeValue);
+		if (element_id === 'all-opt') {
+			$('#categoryPicker').val('all');
+		} else {
+			$('#categoryPicker').val(document.getElementById(element_id).firstChild.nodeValue);
+		}
 	}
     </script>
     
