@@ -408,7 +408,9 @@ function SetHitAreaHeight ( newHeight ) {
  * @return {str} A time string (ex: '8:55 am').
  */
 function percentageToTimeString ( percentStr ) {
-    var [tMin, tMax] = getMinAndMaxTimes();
+    var timeBounds = getMinAndMaxTimes();
+    var tMin = timeBounds[0];
+    var tMax = timeBounds[1];
     var dNew = new Date();
 
     // Converting min and max strings to milliseconds
@@ -419,11 +421,17 @@ function percentageToTimeString ( percentStr ) {
     var newTime = percentStr.slice(0, percentStr.lastIndexOf("%"));
     newTime = parseFloat(newTime)/100;
     newTime = Math.round(tMin + (tMax - tMin)*newTime);
-    dNew.setTime(newTime);
 
     // Formatting the new time string and returning
-    var newTimeStr = dNew.toTimeString().split(":");
-    var hour = parseFloat(newTimeStr[0]);
+    var newTimeStr = [];
+    newTimeStr[0] = Math.floor(newTime/60/60/1000);
+    newTimeStr[1] = (Math.round((newTime - newTimeStr[0]*60*60*1000)/60/1000)).toString();
+    if ( newTimeStr[1].length == 1) {
+        newTimeStr[1] = "0" + newTimeStr[1];
+    }
+
+    var hour = newTimeStr[0];
+    newTimeStr[0] = newTimeStr[0].toString();
     if ( hour == 0 ) {
         return "12:" + newTimeStr[1] + " AM";
     }
@@ -481,11 +489,15 @@ function timeStringToMilliseconds ( timeStr ) {
                 timeStr[0] = (parseInt(timeStr[0]) + 12).toString();
             }
         }
-        timeStr = timeStr[0] + ':' + timeStr[1];
     }
+    else {
+        timeStr = timeStr.split(':');
+    }
+    timeStr[0] = parseFloat(timeStr[0]);
+    timeStr[1] = parseFloat(timeStr[1]);
 
     // Parse the date string 
-    return Date.parse('T' + timeStr);
+    return (timeStr[0]*60*60*1000 + timeStr[1]*60*1000);
 }
 
 /**
@@ -495,7 +507,9 @@ function timeStringToMilliseconds ( timeStr ) {
  *
  */
 function timeStringToPercentage ( timeStr ) {
-    var [tMin, tMax] = getMinAndMaxTimes();
+    var timeBounds = getMinAndMaxTimes();
+    var tMin = timeBounds[0];
+    var tMax = timeBounds[1];
 
     tMin = timeStringToMilliseconds(tMin);
     tMax = timeStringToMilliseconds(tMax);
@@ -519,9 +533,9 @@ function durationInMinutesToPercentage ( duration ) {
     }
 
     // Convert
-    var [tMin, tMax] = getMinAndMaxTimes();
-    tMin = timeStringToMilliseconds(tMin);
-    tMax = timeStringToMilliseconds(tMax);
+    var timeBounds = getMinAndMaxTimes();
+    var tMin = timeStringToMilliseconds(timeBounds[0]);
+    var tMax = timeStringToMilliseconds(timeBounds[1]);
     duration = duration*60*1000;
 
     return Math.round(1000*duration/(tMax-tMin))/10;
@@ -771,9 +785,9 @@ function sortEventArrayDescending ( eventArray, mode ) {
 function getIdEventsMatchingFilters () {
     // Get the set of filters entered by the user
     var catSelected = getSelectedCategoriesNumId();
-    var tMinAllowed;
-    var tMaxAllowed;
-    [tMinAllowed, tMaxAllowed] = getTimeSlidersPosition();
+    var tsPosition = getTimeSlidersPosition();
+    var tMinAllowed = tsPosition[0];
+    var tMaxAllowed = tsPosition[1];
 
     // Get the events
     // Category is supposed to be in [1], start time in [4] and
