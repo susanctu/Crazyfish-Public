@@ -870,6 +870,9 @@ $( '.event-holder .timeline-header .timeline-table .timeheader .hit-area' ).heig
 // Drag the sliders. Bind event to document, not sliders!
 // Note: this function also deals with all of the event filtering by date.
 $( document ).on('mousedown', '.head-block .hit-area', function(e) {
+    // Prevent selection of other elements
+    $(this).addClass("unselectable");
+
     var cAnchor = $( this ).parents( '.anchor' );
     var startWidth = cAnchor.position().left;
     var startX = e.pageX;

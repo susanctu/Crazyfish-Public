@@ -37,6 +37,13 @@ body {
     height: 62px;
 }
 
+.unselectable {
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
 /* Search result header area */
 
 .controls-header {
