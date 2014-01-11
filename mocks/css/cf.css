@@ -494,7 +494,6 @@ body {
     color: #838383;
     border: 1px solid #838383;
     cursor: pointer;
-    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.1);
 }
 
 .results-events .event.selected .event-info {
@@ -699,7 +698,6 @@ body {
     color: #838383;
     border: 1px solid #838383;
     z-index: 50;
-    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.1);
     display: none;
 }
 
