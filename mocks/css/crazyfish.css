@@ -30,11 +30,17 @@
   font-family: "Quicksand";
  }
 
+.above-header-spacer {
+    width: 200px;
+    height: 125px;
+}
+
 .btn-search{
     text-align: center;
     width: 200px;
     margin-left: calc((50% - 100px));
     margin-right: calc((50% - 100px));
+    margin-top: 50px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     border-radius: 5px; /* border radius */
@@ -50,6 +56,10 @@
     font-weight: 400;
     font-size: 23px;
     text-shadow: 0 1px 2px rgba(0,0,0,.25); /* drop shadow */
+}
+
+.btn-search:hover {
+    color: #fff;
 }
 
 .btn-default,
@@ -115,15 +125,10 @@ outline: none;}
     background-clip:border-box; /* back to default */
     webkit-transition: none; /* back to default */
     transition: none;
-    position: absolute;
-    top: 24px;
+    margin-top: -110px;
     width: 255px;
     text-overflow: ellipsis;
     cursor: pointer;
-}
-
-.button-container {
-    padding-top: 100px;
 }
  
 .icon {
