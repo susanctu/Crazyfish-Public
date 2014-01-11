@@ -42,28 +42,28 @@
 </div>
 
 <div class="main-search dropdown">
+    <!--
 	<div style="position:absolute;"> 
-		Show me <font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ </font> 
-		events on <font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _</font>
+		Show me <font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ _</font>
+		events on <font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ _</font>
 		in <font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ _</font>
 	</div>
+	-->
 	<form class="form-inline" role="form" action="search" method="get">
 
-        <div class="form-group" id="DPLoc">
-            <label class="sr-only" for="datePicker">Email address</label>
-            <input type="text" name="date" class="form-control datepicker" data-toggle="dropdown" id="datePicker" placeholder="date" style="position:absolute; top:24px; left:615px; width: 230px;" readonly>
-            <script src="js/bootstrap-datepicker.js"></script>
-        </div>
+        <span class="form-text">Show me </span>
 
-        <div class="form-group">
-            <label class="sr-only" for="categoryPicker"  style="position:absolute; top:24px; left:196px;">Category</label>
+        <span class="form-group">
+            <font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ _</font>
+
+            <label class="sr-only" for="categoryPicker">Category</label>
 			
-            <input id="categoryPicker" class="form-control dropdown-toggle" data-toggle="dropdown" style="position:absolute; top:24px; left:196px; width: 240px;" placeholder="category" readonly>
+            <input id="categoryPicker" class="form-control dropdown-toggle" data-toggle="dropdown" placeholder="category" readonly>
             <div class="dropdown-menu" role="menu" aria-labelledby="dLabel" width="100%">
                 <table align='center'>
                     <colgroup>
                         <col width="400px">
-                        <col width="200px"> <!--FIXME (centering)-->
+                        <col width="200px"> <!-- FIXME (centering) -->
                     </colgroup>
                     <tr>
                         <td id="arts-opt" class="icon arts-icon hover-white dropdown-toggle" data-toggle="dropdown"  onClick="set_selection(this.id)">arts &amp; culture</td>
@@ -86,18 +86,34 @@
                     <button id="all-opt" type="button" class="btn btn-default" data-toggle="dropdown" onClick="set_selection(this.id)">select all events</button>
                 </div>
             </div>
-        </div>
 
-        <div>
-            <font color="#00e3fe" data-toggle="dropdown"  class="dropdown-toggle" style="position:absolute; top:31px; left:900px; width:250px">Palo Alto, CA</font>
+        </span>
+
+        <span class="form-text"> events on </span>
+
+        <span class="form-group" id="DPLoc">
+            <font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ _</font>
+
+            <label class="sr-only" for="datePicker">Email address</label>
+            <input type="text" name="date" class="form-control datepicker" data-toggle="dropdown" id="datePicker" placeholder="date" style="position:absolute; top:24px; left:615px; width: 230px;" readonly>
+            <script src="js/bootstrap-datepicker.js"></script>
+
+        </span>
+
+        <span class="form-text"> in </span>
+
+        <span>
+            <font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ _</font>
+
+            <font color="#00e3fe" data-toggle="dropdown"  class="dropdown-toggle" style="position:absolute; top:31px; left:900px; width:250px">&nbsp;Palo Alto, CA</font>
             <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                 <li>We're only available in Palo Alto, CA for now!
             </ul>
-        </div>
 
-        <br/><br/>
-        <div align="center">
-            <input type="submit" id="go" class="btn btn-search" value="&nbsp;&nbsp;&nbsp;&nbsp;LET'S GO&nbsp;&nbsp;&nbsp;&nbsp;">
+        </span>
+
+        <div class="button-container" align="center">
+            <input type="submit" id="go" class="btn btn-search" value="LET'S GO">
         </div>
 
     </form>

@@ -24,8 +24,9 @@ var CfUtils = {
 			monthNames[11]="Dec";
 			var month = monthNames[dateObj.getMonth()];               
 			var date = dateObj.getDate();
+			var year = dateObj.getFullYear();
 			if(date < 10) 
 				date = "0" + date;
-			return day + ' ' + month + ' ' + date;
+			return day + ' ' + month + ' ' + date + ' ' + year;
 		}
 }
