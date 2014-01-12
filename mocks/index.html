@@ -20,7 +20,6 @@
 <body>
 
 <div class="container">
-
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://code.jquery.com/jquery.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
@@ -43,60 +42,56 @@
 </div>
 
 <div class="main-search dropdown">
-    <!--
-	<div style="position:absolute;"> 
-		Show me <font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ _</font>
-		events on <font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ _</font>
-		in <font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ _</font>
-	</div>
-	-->
 	<form class="form-inline" role="form" action="search" method="get">
 
-        <span class="form-text">Show me </span>
-
-        <span class="form-group">
-            <font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ _</font>
-        </span>
-
-        <span class="form-text"> events on </span>
+        <span class="form-text">Show me events on</span>
 
         <span class="form-group" id="DPLoc">
-            <font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ _</font>
-
+	
+			<font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ _</font>
+	
             <label class="sr-only" for="datePicker"></label>
-            <input type="text" name="date" class="form-control datepicker" data-toggle="dropdown" id="datePicker" placeholder="date" readonly>
+            <input type="text" name="date" class="form-control datepicker" data-toggle="dropdown" id="datePicker" placeholder="date" readonly>  
             <script src="js/bootstrap-datepicker.js"></script>
-
         </span>
 
         <span class="form-text"> in </span>
 
-        <span class="form-group">
+        <span class="form-group" id='lastWord'>
             <font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ _</font>
 
-            <input type="text" class="form-control dropdown-toggle" data-toggle="dropdown" value="&nbsp;Palo Alto, CA" readonly>
+            <input type="text" class="form-control dropdown-toggle" data-toggle="dropdown" value="Palo Alto, CA" readonly>
             <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                 <li>We're only available in Palo Alto, CA for now!
             </ul>
 
         </span>
 
-        <div class="button-container" align="center">
-            <input type="submit" id="go" class="btn btn-search" value="LET'S GO">
-        </div>
-
     </form>
+    
+    </div>
+    <div class="button-container" align="center">
+			<input type="submit" id="go" class="btn btn-search" value="LET'S GO">
+    </div>
 
-</div>
+
 
 <script>
     $(document).ready( function() { //set today's date as the default
 		var now = new Date();
 		$('#datePicker').val(CfUtils.format_as_day_month_date(now));
+		resize_main_search();
 	});
 	
     $('.dropdown-toggle').dropdown();
     $('.datepicker').datepicker({placeInside:'#DPLoc'});
+
+    window.addEventListener('resize', resize_main_search);
+    
+	function resize_main_search() {
+		var lastWordPos = $('#lastWord').position();
+		$('.main-search').css('height',(lastWordPos.top + 75) + 'px'); //75px is arbitrary / looks reasonable
+	}
 
 </script>
     
