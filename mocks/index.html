@@ -42,37 +42,46 @@
 	<form class="form-inline" role="form" action="search" method="get">
 
         <span class="form-text">Show me </span>
-
-        <span class="form-group">
-            <font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ _</font>
-            <input type="text" name="category" class="form-control dropdown-toggle category-picker" data-toggle="dropdown" value="all" readonly>
+		
+		<span class="form-text" id="categoryBlank">
+			<font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ _</font>
+		</span>
+		
+        <span class="form-text">
+			<label id="categoryLabelAndInput" class="dropdown-toggle" data-toggle="dropdown">
+				<input type="text" name="category" class="form-control category-picker" value="all" readonly>
+            </label>
             <ul class="dropdown-menu" role="menu">
                 <li>Event categorization coming soon... Stay tuned!</li>
             </ul>
         </span>
 
-
         <span class="form-text"> events on </span>
-
+		
+		<span class="form-text" id='dateBlank'>
+			<font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ _</font>   
+		</span>
+        
         <span class="form-group" id="DPLoc">
-	
-			<font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ _</font>
-	
-            <label class="sr-only" for="datePicker"></label>
-            <input type="text" name="date" class="form-control datepicker" data-toggle="dropdown" id="datePicker" placeholder="date" readonly>  
+			<label id='dateLabelAndInput'>  
+				<input type="text" name="date" class="form-control datepicker" data-toggle="dropdown" id="datePicker" placeholder="date" readonly>  
+            </label>    
             <script src="js/bootstrap-datepicker.js"></script>
         </span>
 
         <span class="form-text"> in </span>
 
-        <span class="form-group" id='lastWord'>
-            <font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ _</font>
-
-            <input type="text" name="location" class="form-control dropdown-toggle" data-toggle="dropdown" value="Palo Alto, CA" readonly>
-            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+		<span class="form-text" id='locationBlank'> 
+			<font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ _</font>
+		</span>
+		
+        <span class="form-group">
+			<label class="dropdown-toggle" data-toggle="dropdown" id='locationLabelAndInput'>
+				<input  type="text" name="location" class="form-control" value="Palo Alto, CA" readonly>
+            </label>
+            <ul class="dropdown-menu" role="menu">
                 <li>We're only available in Palo Alto, CA for now!
             </ul>
-
         </span>
 
     </form>
@@ -82,12 +91,12 @@
 			<input type="submit" id="go" class="btn btn-search" value="LET'S GO">
     </div>
 
-
-
 <script>
+	
     $(document).ready( function() { //set today's date as the default
 		var now = new Date();
 		$('#datePicker').val(CfUtils.format_as_day_month_date(now));
+		reposition_inputs();
 		resize_main_search();
 	});
 	
@@ -95,10 +104,26 @@
     $('.datepicker').datepicker({placeInside:'#DPLoc'});
 
     window.addEventListener('resize', resize_main_search);
+    window.addEventListener('resize', reposition_inputs);
     
 	function resize_main_search() {
-		var lastWordPos = $('#lastWord').position();
+		var lastWordPos = $('#locationBlank').position();
 		$('.main-search').css('height',(lastWordPos.top + 75) + 'px'); //75px is arbitrary / looks reasonable
+	}
+	
+	function reposition_single_input(line_id, input_id) { // positions input on top of line_id element 
+		var linePos = $(line_id).position();
+		$(input_id).css({position:'absolute', 
+						left:linePos.left,
+						top:linePos.top - 5}); // -5px so that input text sits above line
+	}
+	
+	function reposition_inputs() {
+		// Keep all the inputs on their respective "_ _ _ _"'s 
+		// by moving the label (that input element is inside) to where the "_ _ _" is
+		reposition_single_input('#categoryBlank', '#categoryLabelAndInput');
+		reposition_single_input('#dateBlank', '#dateLabelAndInput');
+		reposition_single_input('#locationBlank', '#locationLabelAndInput');
 	}
 
 </script>
