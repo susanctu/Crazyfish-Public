@@ -3,6 +3,8 @@ CSS and JS includes for the index.html page.
 Those are the scripts that can be loaded *before* the page. Scripts that need
 to be loaded after the html has been declared go in index_body_includes.html.
 *************************************************************************** -->
+{% load staticfiles %}
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Bootstrap -->
 <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">

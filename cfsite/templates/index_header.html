@@ -1,6 +1,8 @@
 <!-- **************************************************************************
 Header for the index.html page.
 *************************************************************************** -->
+{% load staticfiles %}
+
 <div class="container">
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
@@ -11,7 +13,7 @@ Header for the index.html page.
 
     <div class="above-header-spacer"></div>
     <div class="logo-container" align="center">
-            <img src="img/logo-white-transparent.png">
+            <img src="{% static "img/logo-white-transparent.png" %}">
     </div>
     <br/><br/><br/>
 
