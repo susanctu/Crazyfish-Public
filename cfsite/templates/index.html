@@ -1,6 +1,28 @@
 {% load staticfiles %}
+{% extends base.html %}
+
+{% block title %}crazyfish :: all your events in one place{% endblock %}
+
+{% block head_style_and_js %}
+    {% include "index_head_includes.html" %}
+{% endblock %}
+
+{% block header_content %}
+    {% include "index_header.html" %}
+{% endblock %}
+
+{% block body_content %}
+    {% include "index_body_content.html" %}
+{% endblock %}
+
+{% block body_js %}
+    {% include "index_body_includes.html" %}
+{% endblock %}
+
+
+<!-- BELOW: OLD TEMPLATE. SHOULD BE DELETED WHEN THINGS WORK
 <html>
-  <head>
+<head>
     <title>crazyfish: all your events in one place</title>
 
     <link href="{% static "css/crazyfish.css" %}" rel="stylesheet">
@@ -14,28 +36,28 @@
     });
     </script>
 
-  </head>
+</head>
 
-  <body>
+<body>
 
-    <!-- LOGO !-->
-    <div class="section-hero">
-      <img src="{% static "img/logo-white-transparent.png" %}" alt="logo"/>
-    </div>
+<!-- LOGO - ->
+<div class="section-hero">
+    <img src="{% static "img/logo-white-transparent.png" %}" alt="logo"/>
+</div>
 
-    <!-- SEARCH ELEMENT !-->
-    <div class="main-search">
-      <form action="search" method="get">
-	<p>
+<!-- SEARCH ELEMENT - ->
+<div class="main-search">
+    <form action="search" method="get">
+        <p>
 
-	  Show me
+            Show me
 
-	  <select name="category">
-            <option value="all">all</option>
+            <select name="category">
+                <option value="all">all</option>
             {% for category_name in category_list %}
-              <option value="{{ category_name }}">{{ category_name }}</option>
+                <option value="{{ category_name }}">{{ category_name }}</option>
             {% endfor %}
-	  </select>
+            </select>
 
 	  events on
 
@@ -50,12 +72,12 @@
             {% endfor %}
 	  </datalist>
 
-	</p>
+	  </p>
 
-	<input type="submit" value="Let's go">
+	  <input type="submit" value="Let's go">
       </form>
 
-    <!-- ERROR HANDLING IF USER DOES NOT INPUT VALID DATA !-->
+    <!-- ERROR HANDLING IF USER DOES NOT INPUT VALID DATA - ->
     {% if errors %}
       <ul>
 	Please correct the following error{{ errors|pluralize }}:
@@ -65,11 +87,13 @@
 	{% endfor %}
       </ul>
     {% endif %}
-    <!-- END ERROR HANDLING !-->
+    <!-- END ERROR HANDLING - ->
       
     </div>
-    <!-- END SEARCH !-->
+    <!-- END SEARCH - ->
 
   </body>
 
 </html>
+
+-->
