@@ -1,0 +1,112 @@
+/*!
+ * Datepicker for Bootstrap
+ *
+ * Copyright 2012 Stefan Petre
+ * Licensed under the Apache License v2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ */
+.datepicker .dow {
+	font-family: Helvetica;
+	font-size: 12px;
+	color: white;
+    border-bottom: 1px solid white !important;
+}
+
+.datepicker > div {
+  display: none;
+}
+
+.datepicker table {
+  margin:0 auto;
+  border-collapse: separate;
+}
+.datepicker td {
+  text-align: center;
+  font-size:17px;
+  color: white;
+  height: 40px;
+  width: 40px;
+  padding:0 !important;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+   border: solid 1px transparent;
+}
+
+.datepicker th {
+  text-align: center !important;
+  font-weight: normal;
+}
+
+.datepicker td.day:hover {
+  cursor: pointer;
+  border: solid 1px white;
+}
+
+.datepicker td.day.disabled {
+  color: #eeeeee;
+}
+.datepicker td.old,
+.datepicker td.new {
+  color: #999999;
+}
+.datepicker td.active,
+.datepicker td.active:hover {
+ 
+}
+
+.datepicker td.active:hover,
+.datepicker td.active:hover:hover,
+.datepicker td.active:focus,
+.datepicker td.active:hover:focus,
+.datepicker td.active:active,
+.datepicker td.active:hover:active,
+.datepicker td.active.active,
+.datepicker td.active:hover.active,
+.datepicker td.active.disabled,
+.datepicker td.active:hover.disabled,
+.datepicker td.active[disabled],
+.datepicker td.active:hover[disabled] {
+  color: #35b2d2;
+  background-color: white;
+}
+.datepicker td.active:active,
+.datepicker td.active:hover:active,
+.datepicker td.active.active,
+.datepicker td.active:hover.active {
+  background-color: #003399 \9;
+}
+
+.datepicker th.next-month,
+.datepicker th.prev-month,
+.datepicker th.next-year,
+.datepicker th.prev-year {
+  font-size: 15px;
+  cursor:pointer;
+}
+
+.input-append.date .add-on i,
+.input-prepend.date .add-on i {
+  display: block;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+}
+
+.datepicker .yearSwitch {
+	font-family: Helvetica;
+	color: white;
+	font-size: 10px;
+	text-align:center;
+}
+
+.datepicker .monthSwitch {
+	font-family: Helvetica;
+	color: white;
+	text-align:center;
+}
+
+.glyphicon:empty {
+	width: auto;
+}

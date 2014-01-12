@@ -27,12 +27,8 @@
     <script src="js/cf_utils.js"></script>
 
     <div class="above-header-spacer"></div>
-    <div class="section-hero">
-        <div class="container" align="center">
-            <div class="row">
-                <img src="img/logo-white-transparent.png">
-            </div>
-        </div>
+    <div class="logo-container" align="center">
+            <img src="img/logo-white-transparent.png">
     </div>
     <br/><br/><br/>
 
@@ -42,9 +38,21 @@
 </div>
 
 <div class="main-search dropdown">
+
 	<form class="form-inline" role="form" action="search" method="get">
 
-        <span class="form-text">Show me events on</span>
+        <span class="form-text">Show me </span>
+
+        <span class="form-group">
+            <font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ _</font>
+            <input type="text" name="category" class="form-control dropdown-toggle category-picker" data-toggle="dropdown" value="all" readonly>
+            <ul class="dropdown-menu" role="menu">
+                <li>Event categorization coming soon... Stay tuned!</li>
+            </ul>
+        </span>
+
+
+        <span class="form-text"> events on </span>
 
         <span class="form-group" id="DPLoc">
 	
@@ -60,7 +68,7 @@
         <span class="form-group" id='lastWord'>
             <font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ _</font>
 
-            <input type="text" class="form-control dropdown-toggle" data-toggle="dropdown" value="Palo Alto, CA" readonly>
+            <input type="text" name="location" class="form-control dropdown-toggle" data-toggle="dropdown" value="Palo Alto, CA" readonly>
             <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                 <li>We're only available in Palo Alto, CA for now!
             </ul>
