@@ -25,7 +25,8 @@ def home(request):
     location_list = list(set([c.city for c in Location.objects.all()]))
 
     # TODO: parse GET request if it exists.
-
+    if request.method == 'GET':
+        error_list = []
 
     # TODO: update the template so that it can change default value of the
     # different fields. 
@@ -53,7 +54,10 @@ def search(request):
         form = SearchForm()
 
     # If no errors in the form, we can proceed with the search
-    if not form.errors:
+    #if form.errors:
+    #    return HttpResponseRedirect('/')
+
+    if form.is_valid():
         event_list = Event.objects.search_for_events(form.get_date(),
                                                      form.get_category_id(),
                                                      form.get_location_id())
