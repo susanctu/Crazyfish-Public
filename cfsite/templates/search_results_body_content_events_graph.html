@@ -63,7 +63,11 @@ Those fields hold the following information:
                     {{ event.name }}
                 </div>
                 <div class="title-sub">
+                {% if event.description %}
                     {{ event.description }}
+                {% else %}
+                    No description for this event
+                {% endif %}
                 </div>
             </div>
 
@@ -75,16 +79,18 @@ Those fields hold the following information:
                 <div class="from-flag">
                     from
                 </div>
+                {% if event.price>0 %}
                 <div class="currency from">
                     $
                 </div>
                 <div class="price from">
-                {% if event.price>0 %}
                     {{ event.price }}
-                {% else %}
-                    free
-                {% endif %}
                 </div>
+                {% else %}
+                <div class="price-free from">
+                    free
+                </div>
+                {% endif %}
             {% else %}
                 <div class="currency">
                     $
@@ -139,11 +145,19 @@ Those fields hold the following information:
             <!-- Left column has the title and long description, as well as the link to the organizer's website -->
             <div class="event-details-column-left">
                 <div class="event-title-field">
-                    <div class="event-title">{{ event.title }}</div>
+                    <div class="event-title">
+                        {{ event.title }}
+                    </div>
                 </div>
 
                 <div class="event-description-field">
-                    <div class="event-description">{{ event.description }}</div>
+                    <div class="event-description">
+                    {% if event.description %}
+                        {{ event.description }}
+                    {% else %}
+                        No description for this event
+                    {% endif %}
+                    </div>
                 </div>
 
                 <div class="event-external">
