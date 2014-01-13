@@ -61,9 +61,6 @@ def search(request):
         form = SearchForm()
 
     # If no errors in the form, we can proceed with the search
-    #if form.errors:
-    #    return HttpResponseRedirect('/')
-
     if form.is_valid():
         event_list = Event.objects.search_for_events(form.get_date(),
                                                      form.get_category_id(),
@@ -89,7 +86,7 @@ def format_search_get_request(get_request):
     @param get_request: QueryDict representing the user's GET request.
 
     @return: dict representing the formatted GET request.
-    @rtype
+    @rtype: dict
     """
     new_dict = get_request.dict()
 
