@@ -33,9 +33,9 @@ class SearchForm(forms.Form):
             if len(matching_ids)>1:
                 # If there is more than one match: something went wrong
                 raise forms.ValidationError(
-                    "The category could not be matched properly.")
+                    "Ooops. We couldn't understand what type of events you're looking for.")
             elif not matching_ids:
-                raise forms.ValidationError("Please choose a valid category.")
+                raise forms.ValidationError("We don't have data for this type of events.")
 
         return category
 
@@ -50,9 +50,9 @@ class SearchForm(forms.Form):
 
         matching_ids = get_all_matching_location_ids(location)
         if len(matching_ids)>1:
-            raise forms.ValidationError("Something went wrong when trying to find the location")
+            raise forms.ValidationError("Ooops. We couldn't understand which location you're interested in.")
         elif not matching_ids:
-            raise forms.ValidationError("Please choose a location.")
+            raise forms.ValidationError("Crazyfish is not available at the location specified.")
 
         return location
 
@@ -92,8 +92,8 @@ class SearchForm(forms.Form):
         # Cleaning date
         t = self.cleaned_data['date']
         now = datetime.now(pytz.timezone(location.timezone)).date()
-        if (t < now):
-            raise forms.ValidationError("Crazyfish can't help you go back in time.")
+        if t < now:
+            raise forms.ValidationError("It looks like the date you searched for already happened...")
 
         return self.cleaned_data
 
