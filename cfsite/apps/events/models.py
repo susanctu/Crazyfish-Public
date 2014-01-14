@@ -142,8 +142,8 @@ class EventManager(models.Manager):
         return self.filter(name__icontains=keyword)
 
     @staticmethod
-    def search_for_events(date, category_id, location_id):
-        """ EventManager.search_for_events(date, category_id, location_id)
+    def search_for_events(date, location_id):
+        """ EventManager.search_for_events(date, location_id)
         ----------
         Returns the list of all events that occurs on the date specified, 
         for the matching category and location.
@@ -154,18 +154,13 @@ class EventManager(models.Manager):
         Note: for now, it does not return events which last more than one day
         and do not start on the date specified.
 
-        @type category_id: int
-        @param category_id: numerical ID of the category of interest
-
         @type: location_id: int
         @param: location_id: numerical ID of the location of interest
 
         """
-        categories = Category.objects.get(id=category_id)
         locations = Location.objects.get(id=location_id)
-        l1 = categories.event_set.filter(event_start_date=date)
-        l2 = locations.event_set.filter(event_start_date=date)
-        return list(set(l1) & set(l2))
+        l = locations.event_set.filter(event_start_date=date)
+        return l
 
 
 # Event model here...
