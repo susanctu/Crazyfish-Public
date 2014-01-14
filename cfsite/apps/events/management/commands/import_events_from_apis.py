@@ -1,6 +1,7 @@
 import os
 import urllib2 
 import json
+import re
 from datetime import datetime
 from django.core.management.base import NoArgsCommand, CommandError
 from cfsite.apps.events.models import Event, Location, Category
@@ -29,14 +30,13 @@ EBRITE_TO_CF_CATEGORIES = {'conferences':CONF,
                            'social':MEET, 
                            'sports':SPORT, 
                            'tradeshows':CONF, 
-                           'travel':FAM, 
-                           'religion':FAM, 
-                           'fairs':FOOD, 
+                           'travel':FAM, # TODO (susanctu): questionable mapping
+                           'religion':FAM, # questionable
+                           'fairs':FAM, 
                            'food':FOOD, 
                            'music':MUSIC, 
                            'recreation':FAM}
 
-# TODO (susanctu): fix this first thing tomorrow!
 def get_cfsite_categories(ebrite_categories):
     """
     Takes a list of eventbrite categories and 
@@ -78,16 +78,26 @@ def get_and_parse_eventbrite_JSON(): # generator function
             try:
                 ev_dict =  ebrite_events_dict[u'events'][i][u'event'] 
                 name = ev_dict[u'title']
-                categories = get_cfsite_categories(ev_dict[u'category'].rsplit(','))
+                categories = get_cfsite_categories(ev_dict[u'category'].split(','))
                 loc = ev_dict[u'venue'][u'address']
-                start_time = ev_dict[u'start_date']
+                start_datetime = convert_to_datetime(ev_dict[u'start_date'])
                 events_list.append({'name':name, 'categories':categories, 'location':loc, 
-                                    'start_time':start_time})
+                                    'start_datetime':start_datetime})
             except KeyError:
                 continue
 
         yield events_list
          
+def convert_to_datetime(ebrite_date_str):
+    """ 
+    Takes eventbrite start or end date and time
+    Returns a datetime object.
+    """
+    dt_list = re.findall(r'[0-9]+', ebrite_date_str)
+    assert(len(dt_list)==6) # must be six elements, 3 for date, 3 for time
+    dt_int_list = [int(num_str) for num_str in dt_list]
+    return datetime(dt_int_list[0], dt_int_list[1], dt_int_list[2],
+                             dt_int_list[3], dt_int_list[4], dt_int_list[5])
 
 def get_and_parse_meetup_JSON():
     pass
@@ -96,9 +106,9 @@ def save_event_model(event_list):
     """
     Save each of the events (represented as dicts)
     in event_list.
-    Currently the only piece of info from the dict that 
-    is saved is the event name. (other fields are filled in with dummy info)
     """
+    # TODO (susanctu): extend Location class so we can store 
+    # a more specific address
     for event_dict in event_list:
         ev = Event(
             name=event_dict['name'],
@@ -108,13 +118,15 @@ def save_event_model(event_list):
                 zip_code=94301,
                 country='US',
                 timezone='Pacific',
-                )[0],
-            event_start_date=datetime.now().today(),
-            event_start_time=datetime.now().time(),
+                )[0], # discard second element (a bool) of tuple
+            event_start_date=event_dict['start_datetime'].date(),
+            event_start_time=event_dict['start_datetime'].time(),
             is_valid_event=True)
-        cat, unused_is_new_bool = Category.objects.get_or_create(base_name=MEET);
         ev.save()
-        ev.category.add(cat);
+        
+        for category in event_dict['categories']:
+            cat, unused_is_new_bool = Category.objects.get_or_create(base_name=category);
+            ev.category.add(cat);
 
 def import_events(): 
     gen = get_and_parse_eventbrite_JSON()
