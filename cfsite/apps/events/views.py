@@ -11,7 +11,7 @@ from cfsite.apps.events.models import Location, Category, Event
 from cfsite.apps.events.forms import SearchForm
 
 
-# Create your views here.
+# The event related views are here.
 def home(request):
     """ home(request)
     ----------
@@ -122,28 +122,41 @@ def format_sr_data_from_event_list(event_list):
 
     @param event_list: an array of event matching the user's query.
     @type event_list: [Event]
-    """
-    assert(len(event_list) > 0)
 
+    @return: the search_results template contextual data.
+    @rtype: dict
+    """
     # unique tab ID: unless the request was made through AJAX, this can be 0
     uid_val = 0
 
     # format categories for the JS helper
     categories_val = []
 
-    # format event list
-    events_val = []
+    if event_list:
+        # format event list
+        events_val = []
 
-    # format the time header
-    # end time is optional, but start time is not, so we only need to filter
-    # out None values for t_max.
-    t_min = min([event.event_start_time for event in event_list])
-    t_max = max(filter(None, [event.event_end_time for event in event_list]))
-    e_date = event_list[0].event_start_date
-    time_header_val = format_time_header_data_from_min_max(t_min, t_max, e_date)
+        # format the time header
+        t_min = min([event.event_start_time for event in event_list])
+        # end time is optional, but start time is not, so we only need to filter
+        # out None values for t_max.
+        # t_max can also be the maximum event start time of an event that does not
+        # have duration information
+        t_max1 = max([event.event_start_time for event in event_list])
+        t_max2 = max(filter(None, [event.event_end_time for event in event_list]))
+        t_max = max([t_max1, t_max2])
+        # for the date: we're guaranteed to have at least one event in the list here
+        e_date = event_list[0].event_start_date
 
-    # format the lines
-    lines_val = [t["pos"] for t in time_header_val["times_val_and_pos"]]
+        time_header_val = format_time_header_data_from_min_max(t_min, t_max, e_date)
+
+        # format the lines
+        lines_val = [t["pos"] for t in time_header_val["times_val_and_pos"]]
+    else:
+        # TODO
+        events_val = []
+        time_header_val = []
+        lines_val = []
 
     # Create the final data structure
     sr_data = dict(uid=uid_val, categories=categories_val, events=events_val,
@@ -167,21 +180,17 @@ def format_time_header_data_from_min_max(t_min, t_max, e_date):
 
     @param e_date: date of the search
     @type e_date: datetime.date
+
+    @return: the time_header contextual data
+    @return: dict
     """
     # Set the minimum and maximum values of the time header
-    if (t_min.minute == 0) & (t_min.hour > 0):
-        t_min.replace(hour=t_min.hour-1)
-        t_min.replace(minute=0)
-    else:
-        t_min.replate(minute=0)
-
-    if t_max.hour == 23:
-        t_max.replace(minute=59)
-    else:
-        t_max.replace(hour=t_max.hour+1)
-        t_max.replace(minute=0)
+    [t_min, t_max] = calculate_bounds_time_data(t_min, t_max)
     min_time_val = t_min.strftime('%H:%M')
-    max_time_val = t_max.strftime('%H:%M')
+    if t_max == datetime.time(23,59):
+        max_time_val = '24:00'
+    else:
+        max_time_val = t_max.strftime('%H:%M')
 
     # Format the date string
     weekday_num_to_str = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
@@ -194,9 +203,9 @@ def format_time_header_data_from_min_max(t_min, t_max, e_date):
     times_data_pos = format_lines_data(t_min, t_max)
     all_times_val = []
     for td in times_data_pos:
-        all_times_val.append(dict(pos=td,
-                                  val=percentage_to_time_string(td,
-                                                                t_min, t_max)))
+        all_times_val.append(
+            dict(pos=td, val=percentage_to_time_string(td, t_min, t_max))
+        )
 
     # Format the time header data
     th_data = dict(min_time=min_time_val, max_time=max_time_val, date=date_val,
@@ -205,16 +214,96 @@ def format_time_header_data_from_min_max(t_min, t_max, e_date):
     return th_data
 
 
-def format_lines_data(t_min, t_max):
-    """ format_lines_data
+def calculate_bounds_time_data(t_min, t_max):
+    """ calculate_bounds_time_data(t_min, t_max)
     ----------
+    Calculates the bounds of the time header from the minimum event start
+    time and maximum event end time.
 
+    @param t_min: minimum event start time
+    @type t_min: datetime.time
+
+    @param t_max: maximum event end time
+    @type t_max: datetime.time
+
+    @return: the minimum and maximum times that will be used for the time
+             header slider control.
+    @rtype: [datetime.time(), datetime.time()]
     """
-    return []
+    # First: start by broadening the time range to guarantee all events
+    # fit into the window.
+    if (t_min.minute == 0) & (t_min.hour > 0):
+        t_min.replace(hour=t_min.hour-1)
+        t_min.replace(minute=0)
+    else:
+        t_min.replate(minute=0)
+
+    if t_max.hour == 23:
+        t_max.replace(minute=59)
+    else:
+        t_max.replace(hour=t_max.hour+1)
+        t_max.replace(minute=0)
+
+    # Then make sure the width of the window is a multiple of two hours
+    # 23:59 for t_max is a special case, as it should really be 24:00
+    if t_max == datetime.time(23, 59):
+        if divmod(24 - t_min.hour, 2):
+            t_min.replace(hour=t_min.hour-1)
+    else:
+        if divmod(24 - t_min.hour, 2):
+            if t_max.hour == 23:
+                t_max.replace(minute=59)
+            else:
+                t_max.replace(hour=t_max.hour+1)
+
+    return [t_min, t_max]
+
+
+def format_lines_data(t_min, t_max):
+    """ format_lines_data(t_min, tmax)
+    ----------
+    Creates the set of vertical lines which will be used as delimiters on the
+    search_results page.
+
+    @param t_min: minimum time allowed on the time slider control.
+    @type t_min: datetime.time
+
+    @param t_max: maximum time allowed on the time slider control.
+    @type t_max: datetime.time
+
+    @return: array of percentages representing the position of the lines.
+    @rtype: [float]
+    """
+    # We're going to work with minutes
+    if t_max == datetime.time(23,59):
+        t_max = 24*60
+    else:
+        t_max = t_max.hour*60 + t_max.minute
+    t_min = t_min.hour*60 + t_min.minute
+
+    # Determine if we're doing 30min, 1h or 2h intervals
+    # Interval is two hours: do 30min intervals
+    if t_max-t_min <= 120:
+        interval = 30
+    # Interval is 4 hours: do 60 minutes intervals
+    elif t_max-t_min <= 240:
+        interval = 60
+    # Otherwise, do 120 minutes intervals
+    else:
+        interval = 120
+
+    # Create the lines accordingly
+    line_pos = []
+    c_pos = t_min + interval
+    while c_pos < t_max:
+        line_pos.append(round((c_pos-t_min)/(t_max-t_min)*100, 1))
+        c_pos += interval
+
+    return line_pos
 
 
 def time_to_percentage(time_val, t_min, t_max):
-    """ time_to_percentage
+    """ time_to_percentage(time_val, t_min, t_max)
     ----------
 
     """
@@ -222,7 +311,7 @@ def time_to_percentage(time_val, t_min, t_max):
 
 
 def percentage_to_time_string(percent, t_min, t_max):
-    """ percentage_to_time_string
+    """ percentage_to_time_string(percent, t_min, t_max)
     ----------
 
     """
