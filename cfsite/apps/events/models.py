@@ -214,8 +214,8 @@ class Event(models.Model):
     event_location = models.ForeignKey(Location)
     address = models.CharField(max_length=120, blank=True)
     website = models.URLField(blank=True)
-    event_start_date = models.DateField(label='start date')
-    event_end_date = models.DateField(label='end date, optional',
+    event_start_date = models.DateField('start date')
+    event_end_date = models.DateField('end date, optional',
                                       blank=True, null=True)
     event_start_time = models.TimeField('start time')
     event_end_time = models.TimeField('end time', blank=True, null=True)
