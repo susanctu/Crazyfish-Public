@@ -1,19 +1,9 @@
-from django.conf import settings
-"""settings.configure(
-    DATABASES = { 'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'db_name',
-        'USER': 'db_usr',
-        'PASSWORD': 'db_pass',
-        'HOST': '',
-        'PORT': '',
-        }, },
-    TIME_ZONE = 'Europe/Luxembourg'
-)"""
-# from events.models import Event, Location, Category
+import os
 import urllib2 
 import json
-from sets import Set
+from datetime import datetime
+from django.core.management.base import NoArgsCommand, CommandError
+from cfsite.apps.events.models import Event, Location, Category
 
 APP_KEY = "JO34L4OP3GCXGEC2XJ"
 
@@ -46,20 +36,13 @@ EBRITE_TO_CF_CATEGORIES = {'conferences':CONF,
                            'music':MUSIC, 
                            'recreation':FAM}
 
-def get_and_parse_JSON_test():
-    gen = get_and_parse_eventbrite_JSON()
-    try:
-        while True:
-            print(next(gen))
-    except StopIteration:
-        print 'finished' 
-
+# TODO (susanctu): fix this first thing tomorrow!
 def get_cfsite_categories(ebrite_categories):
     """
     Takes a list of eventbrite categories and 
     returns corresponding crazyfish categories.
     """
-    cf_categories = Set()
+    cf_categories = set()
     for cat in ebrite_categories:
         cf_categories.add(EBRITE_TO_CF_CATEGORIES[cat])
     return list(cf_categories)
@@ -68,7 +51,7 @@ def get_and_parse_eventbrite_JSON(): # generator function
     """
     Get next page's worth of JSON and extract 
     start time, name, category, place, (<--mandatory, if missing, disregard event)
-    end time, price, description, website (<--optional, ok if missing)
+    TODO (susanctu): end time, price, description, website (<--optional, ok if missing)
     Return a list of dicts that contain this info, one dict per event
     """
     curr_page = 0
@@ -85,7 +68,8 @@ def get_and_parse_eventbrite_JSON(): # generator function
         ebrite_events_dict = json.load(f)
         if u'error' in ebrite_events_dict:
             break
-        
+       
+        # TODO (susanctu): what if the next two lines result in KeyError? 
         total_items = ebrite_events_dict[u'events'][0][u'summary'][u'total_items']
         num_showing = ebrite_events_dict[u'events'][0][u'summary'][u'num_showing']
         num_shown_so_far += num_showing
@@ -94,7 +78,6 @@ def get_and_parse_eventbrite_JSON(): # generator function
             try:
                 ev_dict =  ebrite_events_dict[u'events'][i][u'event'] 
                 name = ev_dict[u'title']
-                print ev_dict[u'category'].rsplit(",")
                 categories = get_cfsite_categories(ev_dict[u'category'].rsplit(','))
                 loc = ev_dict[u'venue'][u'address']
                 start_time = ev_dict[u'start_date']
@@ -109,21 +92,43 @@ def get_and_parse_eventbrite_JSON(): # generator function
 def get_and_parse_meetup_JSON():
     pass
 
-def save_to_db(self, list_of_event_dicts): 
-    # first call some method to remove duplicates from within the list
-    # then save to db (checking that there are no duplicates in the db first)
+def save_event_model(event_list):
+    """
+    Save each of the events (represented as dicts)
+    in event_list.
+    Currently the only piece of info from the dict that 
+    is saved is the event name. (other fields are filled in with dummy info)
+    """
+    for event_dict in event_list:
+        ev = Event(
+            name=event_dict['name'],
+            event_location=Location.objects.get_or_create(
+                city='Palo Alto',
+                state_province='CA',
+                zip_code=94301,
+                country='US',
+                timezone='Pacific',
+                )[0],
+            event_start_date=datetime.now().today(),
+            event_start_time=datetime.now().time(),
+            is_valid_event=True)
+        cat, unused_is_new_bool = Category.objects.get_or_create(base_name=MEET);
+        ev.save()
+        ev.category.add(cat);
+
+def import_events(): 
     gen = get_and_parse_eventbrite_JSON()
     try:
         while True:
-            print(next(gen))
+            # TODO (susanctu): first call some method to remove duplicates from within the list
+            # then save to db (checking that there are no duplicates in the db first)
+            save_event_model(next(gen))
     except StopIteration:
-        print 'import_from_eventbrite finished'
+        return 'finished' # TODO (susanctu): in future, maybe we want to return some stats  
 
-def import_events(event_generator_fn):
-    """
-    
-    """ 
-    pass
+class Command(NoArgsCommand):
+    help = 'Pulls events from Eventbrite and adds to database'
 
-if __name__=='__main__':
-    get_and_parse_JSON_test()
+    def handle(self, **options):
+        result_msg = import_events()
+        self.stdout.write(result_msg)
