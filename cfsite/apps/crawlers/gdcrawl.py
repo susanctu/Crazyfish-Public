@@ -311,12 +311,12 @@ class GdocsCrawler:
         # Warning: the program will silently ignore unknown category names
         for category_name in event_categories:
             try:
-                categories_list.append(Category.objects.get(base_name=category_name.strip()))
+                categories_list.append(Category.objects.get(base_name__iexact=category_name.strip()))
             except:
                 continue
 
         if not categories_list:
-            categories_list.append(Category.objects.get(base_name=u'other'))
+            categories_list.append(Category.objects.get(base_name__iexact=u'other'))
 
         return categories_list
 
