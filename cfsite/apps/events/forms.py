@@ -74,6 +74,10 @@ class SearchForm(forms.Form):
 
         """
 
+        # First, check that something hasn't gone wrong already.
+        if self.errors:
+            return {}
+
         # Cleaning IDs
         category_name = self.cleaned_data['category']
         location_name = self.cleaned_data['location']
