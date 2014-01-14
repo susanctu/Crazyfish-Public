@@ -10,7 +10,8 @@ from django.core.exceptions import ValidationError
 # Username and password in the code is probably a terrible idea...
 EVENTS_USERNAME = 'crazyfish.events@gmail.com'
 EVENTS_PASSWORD = 'crazyfishPA'
-EVENTS_SPREADSHEET_KEY = '0AokDNrqFh15QdDVJLVZ0V2FyU2FmLWJjaV9rakwyVHc'
+# EVENTS_SPREADSHEET_KEY = '0AokDNrqFh15QdDVJLVZ0V2FyU2FmLWJjaV9rakwyVHc' # Production spreadsheet
+EVENTS_SPREADSHEET_KEY = '0AokDNrqFh15QdGJESTFpdVhLbTNsaVd5NjNNVENFNFE'
 EVENTS_WORKSHEET_NAME = 'Events'
 
 
