@@ -5,6 +5,7 @@ import re
 from datetime import datetime
 from django.core.management.base import NoArgsCommand, CommandError
 from cfsite.apps.events.models import Event, Location, Category
+from cfsite.apps.crawlers.deduplication import SimpleDeduplicator
 
 APP_KEY = "JO34L4OP3GCXGEC2XJ"
 
@@ -36,16 +37,6 @@ EBRITE_TO_CF_CATEGORIES = {'conferences':CONF,
                            'food':FOOD, 
                            'music':MUSIC, 
                            'recreation':FAM}
-
-def get_cfsite_categories(ebrite_categories):
-    """
-    Takes a list of eventbrite categories and 
-    returns corresponding crazyfish categories.
-    """
-    cf_categories = set()
-    for cat in ebrite_categories:
-        cf_categories.add(EBRITE_TO_CF_CATEGORIES[cat])
-    return list(cf_categories)
 
 def get_and_parse_eventbrite_JSON(): # generator function
     """
@@ -87,7 +78,19 @@ def get_and_parse_eventbrite_JSON(): # generator function
                 continue
 
         yield events_list
-         
+
+ 
+def get_cfsite_categories(ebrite_categories):
+    """
+    Takes a list of eventbrite categories and 
+    returns corresponding crazyfish categories.
+    """
+    cf_categories = set()
+    for cat in ebrite_categories:
+        cf_categories.add(EBRITE_TO_CF_CATEGORIES[cat])
+    return list(cf_categories)
+
+    
 def convert_to_datetime(ebrite_date_str):
     """ 
     Takes eventbrite start or end date and time
@@ -99,48 +102,57 @@ def convert_to_datetime(ebrite_date_str):
     return datetime(dt_int_list[0], dt_int_list[1], dt_int_list[2],
                              dt_int_list[3], dt_int_list[4], dt_int_list[5])
 
-def get_and_parse_meetup_JSON():
-    pass
-
-def save_event_model(event_list):
-    """
-    Save each of the events (represented as dicts)
-    in event_list.
-    """
-    # TODO (susanctu): extend Location class so we can store 
-    # a more specific address
-    for event_dict in event_list:
-        ev = Event(
-            name=event_dict['name'],
-            event_location=Location.objects.get_or_create(
-                city='Palo Alto',
-                state_province='CA',
-                zip_code=94301,
-                country='US',
-                timezone='Pacific',
-                )[0], # discard second element (a bool) of tuple
-            event_start_date=event_dict['start_datetime'].date(),
-            event_start_time=event_dict['start_datetime'].time(),
-            is_valid_event=True)
-        ev.save()
-        
-        for category in event_dict['categories']:
-            cat, unused_is_new_bool = Category.objects.get_or_create(base_name=category);
-            ev.category.add(cat);
-
-def import_events(): 
-    gen = get_and_parse_eventbrite_JSON()
-    try:
-        while True:
-            # TODO (susanctu): first call some method to remove duplicates from within the list
-            # then save to db (checking that there are no duplicates in the db first)
-            save_event_model(next(gen))
-    except StopIteration:
-        return 'finished' # TODO (susanctu): in future, maybe we want to return some stats  
 
 class Command(NoArgsCommand):
+    """
+    Note that many of the methods in here could have been written as 
+    functions or static methods, but we pass in self since the 
+    documentation for custom manage.py commands says that we should 
+    use self.stdout.write instead of printing directly to stdout.
+    """
     help = 'Pulls events from Eventbrite and adds to database'
 
     def handle(self, **options):
-        result_msg = import_events()
-        self.stdout.write(result_msg)
+        self.import_events()
+
+    def save_event_model(self, event_list):
+        """
+        Save each of the events (represented as dicts)
+        in event_list.
+        """
+        # TODO (susanctu): extend Location class so we can store 
+        # a more specific address
+        self.stdout.write('Saving events to database:', ending='')
+        for event_dict in event_list:
+            ev = Event(
+                name=event_dict['name'],
+                event_location=Location.objects.get_or_create(
+                    city='Palo Alto',
+                    state_province='CA',
+                    zip_code=94301,
+                    country='US',
+                    timezone='Pacific',
+                    )[0], # discard second element (a bool) of tuple
+                event_start_date=event_dict['start_datetime'].date(),
+                event_start_time=event_dict['start_datetime'].time(),
+                is_valid_event=True)
+
+            # TODO (susanctu): should duplicates be at at the same location? 
+            if (SimpleDeduplicator.is_duplicate(ev)):
+                self.stdout.write('Skipping duplicate...')
+            else:
+                self.stdout.write(event_dict.__str__())
+                ev.save()            
+                for category in event_dict['categories']:
+                    cat, unused_is_new_bool = Category.objects.get_or_create(base_name=category);
+                    ev.category.add(cat);
+
+    def import_events(self): 
+        gen = get_and_parse_eventbrite_JSON()
+        try:
+            while True:
+                self.save_event_model(next(gen))
+        except StopIteration:
+            self.stdout.write('finished') # TODO (susanctu): in future, maybe we want to print some stats  
+
+
