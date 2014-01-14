@@ -2,11 +2,9 @@ __author__ = "Georges Goetz"
 __email__ = "ggoetz@stanford.edu"
 __status__ = "Prototype"
 
-import datetime
+import datetime, math
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
-from django.template import Context
-from django.template.loader import get_template
+from django.http import HttpResponseRedirect
 from cfsite.apps.events.models import Location, Category, Event
 from cfsite.apps.events.forms import SearchForm
 
@@ -63,7 +61,7 @@ def search(request):
 
     # If no errors in the form, we can proceed with the search
     if form.is_valid():
-        # TODO: what happens if not event?
+        # TODO: what happens to template if no event?
         event_list = Event.objects.search_for_events(form.get_date(),
                                                      form.get_location_id())
 
@@ -305,14 +303,71 @@ def format_lines_data(t_min, t_max):
 def time_to_percentage(time_val, t_min, t_max):
     """ time_to_percentage(time_val, t_min, t_max)
     ----------
+    Converts a time value into a percentage of the time bar, as delimited
+    by t_min and t_max.
+    If time_val is outside the range of values allowed, it is rounded to 0
+    or 100.
 
+    @param time_val: value that is going to be converted into a percentage
+    @type time_val: datetime.time()
+
+    @param t_min: minimum time displayed on the time bar
+    @type t_min: datetime.time()
+
+    @param t_max: maximum time displayed on the time bar
+    @type t_max: datetime.time()
+
+    @return: a percentage of the time bar, rounded to 1 digit
+    @rtype: float
     """
-    return 0
+    # Convert everything to minutes, with the caveat that 23:59 for t_max
+    # actually means 24:00.
+    if t_max == datetime.time(23,59):
+        t_max = 24*60
+    else:
+        t_max = t_max.hour*60 + t_max.minute
+    t_min = t_min.hour*60 + t_min.minute
+    time_val = time_val.hour*60 + time_val.minute
+
+    # Then: to percentage
+    percentage = round((time_val-t_min)/(t_max-t_min)*100, 1)
+    if percentage < 0:
+        percentage = 0
+    if percentage > 100:
+        percentage = 100
+
+    return percentage
 
 
 def percentage_to_time_string(percent, t_min, t_max):
     """ percentage_to_time_string(percent, t_min, t_max)
     ----------
+    Converts a percentage representing
 
+    @param percent: the percentage (between 0 and 100) which is going to be
+           converted to a time string.
+    @type percent: float
+
+    @param t_min: minimum time allowed on the time bar.
+    @type t_min: datetime.time
+
+    @param t_max: maximum time allowed on the time bar.
+    @type t_max: datetime.time
+
+    @return: time string corresponding to the percentage.
+    @rtype: str
     """
-    return ''
+    # Going to minutes...
+    if t_max == datetime.time(23,59):
+        t_max = 24*60
+    else:
+        t_max = t_max.hour*60 + t_max.minute
+    t_min = t_min.hour*60 + t_min.minute
+
+    new_time = round(t_min + (t_max-t_min)/(percent/100))
+    new_time = datetime.time(
+        int(math.floor(new_time/60)),
+        int(new_time - math.floor(new_time/60)*60)
+    )
+
+    return new_time.strftime('%H:%M')
