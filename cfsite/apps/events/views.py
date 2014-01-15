@@ -66,11 +66,10 @@ def search(request):
 
     # If no errors in the form, we can proceed with the search
     if form.is_valid():
-        # TODO: what happens to template if no event?
         event_list = Event.objects.search_for_events(form.get_date(),
                                                      form.get_location_id())
 
-        search_results_data = format_sr_data_from_event_list(event_list)
+        search_results_data = format_sr_data_from_event_list(event_list, form.get_date())
         return render(request, 'search_results.html',
                       {'sr_data': search_results_data, })
     # If errors, redirect to the home page.
@@ -117,7 +116,7 @@ def format_search_get_request(get_request):
         return new_dict
 
 
-def format_sr_data_from_event_list(event_list):
+def format_sr_data_from_event_list(event_list, date):
     """ format_sr_data_from_event_list
     ----------
     This function creates the search_results template contextual data from
@@ -125,6 +124,9 @@ def format_sr_data_from_event_list(event_list):
 
     @param event_list: an array of event matching the user's query.
     @type event_list: [Event]
+
+    @param date: date of the search
+    @type date: datetime.date()
 
     @return: the search_results template contextual data.
     @rtype: dict
@@ -154,16 +156,21 @@ def format_sr_data_from_event_list(event_list):
             events_val.append(format_event_data(event, t_min, t_max))
 
         # format the time header
-        e_date = event_list[0].event_start_date
-        time_header_val = format_time_header_data_from_min_max(t_min, t_max, e_date)
+        time_header_val = format_time_header_data_from_min_max(
+            t_min, t_max, date
+        )
 
         # format the lines
         lines_val = [t["pos"] for t in time_header_val["times_val_and_pos"]]
     else:
-        # TODO
         events_val = []
-        time_header_val = []
-        lines_val = []
+        # Arbitrary t_min and t_max
+        t_min = datetime.time(10, 00)
+        t_max = datetime.time(22, 00)
+        time_header_val = format_time_header_data_from_min_max(
+            t_min, t_max, date
+        )
+        lines_val = [t["pos"] for t in time_header_val["times_val_and_pos"]]
 
     # Create the final data structure
     sr_data = dict(uid=uid_val, categories=categories_val, events=events_val,
