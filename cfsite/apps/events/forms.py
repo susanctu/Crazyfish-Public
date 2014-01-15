@@ -9,7 +9,7 @@ from cfsite.apps.events.models import Category, Location
 
 
 class SearchForm(forms.Form):
-    """ SeachForm
+    """ SearchForm
     ----------
     A class which handles user search data.
     It mostly takes care of validating user input. 

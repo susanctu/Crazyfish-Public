@@ -130,9 +130,6 @@ def format_search_get_request(get_request):
             month_str_to_num = dict(Jan=1, Feb=2, Mar=3, Apr=4, May=5, Jun=6,
                                     Jul=7, Aug=8, Sep=9, Oct=10, Nov=11,
                                     Dec=12)
-            test = datetime.date(int(date_str[3]),
-                                 month_str_to_num[date_str[1]],
-                                 int(date_str[2]))
             new_dict[u'date'] = datetime.date(int(date_str[3]),
                                               month_str_to_num[date_str[1]],
                                               int(date_str[2]))
@@ -159,8 +156,11 @@ def format_sr_data_from_event_list(event_list, date):
     uid_val = 0
 
     # format categories for the JS helper
+    category_list = Category.objects.exclude(
+        base_name__icontains='other'
+    )
     categories_val = build_category_data(
-        list(set([c.id for c in Category.objects.all()]))
+        list(set([c.id for c in category_list]))
     )
 
     if event_list:
@@ -182,15 +182,18 @@ def format_sr_data_from_event_list(event_list, date):
                                 [event.event_end_time for event in event_list]))
             t_max = max([t_max1, t_max2])
 
-        # format event list
-        events_val = []
-        for event in event_list:
-            events_val.append(format_event_data(event, t_min, t_max))
+        # Set the minimum and maximum values of the time header
+        [t_min, t_max] = calculate_bounds_time_data(t_min, t_max)
 
         # format the time header
         time_header_val = format_time_header_data_from_min_max(
             t_min, t_max, date
         )
+
+        # format event list
+        events_val = []
+        for event in event_list:
+            events_val.append(format_event_data(event, t_min, t_max))
 
         # format the lines
         lines_val = [t["pos"] for t in time_header_val["times_val_and_pos"]]
@@ -246,7 +249,7 @@ def format_event_data(event, t_min, t_max):
         description_formatted_val = '<p>No description for this event.</p>'
 
     # Then: format start, end time, duration
-    start_time_val = event.event_start_time.strftime('%H:%M')
+    start_time_val = event.event_start_time.strftime('%I:%M %p')
     start_time_val_percent = time_to_percentage(
         event.event_start_time, t_min, t_max
     )
@@ -258,10 +261,16 @@ def format_event_data(event, t_min, t_max):
                 event.event_start_time, datetime.time(23, 59), t_min, t_max
             )
     else:
-        [duration_minutes_val, duration_str_val, duration_percent_val] = \
-            duration_from_start_end_time(
-                event.event_start_time, event.event_end_time, t_min, t_max
-            )
+        if event.event_end_time:
+            [duration_minutes_val, duration_str_val, duration_percent_val] = \
+                duration_from_start_end_time(
+                    event.event_start_time, event.event_end_time, t_min, t_max
+                )
+        else:
+            [duration_minutes_val, duration_str_val, duration_percent_val] = \
+                duration_from_start_end_time(
+                    event.event_start_time, event.event_start_time, t_min, t_max
+                )
 
     # Format the datetime string for display purposes
     weekday_num_to_str = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
@@ -278,14 +287,16 @@ def format_event_data(event, t_min, t_max):
         price_val = '??'
 
     # Format the category data
-    cat_data = build_category_data(event.category)
+    # Don't forget to remove the 'other' category which doesn't have a logo.
+    cat_data = build_category_data(
+        [c.id for c in event.category.exclude(
+            base_name__icontains='other'
+        ).all()]
+    )
 
     # Build the final event template context dictionary
     ecd = dict(
-        # Note: the category IDs are 1-based in the database,
-        # but they should be 0-based for all the rest of the code.
-        category_list=[cat.id-1 for cat in event.category],
-        rating=event.rating,
+        category_list=[cat.id for cat in event.category.all()],
         name=event.name,
         description_short=description_short_val,
         description_formatted=description_formatted_val,
@@ -300,6 +311,8 @@ def format_event_data(event, t_min, t_max):
     )
 
     # Add in optional fields
+    if not event.rating:
+        ecd['rating'] = 2.5
     if event.website:
         ecd['website'] = event.website
     if event.price_details:
@@ -330,8 +343,6 @@ def format_time_header_data_from_min_max(t_min, t_max, e_date):
     @return: the time_header contextual data
     @return: dict
     """
-    # Set the minimum and maximum values of the time header
-    [t_min, t_max] = calculate_bounds_time_data(t_min, t_max)
     min_time_val = t_min.strftime('%H:%M')
     if t_max == datetime.time(23, 59):
         max_time_val = '24:00'
@@ -355,7 +366,7 @@ def format_time_header_data_from_min_max(t_min, t_max, e_date):
 
     # Format the time header data
     th_data = dict(min_time=min_time_val, max_time=max_time_val, date=date_val,
-                   times_val_and_pos=times_data_pos)
+                   times_val_and_pos=all_times_val)
 
     return th_data
 
@@ -379,28 +390,28 @@ def calculate_bounds_time_data(t_min, t_max):
     # First: start by broadening the time range to guarantee all events
     # fit into the window.
     if (t_min.minute == 0) & (t_min.hour > 0):
-        t_min.replace(hour=t_min.hour-1)
-        t_min.replace(minute=0)
+        t_min = t_min.replace(hour=t_min.hour-1)
+        t_min = t_min.replace(minute=0)
     else:
-        t_min.replate(minute=0)
+        t_min = t_min.replace(minute=0)
 
     if t_max.hour == 23:
-        t_max.replace(minute=59)
+        t_max = t_max.replace(minute=59)
     else:
-        t_max.replace(hour=t_max.hour+1)
-        t_max.replace(minute=0)
+        t_max = t_max.replace(hour=t_max.hour+1)
+        t_max = t_max.replace(minute=0)
 
     # Then make sure the width of the window is a multiple of two hours
     # 23:59 for t_max is a special case, as it should really be 24:00
     if t_max == datetime.time(23, 59):
         if divmod(24 - t_min.hour, 2):
-            t_min.replace(hour=t_min.hour-1)
+            t_min = t_min.replace(hour=t_min.hour-1)
     else:
         if divmod(24 - t_min.hour, 2):
             if t_max.hour == 23:
-                t_max.replace(minute=59)
+                t_max = t_max.replace(minute=59)
             else:
-                t_max.replace(hour=t_max.hour+1)
+                t_max = t_max.replace(hour=t_max.hour+1)
 
     return [t_min, t_max]
 
@@ -442,7 +453,7 @@ def format_lines_data(t_min, t_max):
     line_pos = []
     c_pos = t_min + interval
     while c_pos < t_max:
-        line_pos.append(round((c_pos-t_min)/(t_max-t_min)*100, 1))
+        line_pos.append(round(float(c_pos-t_min)/float(t_max-t_min)*100, 1))
         c_pos += interval
 
     return line_pos
@@ -468,7 +479,7 @@ def build_category_data(cat_id_list):
                  name=CAT_VERBOSE_NAME[cid],
                  id=cid)
         )
-    return []
+    return cat_data
 
 
 def time_to_percentage(time_val, t_min, t_max):
@@ -501,7 +512,7 @@ def time_to_percentage(time_val, t_min, t_max):
     time_val = time_val.hour*60 + time_val.minute
 
     # Then: to percentage
-    percentage = round((time_val-t_min)/(t_max-t_min)*100, 1)
+    percentage = round(float(time_val-t_min)/float(t_max-t_min)*100, 1)
     if percentage < 0:
         percentage = 0
     if percentage > 100:
@@ -535,13 +546,20 @@ def percentage_to_time_string(percent, t_min, t_max):
         t_max = t_max.hour*60 + t_max.minute
     t_min = t_min.hour*60 + t_min.minute
 
-    new_time = round(t_min + (t_max-t_min)/(percent/100))
+    new_time = round(t_min + float(t_max-t_min)*(percent/100))
     new_time = datetime.time(
         int(math.floor(new_time/60)),
         int(new_time - math.floor(new_time/60)*60)
     )
 
-    return new_time.strftime('%H:%M')
+    if new_time.minute != 0:
+        time_str = new_time.strftime('%I:%M %p')
+    else:
+        time_str = new_time.strftime('%I %p')
+    if time_str[0] == '0':
+        time_str = time_str[1:]
+
+    return time_str
 
 
 def duration_from_start_end_time(start_time, end_time, t_min, t_max):
@@ -574,11 +592,11 @@ def duration_from_start_end_time(start_time, end_time, t_min, t_max):
     end_time = end_time.hour*60 + end_time.minute
 
     duration_minutes = end_time - start_time
-    duration_percent = round(duration_minutes/(t_max - t_min)*100, 1)
+    duration_percent = round(float(duration_minutes)/float(t_max - t_min)*100, 1)
 
     # Format the duration string
     if duration_minutes/60 >= 1:
-        hours = int(math.floor(duration_minutes/60)),
+        hours = int(math.floor(duration_minutes/60))
         minutes = int(duration_minutes - math.floor(duration_minutes/60)*60)
         if minutes:
             duration_str = "%dh%02d" % (hours, minutes)
