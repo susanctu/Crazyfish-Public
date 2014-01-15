@@ -9,9 +9,24 @@ from cfsite.apps.events.models import Location, Category, Event
 from cfsite.apps.events.forms import SearchForm
 from cfsite.apps.crawlers.parsers import MLStripper, MLTagDetector, MLFormatter
 
-# Category logo and verbose names
-CAT_LOGO_NAME = []
-CAT_VERBOSE_NAME = []
+# Category logo and verbose names. Order of the list matters and should match
+# category IDs. Pretty clunky...
+CAT_LOGO_NAME = ['logo-arts-culture',
+                 'logo-classes-workshops',
+                 'logo-conference',
+                 'logo-family',
+                 'logo-food-wine',
+                 'logo-meetup',
+                 'logo-music',
+                 'logo-sport']
+CAT_VERBOSE_NAME = ['arts &amp; culture',
+                    'classes &amp; workshops',
+                    'conference',
+                    'family',
+                    'food &amp; wine',
+                    'meetup',
+                    'music',
+                    'sport']
 
 
 # The event related views are here.
@@ -242,7 +257,9 @@ def format_event_data(event, t_min, t_max):
 
     # Build the final event template context dictionary
     ecd = dict(
-        category_list=event.category,
+        # Note: the category IDs are 1-based in the database,
+        # but they should be 0-based for all the rest of the code.
+        category_list=[cat.id-1 for cat in event.category],
         rating=event.rating,
         name=event.name,
         description_short=description_short_val,
@@ -408,11 +425,22 @@ def format_lines_data(t_min, t_max):
 def build_category_data(cat_id_list):
     """ build_category_data
     ----------
+    Builds the list of category context data dictionaries from the list
+    of category IDs specified as a parameter.
 
-    @param cat_id_list: a list of categories IDs
+    @param cat_id_list: a list of categories IDs, which is assumed to be
+           1-based (IE raw IDs as from the DB).
     @type cat_id_list: [int]
+
+    @return: a list of category description dictionaries, with fields css
+             and name.
+    @rtype: [dict]
     """
-    # TODO
+    cat_data = []
+    for cid in cat_id_list:
+        cat_data.append(
+            dict(css=CAT_LOGO_NAME[cid-1], name=CAT_VERBOSE_NAME[cid-1])
+        )
     return []
 
 
