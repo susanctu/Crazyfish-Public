@@ -1,5 +1,5 @@
 import os
-import urllib2 
+import urllib2
 import json
 import re
 from datetime import datetime
@@ -18,29 +18,29 @@ SPORT ='sport'
 MUSIC = 'music'
 MEET = 'meetup'
 FOOD = 'food & wine'
-EBRITE_TO_CF_CATEGORIES = {'conferences':CONF, 
-                           'conventions':CONF, 
-                           'entertainment':ART, 
-                           'fundraisers':MEET, 
-                           'meetings':MEET, 
-                           'other':MEET, 
-                           'performances':ART, 
-                           'reunions':MEET, 
-                           'sales':FAM, 
-                           'seminars':CLASS, 
-                           'social':MEET, 
-                           'sports':SPORT, 
-                           'tradeshows':CONF, 
+EBRITE_TO_CF_CATEGORIES = {'conferences':CONF,
+                           'conventions':CONF,
+                           'entertainment':ART,
+                           'fundraisers':MEET,
+                           'meetings':MEET,
+                           'other':MEET,
+                           'performances':ART,
+                           'reunions':MEET,
+                           'sales':FAM,
+                           'seminars':CLASS,
+                           'social':MEET,
+                           'sports':SPORT,
+                           'tradeshows':CONF,
                            'travel':FAM, # TODO (susanctu): questionable mapping
                            'religion':FAM, # questionable
-                           'fairs':FAM, 
-                           'food':FOOD, 
-                           'music':MUSIC, 
+                           'fairs':FAM,
+                           'food':FOOD,
+                           'music':MUSIC,
                            'recreation':FAM}
 
 def get_and_parse_eventbrite_JSON(): # generator function
     """
-    Get next page's worth of JSON and extract 
+    Get next page's worth of JSON and extract
     start time, name, category, place, (<--mandatory, if missing, disregard event)
     TODO (susanctu): end time, price, description, website (<--optional, ok if missing)
     Return a list of dicts that contain this info, one dict per event
@@ -53,36 +53,49 @@ def get_and_parse_eventbrite_JSON(): # generator function
         events_list = []
         curr_page +=1
         req = urllib2.Request(("https://www.eventbrite.com/json/event_search"
-                               "?app_key=%s&city=Palo+Alto&region=CA&max=100&page=%d" 
+                               "?app_key=%s&city=Palo+Alto&region=CA&max=100&page=%d"
                                % (APP_KEY, curr_page)))
         f = opener.open(req)
         ebrite_events_dict = json.load(f)
         if u'error' in ebrite_events_dict:
             break
-       
-        # TODO (susanctu): what if the next two lines result in KeyError? 
+
+        # TODO (susanctu): what if the next two lines result in KeyError?
         total_items = ebrite_events_dict[u'events'][0][u'summary'][u'total_items']
         num_showing = ebrite_events_dict[u'events'][0][u'summary'][u'num_showing']
         num_shown_so_far += num_showing
 
         for i in range(1,num_showing+1):
+            ev_dict =  ebrite_events_dict[u'events'][i][u'event']
             try:
-                ev_dict =  ebrite_events_dict[u'events'][i][u'event'] 
                 name = ev_dict[u'title']
                 categories = get_cfsite_categories(ev_dict[u'category'].split(','))
-                loc = ev_dict[u'venue'][u'address']
+                # loc = ev_dict[u'venue'][u'address']
                 start_datetime = convert_to_datetime(ev_dict[u'start_date'])
-                events_list.append({'name':name, 'categories':categories, 'location':loc, 
-                                    'start_datetime':start_datetime})
-            except KeyError:
+            except KeyError: # if any of 3 mandatory fields are missing, skip event
                 continue
+            cf_ev_dict = {'name':name, 'categories':categories, # 'location':loc,
+                          'start_datetime':start_datetime}
+
+            if u'end_date' in ev_dict:
+                cf_ev_dict['end_datetime'] = convert_to_datetime(ev_dict[u'end_date'])
+            # what if there is 0 tickets, >1 tickets??
+            if (u'tickets' in ev_dict) and (u'ticket' in ev_dict[u'tickets'][0]) \
+                and (u'price' in ev_dict[u'tickets'][0][u'ticket']):
+                cf_ev_dict['price'] = ev_dict[u'tickets'][0][u'ticket'][u'price'];
+            if u'description' in ev_dict:
+                cf_ev_dict['description'] = ev_dict[u'description']
+            if u'url' in ev_dict:
+                cf_ev_dict['url'] = ev_dict[u'url']
+
+            events_list.append(cf_ev_dict)
 
         yield events_list
 
- 
+
 def get_cfsite_categories(ebrite_categories):
     """
-    Takes a list of eventbrite categories and 
+    Takes a list of eventbrite categories and
     returns corresponding crazyfish categories.
     """
     cf_categories = set()
@@ -90,9 +103,9 @@ def get_cfsite_categories(ebrite_categories):
         cf_categories.add(EBRITE_TO_CF_CATEGORIES[cat])
     return list(cf_categories)
 
-    
+
 def convert_to_datetime(ebrite_date_str):
-    """ 
+    """
     Takes eventbrite start or end date and time
     Returns a datetime object.
     """
@@ -105,9 +118,9 @@ def convert_to_datetime(ebrite_date_str):
 
 class Command(NoArgsCommand):
     """
-    Note that many of the methods in here could have been written as 
-    functions or static methods, but we pass in self since the 
-    documentation for custom manage.py commands says that we should 
+    Note that many of the methods in here could have been written as
+    functions or static methods, but we pass in self since the
+    documentation for custom manage.py commands says that we should
     use self.stdout.write instead of printing directly to stdout.
     """
     help = 'Pulls events from Eventbrite and adds to database'
@@ -120,7 +133,7 @@ class Command(NoArgsCommand):
         Save each of the events (represented as dicts)
         in event_list.
         """
-        # TODO (susanctu): extend Location class so we can store 
+        # TODO (susanctu): extend Location class so we can store
         # a more specific address
         self.stdout.write('Saving events to database:', ending='')
         for event_dict in event_list:
@@ -137,22 +150,33 @@ class Command(NoArgsCommand):
                 event_start_time=event_dict['start_datetime'].time(),
                 is_valid_event=True)
 
-            # TODO (susanctu): should duplicates be at at the same location? 
+            if 'end_datetime' in event_dict:
+                ev.event_end_date = event_dict['end_datetime'].date()
+                ev.event_end_time = event_dict['end_datetime'].time()
+            if 'price' in event_dict:
+                no_comma_price = re.sub(u',',u'',event_dict['price'])
+                ev.price = float(no_comma_price)
+            if 'url' in event_dict:
+                ev.url = event_dict['url']
+            if 'description' in event_dict:
+                ev.description = event_dict['description']
+
+            # TODO (susanctu): should duplicates be at at the same location?
             if (SimpleDeduplicator.is_duplicate(ev)):
                 self.stdout.write('Skipping duplicate...')
             else:
                 self.stdout.write(event_dict.__str__())
-                ev.save()            
+                ev.save()
                 for category in event_dict['categories']:
                     cat, unused_is_new_bool = Category.objects.get_or_create(base_name=category);
                     ev.category.add(cat);
 
-    def import_events(self): 
+    def import_events(self):
         gen = get_and_parse_eventbrite_JSON()
         try:
             while True:
                 self.save_event_model(next(gen))
         except StopIteration:
-            self.stdout.write('finished') # TODO (susanctu): in future, maybe we want to print some stats  
+            self.stdout.write('finished') # TODO (susanctu): in future, maybe we want to print some stats
 
 
