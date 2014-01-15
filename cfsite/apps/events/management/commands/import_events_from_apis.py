@@ -2,6 +2,8 @@ import os
 import urllib2
 import json
 import re
+import traceback
+import sys
 from datetime import datetime
 from django.core.management.base import NoArgsCommand, CommandError
 from cfsite.apps.events.models import Event, Location, Category
@@ -38,11 +40,14 @@ EBRITE_TO_CF_CATEGORIES = {'conferences':CONF,
                            'music':MUSIC,
                            'recreation':FAM}
 
+def convert_ebrite_price_to_float(price_str):
+    return float(re.sub(u',',u'', price_str))
+
 def get_and_parse_eventbrite_JSON(): # generator function
     """
     Get next page's worth of JSON and extract
-    start time, name, category, place, (<--mandatory, if missing, disregard event)
-    TODO (susanctu): end time, price, description, website (<--optional, ok if missing)
+    start time, name, category, (<--mandatory, if missing, disregard event)
+    end time, price, address, description, website (<--optional, ok if missing)
     Return a list of dicts that contain this info, one dict per event
     """
     curr_page = 0
@@ -60,38 +65,70 @@ def get_and_parse_eventbrite_JSON(): # generator function
         if u'error' in ebrite_events_dict:
             break
 
-        # TODO (susanctu): what if the next two lines result in KeyError?
-        total_items = ebrite_events_dict[u'events'][0][u'summary'][u'total_items']
-        num_showing = ebrite_events_dict[u'events'][0][u'summary'][u'num_showing']
-        num_shown_so_far += num_showing
+        try:
+            total_items = ebrite_events_dict[u'events'][0][u'summary'][u'total_items']
+            num_showing = ebrite_events_dict[u'events'][0][u'summary'][u'num_showing']
+            num_shown_so_far += num_showing
+        except KeyError:
+            break
 
         for i in range(1,num_showing+1):
             ev_dict =  ebrite_events_dict[u'events'][i][u'event']
             try:
                 name = ev_dict[u'title']
                 categories = get_cfsite_categories(ev_dict[u'category'].split(','))
-                # loc = ev_dict[u'venue'][u'address']
                 start_datetime = convert_to_datetime(ev_dict[u'start_date'])
             except KeyError: # if any of 3 mandatory fields are missing, skip event
                 continue
             cf_ev_dict = {'name':name, 'categories':categories, # 'location':loc,
                           'start_datetime':start_datetime}
-
-            if u'end_date' in ev_dict:
-                cf_ev_dict['end_datetime'] = convert_to_datetime(ev_dict[u'end_date'])
-            # what if there is 0 tickets, >1 tickets??
-            if (u'tickets' in ev_dict) and (u'ticket' in ev_dict[u'tickets'][0]) \
-                and (u'price' in ev_dict[u'tickets'][0][u'ticket']):
-                cf_ev_dict['price'] = ev_dict[u'tickets'][0][u'ticket'][u'price'];
-            if u'description' in ev_dict:
-                cf_ev_dict['description'] = ev_dict[u'description']
-            if u'url' in ev_dict:
-                cf_ev_dict['url'] = ev_dict[u'url']
+            try:
+                """
+                Most KeyErrors should be avoided since we check if the key
+                exists first, but we do make one assumption about what key
+                *should* be there (if we have a list of tickets, the dicts inside
+                should have key 'ticket')
+                """
+                extract_optional_fields(ev_dict, cf_ev_dict)
+            except KeyError:
+                print(sys.stderr, 'Error extracting optional info from event. Skipping.')
+                traceback.print_exc(file=sys.stderr)
+                continue
 
             events_list.append(cf_ev_dict)
 
         yield events_list
 
+def extract_optional_fields(ev_dict, cf_ev_dict):
+    # Going to do a lot of checks for keys, in case of malformed / missing data:
+    if u'end_date' in ev_dict:
+        cf_ev_dict['end_datetime'] = convert_to_datetime(ev_dict[u'end_date'])
+
+    if u'tickets' in ev_dict:
+        priced_tickets = discard_tickets_without_price(ev_dict[u'tickets'])
+        if priced_tickets:
+            min_price = priced_tickets[0][u'ticket'][u'price']
+            for ticket_info in priced_tickets:
+                ticket_price = convert_ebrite_price_to_float(
+                    ticket_info[u'ticket'][u'price'])
+                min_price = ticket_price if ticket_price < min_price else min_price
+            cf_ev_dict['price'] = min_price
+
+    if u'description' in ev_dict:
+        cf_ev_dict['description'] = ev_dict[u'description']
+
+    if u'url' in ev_dict:
+        cf_ev_dict['url'] = ev_dict[u'url']
+
+    if u'venue' in ev_dict and u'address' in ev_dict[u'venue']:
+        cf_ev_dict['address'] = ev_dict[u'venue'][u'address']
+
+def discard_tickets_without_price(tickets):
+    """
+    Takes in a list of tickets {u'ticket': {u'description': u'', ...}}
+    Returns a list of tickets with ones without prices removed
+    """
+    return filter(lambda ticket: u'price' in ticket[u'ticket'], tickets)
 
 def get_cfsite_categories(ebrite_categories):
     """
@@ -122,6 +159,7 @@ class Command(NoArgsCommand):
     functions or static methods, but we pass in self since the
     documentation for custom manage.py commands says that we should
     use self.stdout.write instead of printing directly to stdout.
+    TODO (susanctu): why? possibly rethink this
     """
     help = 'Pulls events from Eventbrite and adds to database'
 
@@ -133,8 +171,6 @@ class Command(NoArgsCommand):
         Save each of the events (represented as dicts)
         in event_list.
         """
-        # TODO (susanctu): extend Location class so we can store
-        # a more specific address
         self.stdout.write('Saving events to database:', ending='')
         for event_dict in event_list:
             ev = Event(
@@ -154,18 +190,18 @@ class Command(NoArgsCommand):
                 ev.event_end_date = event_dict['end_datetime'].date()
                 ev.event_end_time = event_dict['end_datetime'].time()
             if 'price' in event_dict:
-                no_comma_price = re.sub(u',',u'',event_dict['price'])
-                ev.price = float(no_comma_price)
+                ev.price = event_dict['price']
             if 'url' in event_dict:
-                ev.url = event_dict['url']
+                ev.website = event_dict['url']
             if 'description' in event_dict:
                 ev.description = event_dict['description']
+            if 'address' in event_dict:
+                ev.address = event_dict['address']
 
-            # TODO (susanctu): should duplicates be at at the same location?
             if (SimpleDeduplicator.is_duplicate(ev)):
                 self.stdout.write('Skipping duplicate...')
             else:
-                self.stdout.write(event_dict.__str__())
+                self.stdout.write(event_dict['name'])
                 ev.save()
                 for category in event_dict['categories']:
                     cat, unused_is_new_bool = Category.objects.get_or_create(base_name=category);
