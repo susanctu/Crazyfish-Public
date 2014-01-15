@@ -3,16 +3,19 @@ The events graph is rendered here for the search_results.html landing page.
     @param {event_list} A list of all the events that happen on the
            user-specified date. Each event in the list should have the
            following fields: category_list, rating, price, event_start_time,
-           duration, category_logo, name, description, price_details,
-           duration_percent, duration_minutes, event_start_time_percent,
-           website, event_datetime_verbose
+           duration, category_logo, name, description_short,
+           description_formatted, price_details, duration_percent,
+           duration_minutes, event_start_time_percent, website,
+           event_datetime_verbose
 
 Those fields hold the following information:
     {category_list} A list of category IDs the event belongs to.
     {rating} The rating of the event. Used for "magic" sorting.
     {name} String describing the event.
-    {description} String giving the details about the event. Optional.
-    {event_start_time} Start time of the event.
+    {description_short} String giving details about the event. Optional.
+    {description_formatted} String giving details about the event, formatted
+                            to display nicely in the event details. Optional.
+    {event_start_time} Start time of the event. String.
     {event_start_time_percent} Start time of the event, as a percentage of
                                the time bar, represented by a floating point
                                number WITHOUT a percent sign.
@@ -30,8 +33,9 @@ Those fields hold the following information:
     {category_logo} should itself have two fields, one with a string of all
                     the valid class names for the logo, which will tell the CSS
                     which logo to render. The other will correspond to the
-                    verbose name of the category. The first field is "class"
+                    verbose name of the category. The first field is "css"
                     and the second one is "name".
+    {address} address of the event. Optional.
 *************************************************************************** -->
 <div class="events-graph">
 {% for event in event_list %}
@@ -51,7 +55,7 @@ Those fields hold the following information:
         <div class="event-info">
             <!-- Category information and logo -->
             <div class="category-columns">
-                <div class="category-logo {{ event.category_logo.class }}"></div>
+                <div class="category-logo {{ event.category_logo.css }}"></div>
             </div>
             <div class="category-name">
                 {{ event.category_logo.name }}
@@ -63,8 +67,8 @@ Those fields hold the following information:
                     {{ event.name }}
                 </div>
                 <div class="title-sub">
-                {% if event.description %}
-                    {{ event.description }}
+                {% if event.description_short %}
+                    {{ event.description_short }}
                 {% else %}
                     No description for this event
                 {% endif %}
@@ -152,8 +156,8 @@ Those fields hold the following information:
 
                 <div class="event-description-field">
                     <div class="event-description">
-                    {% if event.description %}
-                        {{ event.description }}
+                    {% if event.description_formatted %}
+                        {{ event.description_formatted }}
                     {% else %}
                         No description for this event
                     {% endif %}
