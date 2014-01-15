@@ -11,15 +11,17 @@ from cfsite.apps.crawlers.parsers import MLStripper, MLTagDetector, MLFormatter
 
 # Category logo and verbose names. Order of the list matters and should match
 # category IDs. Pretty clunky...
-CAT_LOGO_NAME = ['logo-arts-culture',
-                 'logo-classes-workshops',
-                 'logo-conference',
-                 'logo-family',
-                 'logo-food-wine',
-                 'logo-meetup',
-                 'logo-music',
-                 'logo-sport']
-CAT_VERBOSE_NAME = ['arts &amp; culture',
+CAT_LOGO_NAME = ['',
+                 'arts-culture',
+                 'classes-workshops',
+                 'conference',
+                 'family',
+                 'food-wine',
+                 'meetup',
+                 'music',
+                 'sport']
+CAT_VERBOSE_NAME = ['',
+                    'arts &amp; culture',
                     'classes &amp; workshops',
                     'conference',
                     'family',
@@ -157,13 +159,21 @@ def format_sr_data_from_event_list(event_list, date):
     if event_list:
         # for everything: need to know what limits of the time filter are
         t_min = min([event.event_start_time for event in event_list])
+
         # end time is optional, but start time is not, so we only need to filter
         # out None values for t_max.
         # t_max can also be the maximum event start time of an event that does not
         # have duration information
-        t_max1 = max([event.event_start_time for event in event_list])
-        t_max2 = max(filter(None, [event.event_end_time for event in event_list]))
-        t_max = max([t_max1, t_max2])
+        # finally, if an event ends a day after, t_max should be midnight
+        if len(filter(None,
+                      list(set([event.event_end_date
+                                for event in event_list])))) > 1:
+            t_max = datetime.time(23, 59)
+        else:
+            t_max1 = max([event.event_start_time for event in event_list])
+            t_max2 = max(filter(None,
+                                [event.event_end_time for event in event_list]))
+            t_max = max([t_max1, t_max2])
 
         # format event list
         events_val = []
@@ -233,10 +243,18 @@ def format_event_data(event, t_min, t_max):
     start_time_val_percent = time_to_percentage(
         event.event_start_time, t_min, t_max
     )
-    [duration_minutes_val, duration_str_val, duration_percent_val] = \
-        duration_from_start_end_time(
-            event.event_start_time, event.event_end_time, t_min, t_max
-        )
+    # Check if the end date is after the start date
+    # If so, display event end at midnight
+    if event.event_end_date and (event.event_end_date > event.event_start_date):
+        [duration_minutes_val, duration_str_val, duration_percent_val] = \
+            duration_from_start_end_time(
+                event.event_start_time, datetime.time(23, 59), t_min, t_max
+            )
+    else:
+        [duration_minutes_val, duration_str_val, duration_percent_val] = \
+            duration_from_start_end_time(
+                event.event_start_time, event.event_end_time, t_min, t_max
+            )
 
     # Format the datetime string for display purposes
     weekday_num_to_str = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
@@ -274,6 +292,7 @@ def format_event_data(event, t_min, t_max):
         category_logo=cat_data,
     )
 
+    # Add in optional fields
     if event.website:
         ecd['website'] = event.website
     if event.price_details:
@@ -428,8 +447,7 @@ def build_category_data(cat_id_list):
     Builds the list of category context data dictionaries from the list
     of category IDs specified as a parameter.
 
-    @param cat_id_list: a list of categories IDs, which is assumed to be
-           1-based (IE raw IDs as from the DB).
+    @param cat_id_list: a list of categories IDs
     @type cat_id_list: [int]
 
     @return: a list of category description dictionaries, with fields css
@@ -439,7 +457,9 @@ def build_category_data(cat_id_list):
     cat_data = []
     for cid in cat_id_list:
         cat_data.append(
-            dict(css=CAT_LOGO_NAME[cid-1], name=CAT_VERBOSE_NAME[cid-1])
+            dict(css=CAT_LOGO_NAME[cid],
+                 name=CAT_VERBOSE_NAME[cid],
+                 id=cid)
         )
     return []
 
@@ -521,16 +541,44 @@ def duration_from_start_end_time(start_time, end_time, t_min, t_max):
     """ duration_from_start_end_time
     ----------
 
-    @param start_time
+    @param start_time: start time of the event
+    @type start_time: datetime.time
 
-    @param end_time
+    @param end_time: end time of the event
+    @type end_time: datetime.time
 
-    @param t_min
+    @param t_min: minimum time displayed on the time control
+    @type t_min: datetime.time
 
-    @param t_max
+    @param t_max: maximum time displayed on the time control
+    @type t_max: datetime.time
 
-    @return: an array with duration in minutes,
-    @rtype:
+    @return: an array with duration in minutes, the duration string and the
+             duration in percent, in this order.
+    @rtype: [int, str, float]
     """
+    # Convert to minutes
+    if t_max == datetime.time(23, 59):
+        t_max = 24*60
+    else:
+        t_max = t_max.hour*60 + t_max.minute
+    t_min = t_min.hour*60 + t_min.minute
+    start_time = start_time.hour*60 + start_time.minute
+    end_time = end_time.hour*60 + end_time.minute
+
+    duration_minutes = end_time - start_time
+    duration_percent = round(duration_minutes/(t_max - t_min)*100, 1)
+
+    # Format the duration string
+    if duration_minutes/60 >= 1:
+        hours = int(math.floor(duration_minutes/60)),
+        minutes = int(duration_minutes - math.floor(duration_minutes/60)*60)
+        if minutes:
+            duration_str = "%dh%02d" % hours, minutes
+        else:
+            duration_str = "%dh" % hours
+    else:
+        duration_str = "02dm" % duration_minutes
+
     # TODO
-    return ['','','']
+    return [duration_minutes, duration_str, duration_percent]
