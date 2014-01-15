@@ -7,6 +7,7 @@ from datetime import datetime
 from django import forms
 from cfsite.apps.events.models import Category, Location
 
+
 class SearchForm(forms.Form):
     """ SeachForm
     ----------
@@ -39,7 +40,6 @@ class SearchForm(forms.Form):
 
         return category
 
-    
     def clean_location(self):
         """ SearchForm.clean_location()
         ----------
@@ -55,7 +55,6 @@ class SearchForm(forms.Form):
             raise forms.ValidationError("Crazyfish is not available at the location specified.")
 
         return location
-
 
     def clean(self):
         """ SearchForm.clean()
@@ -80,10 +79,15 @@ class SearchForm(forms.Form):
 
         # Cleaning IDs
         category_name = self.cleaned_data['category']
+        if category_name != u'all':
+            matching_category_ids = get_all_matching_category_ids(
+                category_name
+            )
+            self.cleaned_data['category_id'] = matching_category_ids[0]
+        else:
+            self.cleaned_data['category_id'] = 0
+
         location_name = self.cleaned_data['location']
-        matching_category_ids = get_all_matching_category_ids(
-            category_name)
-        self.cleaned_data['category_id'] = matching_category_ids[0]
         matching_location_ids = get_all_matching_location_ids(
             location_name)
         self.cleaned_data['location_id'] = matching_location_ids[0]
@@ -97,7 +101,6 @@ class SearchForm(forms.Form):
 
         return self.cleaned_data
 
-
     def get_location_id(self):
         """ SearchForm.get_location_id()
         ----------
@@ -107,7 +110,6 @@ class SearchForm(forms.Form):
         """
         return self.cleaned_data['location_id']
 
-
     def get_category_id(self):
         """ SearchForm.get_gategory_id()
         ----------
@@ -116,7 +118,6 @@ class SearchForm(forms.Form):
         
         """
         return self.cleaned_data['category_id']
-
 
     def get_date(self):
         """ SearchForm.get_date()
@@ -134,10 +135,10 @@ def get_all_matching_category_ids(category_name):
     a category name.
     
     """
-    cat_names_and_ids = [(c.id, c.base_name) 
-                         for c in Category.objects.all()]
-    return [cid for (cid, bn) in cat_names_and_ids 
-            if bn == category_name]
+    category_list = Category.objects.filter(
+        base_name__icontains=category_name
+    ).all()
+    return [category.id for category in category_list]
 
 
 def get_all_matching_location_ids(location_name):
@@ -147,7 +148,7 @@ def get_all_matching_location_ids(location_name):
     a location name
     
     """
-    locations_and_ids = [(l.id, l.city) for l in Location.objects.all()]
-    return [lid for (lid, city) in locations_and_ids
-            if city == location_name]
-
+    locations_list = Location.objects.filter(
+        city__icontains=location_name
+    ).all()
+    return [location.id for location in locations_list]

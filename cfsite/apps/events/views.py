@@ -78,13 +78,17 @@ def search(request):
     if request.method == 'GET':
         formatted_request = format_search_get_request(request.GET)
         form = SearchForm(formatted_request)
+        is_good_form = form.is_valid()
     else:
         form = SearchForm()
+        is_good_form = form.is_valid()
 
     # If no errors in the form, we can proceed with the search
-    if form.is_valid():
-        event_list = Event.objects.search_for_events(form.get_date(),
-                                                     form.get_location_id())
+    if is_good_form:
+        event_list = Event.objects.search_for_events(
+            form.get_date(),
+            form.get_location_id()
+        )
 
         search_results_data = format_sr_data_from_event_list(event_list, form.get_date())
         return render(request, 'search_results.html',
@@ -126,9 +130,12 @@ def format_search_get_request(get_request):
             month_str_to_num = dict(Jan=1, Feb=2, Mar=3, Apr=4, May=5, Jun=6,
                                     Jul=7, Aug=8, Sep=9, Oct=10, Nov=11,
                                     Dec=12)
-            new_dict[u'date'] = date_str[2] + '/' \
-                                    + str(month_str_to_num[date_str[1]]) \
-                                    + '/' + date_str[3]
+            test = datetime.date(int(date_str[3]),
+                                 month_str_to_num[date_str[1]],
+                                 int(date_str[2]))
+            new_dict[u'date'] = datetime.date(int(date_str[3]),
+                                              month_str_to_num[date_str[1]],
+                                              int(date_str[2]))
     finally:
         return new_dict
 
@@ -574,11 +581,10 @@ def duration_from_start_end_time(start_time, end_time, t_min, t_max):
         hours = int(math.floor(duration_minutes/60)),
         minutes = int(duration_minutes - math.floor(duration_minutes/60)*60)
         if minutes:
-            duration_str = "%dh%02d" % hours, minutes
+            duration_str = "%dh%02d" % (hours, minutes)
         else:
             duration_str = "%dh" % hours
     else:
-        duration_str = "02dm" % duration_minutes
+        duration_str = "%02dm" % duration_minutes
 
-    # TODO
     return [duration_minutes, duration_str, duration_percent]
