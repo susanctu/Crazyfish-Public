@@ -7,6 +7,11 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from cfsite.apps.events.models import Location, Category, Event
 from cfsite.apps.events.forms import SearchForm
+from cfsite.apps.crawlers.parsers import MLStripper, MLTagDetector, MLFormatter
+
+# Category logo and verbose names
+CAT_LOGO_NAME = []
+CAT_VERBOSE_NAME = []
 
 
 # The event related views are here.
@@ -128,13 +133,12 @@ def format_sr_data_from_event_list(event_list):
     uid_val = 0
 
     # format categories for the JS helper
-    categories_val = []
+    categories_val = build_category_data(
+        list(set([c.id for c in Category.objects.all()]))
+    )
 
     if event_list:
-        # format event list
-        events_val = []
-
-        # format the time header
+        # for everything: need to know what limits of the time filter are
         t_min = min([event.event_start_time for event in event_list])
         # end time is optional, but start time is not, so we only need to filter
         # out None values for t_max.
@@ -143,9 +147,14 @@ def format_sr_data_from_event_list(event_list):
         t_max1 = max([event.event_start_time for event in event_list])
         t_max2 = max(filter(None, [event.event_end_time for event in event_list]))
         t_max = max([t_max1, t_max2])
-        # for the date: we're guaranteed to have at least one event in the list here
-        e_date = event_list[0].event_start_date
 
+        # format event list
+        events_val = []
+        for event in event_list:
+            events_val.append(format_event_data(event, t_min, t_max))
+
+        # format the time header
+        e_date = event_list[0].event_start_date
         time_header_val = format_time_header_data_from_min_max(t_min, t_max, e_date)
 
         # format the lines
@@ -162,8 +171,97 @@ def format_sr_data_from_event_list(event_list):
     return sr_data
 
 
+def format_event_data(event, t_min, t_max):
+    """ format_event_data(event, t_min, t_max)
+    ----------
+    Formats the data from a single event into a dictionary that can be used
+    to render correctly event data.
+
+    @param event: an Event object.
+    @type event: Event
+
+    @param t_min: minimum time that is displayed on the time slider control
+    @type t_min: datetime.time
+
+    @param t_max: maximum time displayed on the time slider control
+    @type t_max: datetime.time
+    """
+    # First thing to do: format the description string.
+    # Strip the HTML tags from the description for the preview
+    if event.description:
+        s = MLStripper()
+        s.feed(event.description)
+        description_short_val = s.get_data()[0:100]
+        # Detect if description is HTML or not
+        t_detect = MLTagDetector()
+        t_detect.feed(event.description)
+        if not t_detect.get_tags():
+            # If not tags, it is not and need to be formatted.
+            formatter = MLFormatter()
+            formatter.feed(event.description)
+            description_formatted_val = formatter.get_formatted_string()
+        else:
+            description_formatted_val = event.description
+    else:
+        description_short_val = 'No description for this event.'
+        description_formatted_val = '<p>No description for this event.</p>'
+
+    # Then: format start, end time, duration
+    start_time_val = event.event_start_time.strftime('%H:%M')
+    start_time_val_percent = time_to_percentage(
+        event.event_start_time, t_min, t_max
+    )
+    [duration_minutes_val, duration_str_val, duration_percent_val] = \
+        duration_from_start_end_time(
+            event.event_start_time, event.event_end_time, t_min, t_max
+        )
+
+    # Format the datetime string for display purposes
+    weekday_num_to_str = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    month_num_to_str = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
+                        'Sep', 'Oct', 'Nov', 'Dec']
+    datetime_val = weekday_num_to_str[event.event_start_date.weekday()] + ' ' \
+                   + month_num_to_str[event.event_start_date.month] + ' ' \
+                   + str(event.event_start_date.day) + ', ' + start_time_val
+
+    # Check if price is here or not
+    if event.price:
+        price_val = event.price
+    else:
+        price_val = '??'
+
+    # Format the category data
+    cat_data = build_category_data(event.category)
+
+    # Build the final event template context dictionary
+    ecd = dict(
+        category_list=event.category,
+        rating=event.rating,
+        name=event.name,
+        description_short=description_short_val,
+        description_formatted=description_formatted_val,
+        event_start_time=start_time_val,
+        event_start_time_percent=start_time_val_percent,
+        duration=duration_str_val,
+        duration_minutes=duration_minutes_val,
+        duration_percent=duration_percent_val,
+        price=price_val,
+        event_date_time_verbose=datetime_val,
+        category_logo=cat_data,
+    )
+
+    if event.website:
+        ecd['website'] = event.website
+    if event.price_details:
+        ecd['price_details'] = event.price_details
+    if event.address:
+        ecd['address'] = event.address
+
+    return ecd
+
+
 def format_time_header_data_from_min_max(t_min, t_max, e_date):
-    """ format_time_header_data_from_min_max
+    """ format_time_header_data_from_min_max(t_min, t_max, e_date)
     ----------
     This function formats the time header data from the smallest start time
     and largest end time existing in an event list.
@@ -185,7 +283,7 @@ def format_time_header_data_from_min_max(t_min, t_max, e_date):
     # Set the minimum and maximum values of the time header
     [t_min, t_max] = calculate_bounds_time_data(t_min, t_max)
     min_time_val = t_min.strftime('%H:%M')
-    if t_max == datetime.time(23,59):
+    if t_max == datetime.time(23, 59):
         max_time_val = '24:00'
     else:
         max_time_val = t_max.strftime('%H:%M')
@@ -273,7 +371,7 @@ def format_lines_data(t_min, t_max):
     @rtype: [float]
     """
     # We're going to work with minutes
-    if t_max == datetime.time(23,59):
+    if t_max == datetime.time(23, 59):
         t_max = 24*60
     else:
         t_max = t_max.hour*60 + t_max.minute
@@ -300,6 +398,17 @@ def format_lines_data(t_min, t_max):
     return line_pos
 
 
+def build_category_data(cat_id_list):
+    """ build_category_data
+    ----------
+
+    @param cat_id_list: a list of categories IDs
+    @type cat_id_list: [int]
+    """
+    # TODO
+    return []
+
+
 def time_to_percentage(time_val, t_min, t_max):
     """ time_to_percentage(time_val, t_min, t_max)
     ----------
@@ -322,7 +431,7 @@ def time_to_percentage(time_val, t_min, t_max):
     """
     # Convert everything to minutes, with the caveat that 23:59 for t_max
     # actually means 24:00.
-    if t_max == datetime.time(23,59):
+    if t_max == datetime.time(23, 59):
         t_max = 24*60
     else:
         t_max = t_max.hour*60 + t_max.minute
@@ -358,7 +467,7 @@ def percentage_to_time_string(percent, t_min, t_max):
     @rtype: str
     """
     # Going to minutes...
-    if t_max == datetime.time(23,59):
+    if t_max == datetime.time(23, 59):
         t_max = 24*60
     else:
         t_max = t_max.hour*60 + t_max.minute
@@ -371,3 +480,22 @@ def percentage_to_time_string(percent, t_min, t_max):
     )
 
     return new_time.strftime('%H:%M')
+
+
+def duration_from_start_end_time(start_time, end_time, t_min, t_max):
+    """ duration_from_start_end_time
+    ----------
+
+    @param start_time
+
+    @param end_time
+
+    @param t_min
+
+    @param t_max
+
+    @return: an array with duration in minutes,
+    @rtype:
+    """
+    # TODO
+    return ['','','']
