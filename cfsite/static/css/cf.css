@@ -93,6 +93,14 @@ body {
     left: -4px
 }
 
+.filter-logos-wrapper .tooltip-comment p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
 .sort-controls.control-set {
     width: 240px;
     float: left;
@@ -735,6 +743,10 @@ body {
 
 .results-events .event .event-details .event-description-field {
     padding-bottom: 10px;
+}
+
+.results-events .event .event-details .event-description-field ul {
+    margin-left: 20px;
 }
 
 .results-events .event .event-details .event-misc-info {
