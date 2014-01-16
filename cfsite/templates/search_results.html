@@ -19,7 +19,7 @@ template prototype.
 
 {% block body_content %}
     <div id="results-area">
-    {% include "search_results_body_content.html" with tab_id=sr_data.uid time_header_data=sr_data.time_header lines_data=sr_data.lines categories_data=sr_data.categories events_data=sr_data.events %}
+    {% include "search_results_body_content.html" with location_requested=sr_data.location_requested tab_id=sr_data.uid time_header_data=sr_data.time_header lines_data=sr_data.lines categories_data=sr_data.categories events_data=sr_data.events %}
     </div>
 {% endblock %}
 

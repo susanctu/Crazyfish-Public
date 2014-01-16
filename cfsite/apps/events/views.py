@@ -90,7 +90,9 @@ def search(request):
             form.get_location_id()
         )
 
-        search_results_data = format_sr_data_from_event_list(event_list, form.get_date())
+        search_results_data = format_sr_data_from_event_list(event_list,
+                                                             form.get_date(),
+                                                             form.get_location())
         return render(request, 'search_results.html',
                       {'sr_data': search_results_data, })
     # If errors, redirect to the home page.
@@ -137,7 +139,7 @@ def format_search_get_request(get_request):
         return new_dict
 
 
-def format_sr_data_from_event_list(event_list, date):
+def format_sr_data_from_event_list(event_list, date, location):
     """ format_sr_data_from_event_list
     ----------
     This function creates the search_results template contextual data from
@@ -208,8 +210,13 @@ def format_sr_data_from_event_list(event_list, date):
         lines_val = [t["pos"] for t in time_header_val["times_val_and_pos"]]
 
     # Create the final data structure
-    sr_data = dict(uid=uid_val, categories=categories_val, events=events_val,
-                   time_header=time_header_val, lines=lines_val)
+    sr_data = dict(location_requested=location,
+                   uid=uid_val,
+                   categories=categories_val,
+                   events=events_val,
+                   time_header=time_header_val,
+                   lines=lines_val
+                   )
     return sr_data
 
 

@@ -101,6 +101,15 @@ class SearchForm(forms.Form):
 
         return self.cleaned_data
 
+    def get_location(self):
+        """ SearchForm.get_location()
+        ---------
+        Returns the name of the location macthing the user's request from
+        the cleaned form data.
+
+        """
+        return self.cleaned_data['location']
+
     def get_location_id(self):
         """ SearchForm.get_location_id()
         ----------

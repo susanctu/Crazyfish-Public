@@ -1,6 +1,8 @@
 <!-- **************************************************************************
 Main html template for the search_results.html page. This template renders
 the event table and header for a single results tab.
+    @param {location_requested} String representing the location requested by
+           the user, so that future
     @param {tab_id} Unique ID for the results tab.
     @param {time_header_data} A structure with the following fields: min_time
            corresponding to the minimum time allowed for display, max_time
@@ -16,6 +18,8 @@ the event table and header for a single results tab.
     @param {categories_data} See search_results_body_content_controls.html
            prototype for details.
 *************************************************************************** -->
+<!-- Need a location helper for future Ajax GET requests -->
+<div class="location-helper" style="display: none;">{{ location_requested }}</div>
 <!-- Render only the data for one date, which goes in a single tab -->
 <div id="{{ tab_id }}" class="results results-events selected">
     <div class="results-content">
