@@ -7,8 +7,9 @@ from datetime import datetime
 from django import forms
 from cfsite.apps.events.models import Category, Location
 
+
 class SearchForm(forms.Form):
-    """ SeachForm
+    """ SearchForm
     ----------
     A class which handles user search data.
     It mostly takes care of validating user input. 
@@ -33,13 +34,12 @@ class SearchForm(forms.Form):
             if len(matching_ids)>1:
                 # If there is more than one match: something went wrong
                 raise forms.ValidationError(
-                    "The category could not be matched properly.")
+                    "Ooops. We couldn't understand what type of events you're looking for.")
             elif not matching_ids:
-                raise forms.ValidationError("Please choose a valid category.")
+                raise forms.ValidationError("We don't have data for this type of events.")
 
         return category
 
-    
     def clean_location(self):
         """ SearchForm.clean_location()
         ----------
@@ -50,12 +50,11 @@ class SearchForm(forms.Form):
 
         matching_ids = get_all_matching_location_ids(location)
         if len(matching_ids)>1:
-            raise forms.ValidationError("Something went wrong when trying to find the location")
+            raise forms.ValidationError("Ooops. We couldn't understand which location you're interested in.")
         elif not matching_ids:
-            raise forms.ValidationError("Please choose a location.")
+            raise forms.ValidationError("Crazyfish is not available at the location specified.")
 
         return location
-
 
     def clean(self):
         """ SearchForm.clean()
@@ -80,10 +79,15 @@ class SearchForm(forms.Form):
 
         # Cleaning IDs
         category_name = self.cleaned_data['category']
+        if category_name != u'all':
+            matching_category_ids = get_all_matching_category_ids(
+                category_name
+            )
+            self.cleaned_data['category_id'] = matching_category_ids[0]
+        else:
+            self.cleaned_data['category_id'] = 0
+
         location_name = self.cleaned_data['location']
-        matching_category_ids = get_all_matching_category_ids(
-            category_name)
-        self.cleaned_data['category_id'] = matching_category_ids[0]
         matching_location_ids = get_all_matching_location_ids(
             location_name)
         self.cleaned_data['location_id'] = matching_location_ids[0]
@@ -92,11 +96,10 @@ class SearchForm(forms.Form):
         # Cleaning date
         t = self.cleaned_data['date']
         now = datetime.now(pytz.timezone(location.timezone)).date()
-        if (t < now):
-            raise forms.ValidationError("Crazyfish can't help you go back in time.")
+        if t < now:
+            raise forms.ValidationError("It looks like the date you searched for already happened...")
 
         return self.cleaned_data
-
 
     def get_location_id(self):
         """ SearchForm.get_location_id()
@@ -107,7 +110,6 @@ class SearchForm(forms.Form):
         """
         return self.cleaned_data['location_id']
 
-
     def get_category_id(self):
         """ SearchForm.get_gategory_id()
         ----------
@@ -116,7 +118,6 @@ class SearchForm(forms.Form):
         
         """
         return self.cleaned_data['category_id']
-
 
     def get_date(self):
         """ SearchForm.get_date()
@@ -134,10 +135,10 @@ def get_all_matching_category_ids(category_name):
     a category name.
     
     """
-    cat_names_and_ids = [(c.id, c.base_name) 
-                         for c in Category.objects.all()]
-    return [cid for (cid, bn) in cat_names_and_ids 
-            if bn == category_name]
+    category_list = Category.objects.filter(
+        base_name__icontains=category_name
+    ).all()
+    return [category.id for category in category_list]
 
 
 def get_all_matching_location_ids(location_name):
@@ -147,7 +148,7 @@ def get_all_matching_location_ids(location_name):
     a location name
     
     """
-    locations_and_ids = [(l.id, l.city) for l in Location.objects.all()]
-    return [lid for (lid, city) in locations_and_ids
-            if city == location_name]
-
+    locations_list = Location.objects.filter(
+        city__icontains=location_name
+    ).all()
+    return [location.id for location in locations_list]

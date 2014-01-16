@@ -1,7 +1,7 @@
 <!-- **************************************************************************
 Filter and sort controls for the search_results.html template.
     @param {category_list} a list of categories, each of them having the
-           following fields: logo_css_name, tooltip and id.
+           following fields: css, name and id.
 
 The logo_css_name corresponds to the css class name used to determine which
 logo should be displayed for the category filter.
@@ -25,10 +25,12 @@ that events are properly filtered when the user clicks on the controls.
                 <li>
                     <div class="filter-logos">
                         <div class="spacer"></div>
-                        <div class="filter-logo {{ category.logo_css_name }} selected"></div>
+                        <div class="filter-logo filter-logo-{{ category.css }} selected"></div>
                     </div>
-                    <span class="tooltip-comment">{{ category.tooltip }}</span>
-                    <span class="category-id" style="display: none;">{{ category.id }}</span>
+                    <span class="tooltip-comment"><p>{{ category.name|safe }}</p></span>
+                    <span class="category-id" style="display: none;">
+                        {{ category.id }}
+                    </span>
                 </li>
             {% endfor %}
             </ul>

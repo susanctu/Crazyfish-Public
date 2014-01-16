@@ -54,8 +54,14 @@ class SimpleDeduplicator:
 
         """
         # Parameters we'll filter against
-        e_date = event.event_start_date
+        e_date = datetime.datetime.strptime(event.event_start_date,
+                                            '%Y-%m-%d').date()
+        # Two formats are possible for time: %H:%M or %H:%M:%S
         e_time = event.event_start_time
+        if len(e_time.split(':')) == 2:
+            e_time += ':00'
+        e_time = datetime.datetime.strptime(e_time,
+                                            '%H:%M:%S').time()
         e_date_and_time = datetime.datetime.combine(e_date, e_time)
         e_name = event.name.strip()
         time_window = datetime.timedelta(minutes=30)
@@ -63,16 +69,16 @@ class SimpleDeduplicator:
         # Simple de duplication starts by looking for events that happen on
         # the same date, inside a +/- 30 minutes time window, with at least
         # one matching category.
+        # Also looks for events whose name matches the name of the new event
         matching_events_queryset = Event.objects.filter(
+            name__icontains=e_name
+        ).filter(
             event_start_date__exact=e_date
         ).exclude(
-            event_start_time__lt=e_date_and_time - time_window
+            event_start_time__lt=(e_date_and_time - time_window).time()
         ).exclude(
-            event_start_time__gt=e_date_and_time + time_window
+            event_start_time__gt=(e_date_and_time + time_window).time()
         )
-
-        # Then, look for events whose name matches the name of the new event
-        matching_events_queryset.filter(name__icontains=e_name)
 
         # If name, start date match and start time is very close,
         # then we very probably have a duplicate here. Flag it as such!

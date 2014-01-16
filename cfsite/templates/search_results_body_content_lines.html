@@ -15,9 +15,9 @@ Lines for the event timing graph in the search_results.html template.
     <!-- Those lines are here to help the user materialize when events start and
     end, so there should be an appropriate number so that the page is easy to
     read and still looks elegant -->
-    <div class="line" style="left: 0%"></div>
+    <div class="line" style="left: 0%;"></div>
 {% for line_pos in lines_data_pos %}
-    <div class="line" style="left: {{ line_pos }}%"></div>
+    <div class="line" style="left: {{ line_pos }}%;"></div>
 {% endfor %}
-    <div class="line" style="left: calc(100% - 1px)"></div>
+    <div class="line" style="left: calc(100% - 1px);"></div>
 </div>

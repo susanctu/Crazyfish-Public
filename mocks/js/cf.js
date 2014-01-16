@@ -7,25 +7,11 @@ HIT_AREA_DEFAULT_HEIGHT = 40;
 
 // Warning: order of these categories matter, and should match the order
 // in which they are displayed on the website.
-var categories = ['arts-culture',
-                  'classes-workshops',
-                  'conference',
-                  'family',
-                  'food-wine',
-                  'meetup',
-                  'music',
-                  'sport'];
+var categories = getCategoriesObject();
 
 // Same as previous one, but verbose and used for display purposes.
 // Again, order matters.
-var categoriesVerbose = ['arts &amp; culture',
-                         'classes &amp; workshops',
-                         'conference',
-                         'family',
-                         'food &amp; wine',
-                         'meetup',
-                         'music',
-                         'sport'];
+var categoriesVerbose = getVerboseCategoriesObject();
 
 // Likewise, order of these sorting flags matter, and should match the order
 // in which the sorting logos are displayed.
@@ -45,6 +31,23 @@ var sortType = ['magic',
 function numToPercentString( numValue ) {
     return numValue.toString() + '%';
 };
+
+/**
+ * Counts the number of properties inside an Object.
+ * @param {object} a JS object
+ * @return {int} number of properties of the object
+ *
+ */
+function countProperties(obj) {
+    var count = 0;
+
+    for(var prop in obj) {
+        if(obj.hasOwnProperty(prop))
+            ++count;
+    }
+
+    return count;
+}
 
 
 /**************************** Read HTML data     *****************************/
@@ -132,13 +135,7 @@ function getSelectedCategoriesNumId () {
     var selectedNumIds = [];
     var selectedLogos = $( '#' + getSelectedTabHtmlId() + ' .filter-logos-wrapper .filter-logos .selected' );
     for ( var i = 0; i < selectedLogos.length; i++ ) {
-        var cLogoClass = selectedLogos.eq(i).attr('class');
-        for ( var k = 0; k < categories.length; k++ ) {
-            if ( cLogoClass.indexOf( categories[k] ) != -1 ) {
-                selectedNumIds.push(k);
-                break;
-            }
-        }
+        selectedNumIds.push(parseInt(selectedLogos.eq(i).parents('li').find('.category-id').html()))
     }
     return selectedNumIds;
 };
@@ -155,7 +152,7 @@ function getSelectedCategoriesString () {
     if ( selectedCategoriesId.length == 0 ) {
         return 'No events';
     }
-    if ( selectedCategoriesId.length == categoriesVerbose.length ) {
+    if ( selectedCategoriesId.length == countProperties(categoriesVerbose) ) {
         sumStr = 'All events';
     }
     else {
@@ -257,7 +254,10 @@ function getEventArray () {
         // and only needs to be retrieved from there.
         var cEventHelper = allEvents.eq(i).children( '.event-helper' );
 
-        var cCategory = cEventHelper.children( '.event-helper-category' ).html();
+        var cCategory = cEventHelper.children( '.event-helper-category' ).html().trim();
+        if ( cCategory.length > 0  &&  cCategory[0] === "[" ) {
+            cCategory = cCategory.substring(1)
+        }
         cCategory = cCategory.split(',');
         cCategory = cCategory.map( function (x) {
             return parseInt(x);
@@ -278,8 +278,63 @@ function getEventArray () {
     return eventArr;
 };
 
+/**
+ * Returns a javascript object which links category id and category name.
+ * @return {object} a javascript object such that the name of category with
+ *         ID i is var[i]
+ *
+ */
+function getCategoriesObject () {
+    var allCategories = getActiveTabCategoryControls();
+    var catObject = {};
+
+    for ( var i=0; i < allCategories.length; i++ ) {
+        var cCategory = allCategories[i];
+        var cId = parseInt(allCategories.eq(i).find('.category-id').html());
+        var cNameArr = allCategories.eq(i).find('.filter-logo').attr('class').split(' ');
+        for ( var j=0; j < cNameArr.length; j++ ) {
+            if ( cNameArr[j].indexOf('filter-logo-') > -1 ) {
+                var cName = cNameArr[j].substring('filter-logo-'.length);
+                break;
+            }
+        }
+        catObject[cId] = cName;
+    }
+
+    return catObject
+};
+
+/**
+ * Returns a javascript object which links category id and category verbose
+ * description.
+ * @return {object} a javascript object such that the verbose description of
+ *         category with ID i is var[i]
+ *
+ */
+function getVerboseCategoriesObject () {
+    var allCategories = getActiveTabCategoryControls();
+    var catVerboseObject = {};
+
+    for ( var i=0; i < allCategories.length; i++ ) {
+        var cCategory = allCategories[i];
+        var cId = parseInt(allCategories.eq(i).find('.category-id').html());
+        var cName = allCategories.eq(i).find('.tooltip-comment p').html();
+        catVerboseObject[cId] = cName;
+    }
+
+    return catVerboseObject
+};
 
 /**************************** Get/Set properties *****************************/
+
+/**
+ * Get the list of all category controls in the active tab event graph.
+ * @return {[jQuery]} An array of event objects.
+ *
+ */
+function getActiveTabCategoryControls () {
+    return $( '#' + getSelectedTabHtmlId() + ' .controls-header .filter-logos-wrapper li ' );
+}
 
 /**
  * Returns the height of the event table in pixels

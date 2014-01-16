@@ -10,7 +10,8 @@ from django.core.exceptions import ValidationError
 # Username and password in the code is probably a terrible idea...
 EVENTS_USERNAME = 'crazyfish.events@gmail.com'
 EVENTS_PASSWORD = 'crazyfishPA'
-EVENTS_SPREADSHEET_KEY = '0AokDNrqFh15QdDVJLVZ0V2FyU2FmLWJjaV9rakwyVHc'
+# EVENTS_SPREADSHEET_KEY = '0AokDNrqFh15QdDVJLVZ0V2FyU2FmLWJjaV9rakwyVHc' # Production spreadsheet
+EVENTS_SPREADSHEET_KEY = '0AokDNrqFh15QdGJESTFpdVhLbTNsaVd5NjNNVENFNFE'
 EVENTS_WORKSHEET_NAME = 'Events'
 
 
@@ -310,12 +311,12 @@ class GdocsCrawler:
         # Warning: the program will silently ignore unknown category names
         for category_name in event_categories:
             try:
-                categories_list.append(Category.objects.get(base_name=category_name.strip()))
+                categories_list.append(Category.objects.get(base_name__iexact=category_name.strip()))
             except:
                 continue
 
         if not categories_list:
-            categories_list.append(Category.objects.get(base_name=u'other'))
+            categories_list.append(Category.objects.get(base_name__iexact=u'other'))
 
         return categories_list
 
