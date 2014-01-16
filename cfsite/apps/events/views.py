@@ -19,7 +19,7 @@ CAT_LOGO_NAME = ['',
                  'food-wine',
                  'meetup',
                  'music',
-                 'sport']
+                 'sports']
 CAT_VERBOSE_NAME = ['',
                     'arts &amp; culture',
                     'classes &amp; workshops',
@@ -28,7 +28,7 @@ CAT_VERBOSE_NAME = ['',
                     'food &amp; wine',
                     'meetup',
                     'music',
-                    'sport']
+                    'sports']
 
 
 # The event related views are here.
@@ -281,8 +281,8 @@ def format_event_data(event, t_min, t_max):
                    + str(event.event_start_date.day) + ', ' + start_time_val
 
     # Check if price is here or not
-    if event.price:
-        price_val = event.price
+    if event.price is not None:
+        price_val = int(round(event.price))
     else:
         price_val = '??'
 
@@ -293,6 +293,10 @@ def format_event_data(event, t_min, t_max):
             base_name__icontains='other'
         ).all()]
     )
+    # If there is more than one category we arbitrarily select the first
+    # category for display
+    if cat_data:
+        cat_data = cat_data[0]
 
     # Build the final event template context dictionary
     ecd = dict(
