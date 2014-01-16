@@ -318,7 +318,7 @@ function getVerboseCategoriesObject () {
     for ( var i=0; i < allCategories.length; i++ ) {
         var cCategory = allCategories[i];
         var cId = parseInt(allCategories.eq(i).find('.category-id').html());
-        var cName = allCategories.eq(i).find('.tooltip-comment p').html();
+        var cName = allCategories.eq(i).find('.tooltip-comment').html();
         catVerboseObject[cId] = cName;
     }
 
