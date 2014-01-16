@@ -257,7 +257,10 @@ function getEventArray () {
         // and only needs to be retrieved from there.
         var cEventHelper = allEvents.eq(i).children( '.event-helper' );
 
-        var cCategory = cEventHelper.children( '.event-helper-category' ).html();
+        var cCategory = cEventHelper.children( '.event-helper-category' ).html().trim();
+        if ( cCategory.length > 0 ) && ( cCategory[0] === "[" ) {
+            cCategory = cCategory.substring(1)
+        }
         cCategory = cCategory.split(',');
         cCategory = cCategory.map( function (x) {
             return parseInt(x);
