@@ -557,9 +557,9 @@ def percentage_to_time_string(percent, t_min, t_max):
     )
 
     if new_time.minute != 0:
-        time_str = new_time.strftime('%I:%M %p')
+        time_str = new_time.strftime('%I:%M%p').lower()
     else:
-        time_str = new_time.strftime('%I %p')
+        time_str = new_time.strftime('%I%p').lower()
     if time_str[0] == '0':
         time_str = time_str[1:]
 

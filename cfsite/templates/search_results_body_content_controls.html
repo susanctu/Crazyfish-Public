@@ -27,9 +27,9 @@ that events are properly filtered when the user clicks on the controls.
                         <div class="spacer"></div>
                         <div class="filter-logo filter-logo-{{ category.css }} selected"></div>
                     </div>
-                    <span class="tooltip-comment">{{ category.name|safe }}</span>
+                    <span class="tooltip-comment"><p>{{ category.name|safe }}</p></span>
                     <span class="category-id" style="display: none;">
-                        <p>{{ category.id }}</p>
+                        {{ category.id }}
                     </span>
                 </li>
             {% endfor %}
