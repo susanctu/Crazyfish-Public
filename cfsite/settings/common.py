@@ -75,6 +75,7 @@ USE_L10N = True
 
 
 ########## STATIC FILE CONFIGURATION
+STATIC_ROOT = 'staticfiles'
 
 # URL prefix for static files.
 STATIC_URL = '/static/'
