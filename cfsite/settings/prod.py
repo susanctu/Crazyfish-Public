@@ -5,7 +5,7 @@ from common import *
 import dj_database_url
 
 ########## DEBUG CONFIGURATION
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 ########## END DEBUG CONFIGURATION
 
