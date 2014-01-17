@@ -8,36 +8,35 @@ from django.http import HttpResponseRedirect
 from cfsite.apps.events.models import Location, Category, Event
 from cfsite.apps.events.forms import SearchForm
 from cfsite.apps.crawlers.parsers import MLStripper, MLTagDetector, MLFormatter
+from cfsite.apps.events.management.commands.import_events_from_apis import CF_CATEGORIES
 
 # Category logo and verbose names. Order of the list matters and should match
 # category IDs. Pretty clunky...
-CAT_LOGO_NAME = ['',
-                 'arts-culture',
-                 'classes-workshops',
-                 'conference',
-                 'family',
-                 'food-wine',
-                 'meetup',
-                 'music',
-                 'sports']
-CAT_VERBOSE_NAME = ['',
-                    'arts &amp; culture',
-                    'classes &amp; workshops',
-                    'conference',
-                    'family',
-                    'food &amp; wine',
-                    'meetup',
-                    'music',
-                    'sports']
+DB_TO_CSS_NAME = dict(zip(CF_CATEGORIES, ['arts-culture',
+                                     'classes-workshops',
+                                     'conference',
+                                     'family',
+                                     'food-wine',
+                                     'meetup',
+                                     'music',
+                                     'sports']))
+DB_TO_VERBOSE_NAME = dict(zip(CF_CATEGORIES, ['arts &amp; culture',
+                                         'classes &amp; workshops',
+                                         'conference',
+                                         'family',
+                                         'food &amp; wine',
+                                         'meetup',
+                                         'music',
+                                         'sports']))
 
 
 # The event related views are here.
 def home(request):
     """ home(request)
     ----------
-    View for the home page. 
+    View for the home page.
     Populates the category list with a list of pre approved categories,
-    checks if the home page is being rendered because the user entered 
+    checks if the home page is being rendered because the user entered
     invalid data, and if so, resets the user's valid data.
 
     """
@@ -67,18 +66,20 @@ def home(request):
 def search(request):
     """ search(request)
     ----------
-    Logic for handling a search request. 
+    Logic for handling a search request.
     It will validate the data entered by the user, and if the data is valid,
     look up the list of events which matches the user's request, and render
     them in html.
-    If the data is invalid, it will refuse to proceed with the request, and 
+    If the data is invalid, it will refuse to proceed with the request, and
     redirect the user to the home search page.
 
     """
     if request.method == 'GET':
         formatted_request = format_search_get_request(request.GET)
+        print formatted_request
         form = SearchForm(formatted_request)
         is_good_form = form.is_valid()
+        print form.errors
     else:
         form = SearchForm()
         is_good_form = form.is_valid()
@@ -158,12 +159,7 @@ def format_sr_data_from_event_list(event_list, date, location):
     uid_val = 0
 
     # format categories for the JS helper
-    category_list = Category.objects.exclude(
-        base_name__icontains='other'
-    )
-    categories_val = build_category_data(
-        list(set([c.id for c in category_list]))
-    )
+    categories_val = build_category_data()
 
     if event_list:
         # for everything: need to know what limits of the time filter are
@@ -295,11 +291,7 @@ def format_event_data(event, t_min, t_max):
 
     # Format the category data
     # Don't forget to remove the 'other' category which doesn't have a logo.
-    cat_data = build_category_data(
-        [c.id for c in event.category.exclude(
-            base_name__icontains='other'
-        ).all()]
-    )
+    cat_data = build_category_data()
     # If there is more than one category we arbitrarily select the first
     # category for display
     if cat_data:
@@ -470,11 +462,11 @@ def format_lines_data(t_min, t_max):
     return line_pos
 
 
-def build_category_data(cat_id_list):
+def build_category_data():
     """ build_category_data
     ----------
-    Builds the list of category context data dictionaries from the list
-    of category IDs specified as a parameter.
+    Builds the list of category context data dictionaries. Category id's
+    will be consistent with those in the database.
 
     @param cat_id_list: a list of categories IDs
     @type cat_id_list: [int]
@@ -484,12 +476,13 @@ def build_category_data(cat_id_list):
     @rtype: [dict]
     """
     cat_data = []
-    for cid in cat_id_list:
-        cat_data.append(
-            dict(css=CAT_LOGO_NAME[cid],
-                 name=CAT_VERBOSE_NAME[cid],
-                 id=cid)
-        )
+    for cat in Category.objects.all().order_by('id'):
+        if cat.base_name in CF_CATEGORIES: # ignore unofficial category names
+            cat_data.append(
+                dict(css=DB_TO_CSS_NAME[cat.base_name],
+                     name=DB_TO_VERBOSE_NAME[cat.base_name],
+                    id=cat.id)
+            )
     return cat_data
 
 

@@ -20,6 +20,9 @@ SPORT ='sport'
 MUSIC = 'music'
 MEET = 'meetup'
 FOOD = 'food & wine'
+
+CF_CATEGORIES = [ART, CLASS, CONF, FAM, MUSIC, MEET, FOOD, SPORT]
+
 EBRITE_TO_CF_CATEGORIES = {'conferences':CONF,
                            'conventions':CONF,
                            'entertainment':ART,
@@ -178,9 +181,9 @@ class Command(NoArgsCommand):
                 event_location=Location.objects.get_or_create(
                     city='Palo Alto',
                     state_province='CA',
-                    zip_code=94301,
-                    country='US',
-                    timezone='Pacific',
+                    zip_code=94303,
+                    country='United States',
+                    timezone='US/Pacific',
                     )[0], # discard second element (a bool) of tuple
                 event_start_date=event_dict['start_datetime'].date(),
                 event_start_time=event_dict['start_datetime'].time(),

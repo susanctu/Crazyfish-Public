@@ -13,20 +13,20 @@ from django.core.exceptions import ValidationError
 class Location(models.Model):
     """ Location model class
     ----------
-    This class represents a pre-approved location where events take place. 
+    This class represents a pre-approved location where events take place.
     The location has the following fields:
         - city: name of the city where events take place
         - zip_code: zip code of the city
         - state_province: optional, used only if the event takes place in the US
         or in Canada
-        - country: country where the events take place. 
+        - country: country where the events take place.
         - timezone: local time zone.
-    
-    Each event in the database is tied to one instance of the Location class, 
+
+    Each event in the database is tied to one instance of the Location class,
     so that events are always linked to a known location. Events which cannot be
-    linked to a known event will need to be approved manually, after the 
+    linked to a known event will need to be approved manually, after the
     location where the event takes place has been verified.
-    
+
     """
     city = models.CharField(max_length=60)
     state_province = models.CharField('state or province', max_length=30,
@@ -39,19 +39,19 @@ class Location(models.Model):
         """ Location.__unicode__
         ----------
         Defines the formatting of a Location
-        
+
         """
         return self.city
 
     def clean(self):
         """ Location.clean()
         ----------
-        Custom validation method, which runs the following checks: 
-            - if state_or_province is stripped if country is not "U.S.A." 
+        Custom validation method, which runs the following checks:
+            - if state_or_province is stripped if country is not "U.S.A."
             or "Canada"
-            - if country is USA or Canada, then the state_or_province should be 
+            - if country is USA or Canada, then the state_or_province should be
             provided
-        
+
         """
         # Don't allow events happening in CA or USA to not have a state or
         # province
@@ -71,13 +71,13 @@ class Location(models.Model):
 class Category(models.Model):
     """ Category model class
     ----------
-    This class represents a category for an event. Categories can consist only 
+    This class represents a category for an event. Categories can consist only
     of     a generic classification (stored in base_name), or they can also have
     a sub-category type of classification (stored in sub_category).
-    
-    In general, an event will be tied only to one category, but it is possible 
+
+    In general, an event will be tied only to one category, but it is possible
     to associate an event with multiple categories as well.
-    
+
     """
     base_name = models.CharField(max_length=100)
     sub_category = models.CharField(max_length=100, blank=True)
@@ -86,7 +86,7 @@ class Category(models.Model):
         """ Category.__unicode__
         ----------
         Formatting of a category
-        
+
         """
         if self.sub_category:
             return u'%s/%s' % (self.base_name, self.sub_category)
@@ -96,12 +96,10 @@ class Category(models.Model):
     def clean(self):
         """ Category.clean()
         ----------
-        Category validation method. Doesn't do much, other than make sure that
-        the subcategory is called "all" if the user didn't specify it.
-        
+        Category validation method.
+
         """
-        if not self.sub_category:
-            self.sub_category = "generic"
+        pass
 
     class Meta:
         ordering = ['base_name']
@@ -113,13 +111,13 @@ class EventManager(models.Manager):
     """ EventManager model class
     ----------
     This manager provides search functionality in the events database.
-    
+
     """
 
     def name_count(self, keyword):
         """ EventManager.name_count(keyword)
         -----------
-        Returns the number of events that have a name which matches a 
+        Returns the number of events that have a name which matches a
         keyword.
 
         @type keyword: str
@@ -145,10 +143,10 @@ class EventManager(models.Manager):
     def search_for_events(date, location_id):
         """ EventManager.search_for_events(date, location_id)
         ----------
-        Returns the list of all events that occurs on the date specified, 
+        Returns the list of all events that occurs on the date specified,
         for the matching category and location.
         It assumes that the date requested is specified in the event local
-        time zone, and therefore does not make any checks as far as time 
+        time zone, and therefore does not make any checks as far as time
         zones go before filtering by date.
 
         Note: for now, it does not return events which last more than one day
@@ -167,45 +165,45 @@ class EventManager(models.Manager):
 class Event(models.Model):
     """ Event model class
     ----------
-    This class represents a model for the event stored in the database. 
+    This class represents a model for the event stored in the database.
     An event is primarily comprised of a name and category. It also needs a
     time and place for it to be valid.
     Optionally, an event can have a price, a description and a website.
-    
-    An event can have a different start date from its end date (required for 
+
+    An event can have a different start date from its end date (required for
     events which last more than a day, for example a music festival).
-    When the end date and time of and event are not specified, the event is 
-    assumed to end an hour after its initial start time. If an event end date 
-    is specified but not the event end hour, the event will be assumed to end 
+    When the end date and time of and event are not specified, the event is
+    assumed to end an hour after its initial start time. If an event end date
+    is specified but not the event end hour, the event will be assumed to end
     at midnight on this day.
 
     Detailed explanation of the fields of this class:
-        - name: string summarising the event. 
-        - category: one (or more) of the previously approved categories for 
-        events. Note: it is important to use a many-to-many field for this, 
+        - name: string summarising the event.
+        - category: one (or more) of the previously approved categories for
+        events. Note: it is important to use a many-to-many field for this,
         because of the way categories are described. Since there is one Category
-        object instance for each category/subcategory combination, it is very 
-        likely that an event will be linked to more than one Category object, 
+        object instance for each category/subcategory combination, it is very
+        likely that an event will be linked to more than one Category object,
         even if in the end it only appears in one basic category.
         - description: string describing the event, optional.
         - event_location: one of the previously approved locations for events.
         - address: string giving the address of the event (street and number),
-        optional. The location (city, country) should not be present in this 
+        optional. The location (city, country) should not be present in this
         string, because it is already included in the event_location field.
         - website: website where tickets can be bought.
         - event_start_date: start date of the event.
         - event_end_date: optional, end time of the event.
         - event_start_time: start time of the event.
-        - event_end_time: optional, end time of the event. If it is not 
-        specified and the event end date was specified, then the event is 
+        - event_end_time: optional, end time of the event. If it is not
+        specified and the event end date was specified, then the event is
         assumed to end at 23:59 on the day of the event end.
-        - price: optional, typical price of the event (starting price). 
+        - price: optional, typical price of the event (starting price).
         - price_details: optional, string describing in more details the pricing
         policy for the event.
         - rating: list of integer ratings, between 0 and 5.
         - is_valid_event: flag, used to choose if events should be served to the
         user or not.
-        
+
     """
 
     name = models.CharField(max_length=100)
@@ -229,7 +227,7 @@ class Event(models.Model):
         """ Event.__unicode__
         ----------
         Defines the formatting of an event
-        
+
         """
         return self.name
 
@@ -270,7 +268,7 @@ class Event(models.Model):
         """ Category.category_names()
         ----------
         Database query used to display event category.
-        
+
         """
         return', '.join([a.__unicode__ for a in self.category.all()])
     category_names.short_description = "Categories"

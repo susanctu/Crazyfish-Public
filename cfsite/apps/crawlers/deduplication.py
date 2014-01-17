@@ -54,14 +54,16 @@ class SimpleDeduplicator:
 
         """
         # Parameters we'll filter against
-        e_date = datetime.datetime.strptime(event.event_start_date,
-                                            '%Y-%m-%d').date()
+      #  e_date = datetime.datetime.strptime(event.event_start_date,
+                                      #      '%Y-%m-%d').date()
         # Two formats are possible for time: %H:%M or %H:%M:%S
+    #    e_time = event.event_start_time
+    #    if len(e_time.split(':')) == 2:
+     #       e_time += ':00'
+      #  e_time = datetime.datetime.strptime(e_time,
+                                       #     '%H:%M:%S').time()
+        e_date = event.event_start_date
         e_time = event.event_start_time
-        if len(e_time.split(':')) == 2:
-            e_time += ':00'
-        e_time = datetime.datetime.strptime(e_time,
-                                            '%H:%M:%S').time()
         e_date_and_time = datetime.datetime.combine(e_date, e_time)
         e_name = event.name.strip()
         time_window = datetime.timedelta(minutes=30)

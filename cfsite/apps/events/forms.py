@@ -12,7 +12,7 @@ class SearchForm(forms.Form):
     """ SearchForm
     ----------
     A class which handles user search data.
-    It mostly takes care of validating user input. 
+    It mostly takes care of validating user input.
 
     """
     category = forms.CharField()
@@ -49,7 +49,7 @@ class SearchForm(forms.Form):
         location = self.cleaned_data['location']
 
         matching_ids = get_all_matching_location_ids(location)
-        if len(matching_ids)>1:
+        if len(matching_ids) > 1:
             raise forms.ValidationError("Ooops. We couldn't understand which location you're interested in.")
         elif not matching_ids:
             raise forms.ValidationError("Crazyfish is not available at the location specified.")
@@ -59,16 +59,16 @@ class SearchForm(forms.Form):
     def clean(self):
         """ SearchForm.clean()
         ----------
-        After all the user inputs have been validated, this function will 
-        fill in the category and location ID from the valid location and 
+        After all the user inputs have been validated, this function will
+        fill in the category and location ID from the valid location and
         category data.
         These IDs can then be used to search matching events.
-        Note: there is no need to verify a single ID is returned by the 
-        functions get_category_ids and get_location_ids, because this 
+        Note: there is no need to verify a single ID is returned by the
+        functions get_category_ids and get_location_ids, because this
         check already happened in the location and category validation methods.
 
         After IDs have been validated, the date is cleaned. This cannot be done
-        before as it needs to know in which time zone the location is in 
+        before as it needs to know in which time zone the location is in
         order to check things properly.
 
         """
@@ -113,9 +113,9 @@ class SearchForm(forms.Form):
     def get_location_id(self):
         """ SearchForm.get_location_id()
         ----------
-        Returns the location id matching the user's request from the 
+        Returns the location id matching the user's request from the
         cleaned form data.
-        
+
         """
         return self.cleaned_data['location_id']
 
@@ -124,7 +124,7 @@ class SearchForm(forms.Form):
         ----------
         Returns the category id matching the user's request from the cleaned
         form data.
-        
+
         """
         return self.cleaned_data['category_id']
 
@@ -132,7 +132,7 @@ class SearchForm(forms.Form):
         """ SearchForm.get_date()
         ----------
         Returns the date if the field passed validation.
-        
+
         """
         return self.cleaned_data['date']
 
@@ -142,7 +142,7 @@ def get_all_matching_category_ids(category_name):
     ----------
     This function returns a list (possibly empty) of category ids matching
     a category name.
-    
+
     """
     category_list = Category.objects.filter(
         base_name__icontains=category_name
@@ -155,7 +155,7 @@ def get_all_matching_location_ids(location_name):
     ----------
     This function returns a list (possibly empty) of location ids matching
     a location name
-    
+
     """
     locations_list = Location.objects.filter(
         city__icontains=location_name
