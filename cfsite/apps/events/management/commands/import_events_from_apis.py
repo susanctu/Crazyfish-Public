@@ -5,7 +5,9 @@ import re
 import traceback
 import sys
 from datetime import datetime
-from django.core.management.base import NoArgsCommand, CommandError
+from optparse import make_option
+from xml.dom import minidom
+from django.core.management.base import BaseCommand, CommandError
 from cfsite.apps.events.models import Event, Location, Category
 from cfsite.apps.crawlers.deduplication import SimpleDeduplicator
 
@@ -234,19 +236,159 @@ def _convert_to_datetime(ebrite_date_str):
     return datetime(dt_int_list[0], dt_int_list[1], dt_int_list[2],
                              dt_int_list[3], dt_int_list[4], dt_int_list[5])
 
-
-class Command(NoArgsCommand):
+def _convert_to_datetime_stanford_general(date_str, time_str=None):
     """
-    Note that many of the methods in here could have been written as
-    functions or static methods, but we pass in self since the
-    documentation for custom manage.py commands says that we should
-    use self.stdout.write instead of printing directly to stdout.
-    TODO (susanctu): why? possibly rethink this
-    """
-    help = 'Pulls events from Eventbrite and adds to database'
+    Takes a date_str of the following format:
+        "January 23, 2014"
+    Day of month need not be 0 padded.
 
-    def handle(self, **options):
-        self._import_events()
+    time_str, if provided, should be of the format "4:15 PM"
+
+    Returns a datetime.datetime object.
+    """
+    if not time_str:
+        return datetime.strptime(date_str, "%B %d, %Y")
+    else: 
+        return datetime.strptime(date_str + ' ' + time_str, "%B %d, %Y %I:%M %p")
+
+def _get_and_parse_stanford_general(): # generator function
+    """
+    Get xml from the rss feed, parse it 
+    start time, name, category, (<--mandatory, if missing, disregard event)
+    end time, price, address, description, website (<--optional, ok if missing)
+    Return a list of dicts that contain this info, one dict per event
+    """
+
+    opener = urllib2.build_opener()
+    req = urllib2.Request(
+        "http://events.stanford.edu/xml/byCategory/0/rss.xml")
+    f = opener.open(req)
+    xmldoc = minidom.parse(f)
+
+    itemlist = xmldoc.getElementsByTagName('item')
+    # print itemlist
+    start_date_pattern = re.compile("(January|February|March|April|May|June|July|August"
+                                    "|September|October|November|December)\W\d{1,2}[,\W]+\d{4}")
+
+    start_time_pattern = re.compile("\d{1,2}:\d{2}\W(AM|PM)")
+    event_list = []
+    for item in itemlist:
+        try: 
+            name = item.getElementsByTagName('title')[0].firstChild.data
+            description = item.getElementsByTagName('description')[0].firstChild.data
+        except IndexError:
+            continue # move onto the next event
+        categories = [_MEET] # do something smarter with the description
+
+        start_date = start_date_pattern.search(description)
+                                    
+        if not start_date:
+            continue # unable to extract mandatory info
+        else:
+            start_date = start_date.group()
+
+        start_time = start_time_pattern.search(description)
+
+        if start_time:
+            start_time = start_time.group()
+        start_datetime = _convert_to_datetime_stanford_general(start_date, start_time)
+        cf_ev_dict = {'name':name, 'categories':categories,
+                      'start_datetime':start_datetime,
+                      'description': description}
+        try:
+            url = item.getElementsByTagName('link')[0].firstChild.data
+            cf_ev_dict['url'] = url
+        except KeyError:
+            pass # don't do anything since url was an optional field
+
+        event_list.append(cf_ev_dict)
+
+    yield event_list
+
+
+class SourceRetrievalError(Exception):
+    """
+    This is written as a custom exception class only
+    for clarity of error messages. Indicates that 
+    some issue has been encountered in attempting to retrieve
+    data from some source specified on the command line
+    or from some source in the default list of sources to pull from.
+    """
+    pass
+
+class Command(BaseCommand):
+    """
+    Defines the behavior of and options accepted by
+    python manage.py import_events.
+
+    Since this command could be called from call_command, in
+    which case we might want to redirect the output, nothing
+    in this class or the helper methods that it calls should
+    call print. All output should be directed to self.stdout
+    or self.stderr.
+    """
+    help = 'Pulls events from various apis and feeds and adds to database'
+
+    SOURCE_TYPES = ['api', 'feed']
+    API_SOURCES = ['ebrite','meetup']
+    FEED_SOURCES = ['stanford-general']
+    SOURCES = API_SOURCES + FEED_SOURCES
+    SOURCE_TO_GEN = dict(zip(SOURCES, [
+        _get_and_parse_eventbrite_JSON,
+        _get_and_parse_meetup_JSON,
+        _get_and_parse_stanford_general]))
+
+    option_list = BaseCommand.option_list + (
+
+        make_option('--source_type',
+            action='store',
+            type='string',
+            help='What type of sources to pull from. '
+                 'Either \'apis\' or \'feeds\''),
+        make_option('--sources',
+            action='store',
+            type='string',
+            help='Which sources to pull from. '
+                 'Either \'ebrite\', \'meetup\', \'stanford-general\''),
+            )
+
+    def handle(self, *args, **options):
+        source_list = options.get('sources')
+        source_type = options.get('source_type')
+        source_generators = self.SOURCE_TO_GEN.values() # default to all sources
+        if source_list and source_type:
+            raise SourceRetrievalError("Cannot simultaneously specify both sources and source_type")
+        elif source_list:
+            source_list = self._validate_and_parse_into_list(source_list)
+            source_generators = self._get_sources_generators(source_list)
+        elif source_type:
+            if source_type == "apis":
+                source_generators = self._get_sources_generators(self.API_SOURCES)
+            elif source_type == "feeds":
+                source_generators = self._get_sources_generators(self.FEED_SOURCES)
+            else:
+                raise SourceRetrievalError("Unrecognized source_type: %s" % source_type)
+
+        self._import_events(source_generators)
+
+    def _get_sources_generators(self, sources_str_list):
+        """
+        Takes a list of strings specifying the sources.
+        Returns a list of generators that yield data from those sources.
+        """
+        return [self.SOURCE_TO_GEN[source_str]() for source_str in sources_str_list]
+
+    def _validate_and_parse_into_list(self,sources_str):
+        """
+        Takes a comma, separated list of sources, checks that each listed
+        source is a valid source to pull from, returns list of source
+        names that can be passed to _get_sources_generators
+        """
+        sources_list = sources_str.split(",")
+        for source in sources_list:
+            if not source in self.SOURCES:
+                raise SourceRetrievalError("Unrecognized source: %s" % source)
+        return sources_list 
 
     def _save_event_model(self, event_list):
         """
@@ -289,9 +431,8 @@ class Command(NoArgsCommand):
                     cat, unused_is_new_bool = Category.objects.get_or_create(base_name=category);
                     ev.category.add(cat);
 
-    def _import_events(self):
-        gens = [_get_and_parse_meetup_JSON(), _get_and_parse_eventbrite_JSON()]
-        for gen in gens:
+    def _import_events(self, sources_generators):
+        for gen in sources_generators:
             try:
                 while True:
                     self._save_event_model(next(gen))
