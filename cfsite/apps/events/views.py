@@ -5,10 +5,9 @@ __status__ = "Prototype"
 import datetime, math
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-from cfsite.apps.events.models import Location, Category, Event
+from cfsite.apps.events.models import Location, Category, Event, CF_CATEGORIES
 from cfsite.apps.events.forms import SearchForm
 from cfsite.apps.crawlers.parsers import MLStripper, MLTagDetector, MLFormatter
-from cfsite.apps.events.management.commands.import_events_from_apis import CF_CATEGORIES
 
 # Category logo and verbose names. Order of the list matters and should match
 # category IDs. Pretty clunky...
@@ -165,8 +164,8 @@ def format_sr_data_from_event_list(event_list, date, location):
         # for everything: need to know what limits of the time filter are
         t_min = min([event.event_start_time for event in event_list])
 
-        # end time is optional, but start time is not, so we only need to filter
-        # out None values for t_max.
+        # end time is optional, but start time is not, so we are guaranteed some
+        # non-None tmax
         # t_max can also be the maximum event start time of an event that does not
         # have duration information
         # finally, if an event ends a day after, t_max should be midnight
@@ -176,9 +175,9 @@ def format_sr_data_from_event_list(event_list, date, location):
             t_max = datetime.time(23, 59)
         else:
             t_max1 = max([event.event_start_time for event in event_list])
-            t_max2 = max(filter(None,
-                                [event.event_end_time for event in event_list]))
-            t_max = max([t_max1, t_max2])
+            times = filter(None, [event.event_end_time for event in event_list])
+            times.append(t_max1)
+            t_max = max(times)
 
         # Set the minimum and maximum values of the time header
         [t_min, t_max] = calculate_bounds_time_data(t_min, t_max)
