@@ -118,6 +118,7 @@ class Command(BaseCommand):
                 ev.website = event_dict['url']
             if 'description' in event_dict:
                 ev.description = event_dict['description']
+                self.stdout.write('Description len: %s' % len(ev.description))
             if 'address' in event_dict:
                 ev.address = event_dict['address']
 
