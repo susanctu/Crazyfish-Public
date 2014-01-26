@@ -5,7 +5,9 @@ from django.core.management.base import BaseCommand, CommandError
 # for event retrieval and saving
 from cfsite.apps.events.models import Event, Location, Category
 from cfsite.apps.crawlers.deduplication import SimpleDeduplicator
-from cfsite.apps.crawlers.management.commands._import_from_feeds import get_and_parse_stanford_general
+from cfsite.apps.crawlers.management.commands._import_from_feeds \
+    import get_and_parse_stanford_general, get_and_parse_stanford_sport, get_and_parse_cityofpaloalto, \
+    get_and_parse_paloaltoplayers
 from cfsite.apps.crawlers.management.commands._import_from_ebrite import get_and_parse_eventbrite_JSON
 from cfsite.apps.crawlers.management.commands._import_from_meetup import get_and_parse_meetup_JSON
 from cfsite.apps.crawlers.management.commands._errors import SourceRetrievalError
@@ -25,15 +27,17 @@ class Command(BaseCommand):
 
     SOURCE_TYPES = ['api', 'feed']
     API_SOURCES = ['ebrite','meetup']
-    FEED_SOURCES = ['stanford-general']
+    FEED_SOURCES = ['stanford-general', 'stanford-sport', 'cityofpaloalto', 'paloaltoplayers']
     SOURCES = API_SOURCES + FEED_SOURCES
     SOURCE_TO_GEN = dict(zip(SOURCES, [
         get_and_parse_eventbrite_JSON,
         get_and_parse_meetup_JSON,
-        get_and_parse_stanford_general]))
+        get_and_parse_stanford_general,
+        get_and_parse_stanford_sport,
+        get_and_parse_cityofpaloalto,
+        get_and_parse_paloaltoplayers]))
 
     option_list = BaseCommand.option_list + (
-
         make_option('--source_type',
             action='store',
             type='string',
@@ -43,8 +47,9 @@ class Command(BaseCommand):
             action='store',
             type='string',
             help='Which sources to pull from. '
-                 'Either \'ebrite\', \'meetup\', \'stanford-general\''),
+                 'Choices are %s' % (' '.join(FEED_SOURCES)),
             )
+        )
 
     def handle(self, *args, **options):
         source_list = options.get('sources')
