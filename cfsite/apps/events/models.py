@@ -6,6 +6,18 @@ import datetime
 from django.db import models
 from django.core.exceptions import ValidationError
 
+# the crazyfish categories
+ART = 'arts & culture'
+CLASS = 'classes & workshop'
+CONF = 'conference'
+FAM = 'family'
+SPORT ='sport'
+MUSIC = 'music'
+MEET = 'meetup'
+FOOD = 'food & wine'
+
+CF_CATEGORIES = [ART, CLASS, CONF, FAM, MUSIC, MEET, FOOD, SPORT]
+
 
 ### Models for the event app here ###
 
