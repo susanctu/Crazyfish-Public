@@ -1,9 +1,10 @@
 import os
 import urllib2
+from urllib2 import URLError
 import json
 from datetime import datetime
 from cfsite.apps.events.models import MEET
-from import_events import SourceRetrievalError
+from cfsite.apps.crawlers.management.commands._errors import SourceRetrievalError
 
 _MEETUP_KEY = "6865607a3c4b4d7d52946910646fc"
 _EVENTS_PER_PAGE = 100

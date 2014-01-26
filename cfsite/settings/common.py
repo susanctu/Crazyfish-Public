@@ -139,6 +139,7 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
 
     # site-specific apps
+    'cfsite.apps.crawlers',
     'cfsite.apps.events',
 )
 ########## END APP CONFIGURATION

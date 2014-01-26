@@ -1,24 +1,26 @@
 import os
 import urllib2
+from urllib2 import URLError
 import json
+import json
+import re
+from xml.dom import minidom
 from datetime import datetime
 from cfsite.apps.events.models import MEET
-from import_events import SourceRetrievalError
+from cfsite.apps.crawlers.management.commands._errors import SourceRetrievalError
 
-def _convert_to_datetime_stanford_general(date_str, time_str=None):
+
+def _convert_to_datetime_stanford_general(date_str, time_str):
     """
     Takes a date_str of the following format:
         "January 23, 2014"
     Day of month need not be 0 padded.
 
-    time_str, if provided, should be of the format "4:15 PM"
+    time_str should be of the format "4:15 PM"
 
     Returns a datetime.datetime object.
     """
-    if not time_str:
-        return datetime.strptime(date_str, "%B %d, %Y")
-    else: 
-        return datetime.strptime(date_str + ' ' + time_str, "%B %d, %Y %I:%M %p")
+    return datetime.strptime(date_str + ' ' + time_str, "%B %d, %Y %I:%M %p")
 
 def get_and_parse_stanford_general(): # generator function
     """
@@ -54,16 +56,14 @@ def get_and_parse_stanford_general(): # generator function
         categories = [MEET] # do something smarter with the description
 
         start_date = start_date_pattern.search(description)
-                                    
-        if not start_date:
+        start_time = start_time_pattern.search(description)
+
+        if not start_date or not start_time:
             continue # unable to extract mandatory info
         else:
             start_date = start_date.group()
-
-        start_time = start_time_pattern.search(description)
-
-        if start_time:
             start_time = start_time.group()
+
         start_datetime = _convert_to_datetime_stanford_general(start_date, start_time)
         cf_ev_dict = {'name':name, 'categories':categories,
                       'start_datetime':start_datetime,

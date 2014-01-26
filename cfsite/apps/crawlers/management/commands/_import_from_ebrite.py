@@ -1,9 +1,12 @@
 import os
 import urllib2
+from urllib2 import URLError
 import json
+import json
+import re
 from datetime import datetime
 from cfsite.apps.events.models import CONF, ART, MEET, FAM, CLASS, SPORT, FOOD, MUSIC
-from import_events import SourceRetrievalError
+from cfsite.apps.crawlers.management.commands._errors import SourceRetrievalError
 
 _EBRITE_KEY = "JO34L4OP3GCXGEC2XJ"
 _EVENTS_PER_PAGE = 100

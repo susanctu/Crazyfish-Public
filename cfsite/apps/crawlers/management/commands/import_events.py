@@ -1,62 +1,14 @@
-import os
-import urllib2
-import json
-import re
-import sys
-from datetime import datetime
-
 # for command and option parsing
 from optparse import make_option
-from xml.dom import minidom
 from django.core.management.base import BaseCommand, CommandError
+
+# for event retrieval and saving
 from cfsite.apps.events.models import Event, Location, Category
 from cfsite.apps.crawlers.deduplication import SimpleDeduplicator
-from import_from_feeds import get_and_parse_stanford_general
-from import_from_ebrite import get_and_parse_eventbrite_JSON
-from import_from_meetup import get_and_parse_meetup_JSON
-
-# the crazyfish categories
-ART = 'arts & culture'
-CLASS = 'classes & workshop'
-CONF = 'conference'
-FAM = 'family'
-SPORT ='sport'
-MUSIC = 'music'
-MEET = 'meetup'
-FOOD = 'food & wine'
-
-CF_CATEGORIES = [ART, CLASS, CONF, FAM, MUSIC, MEET, FOOD, SPORT]
-
-EBRITE_TO_CF_CATEGORIES = {'conferences':CONF,
-                           'conventions':CONF,
-                           'entertainment':ART,
-                           'fundraisers':MEET,
-                           'meetings':MEET,
-                           'other':MEET,
-                           'performances':ART,
-                           'reunions':MEET,
-                           'sales':FAM,
-                           'seminars':CLASS,
-                           'social':MEET,
-                           'sports':SPORT,
-                           'tradeshows':CONF,
-                           'travel':FAM,
-                           'religion':FAM,
-                           'fairs':FAM,
-                           'food':FOOD,
-                           'music':MUSIC,
-                           'recreation':FAM}
-
-
-class SourceRetrievalError(Exception):
-    """
-    This is written as a custom exception class only
-    for clarity of error messages. Indicates that 
-    some issue has been encountered in attempting to retrieve
-    data from some source specified on the command line
-    or from some source in the default list of sources to pull from.
-    """
-    pass
+from cfsite.apps.crawlers.management.commands._import_from_feeds import get_and_parse_stanford_general
+from cfsite.apps.crawlers.management.commands._import_from_ebrite import get_and_parse_eventbrite_JSON
+from cfsite.apps.crawlers.management.commands._import_from_meetup import get_and_parse_meetup_JSON
+from cfsite.apps.crawlers.management.commands._errors import SourceRetrievalError
 
 class Command(BaseCommand):
     """
@@ -97,21 +49,21 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         source_list = options.get('sources')
         source_type = options.get('source_type')
-        source_generators = self.SOURCE_TO_GEN.values() # default to all sources
+        source_generators = self.SOURCES # default to all sources
         if source_list and source_type:
             raise SourceRetrievalError("Cannot simultaneously specify both sources and source_type")
         elif source_list:
             source_list = self._validate_and_parse_into_list(source_list)
-            source_generators = self._get_sources_generators(source_list)
+            source_generators = source_list
         elif source_type:
             if source_type == "apis":
-                source_generators = self._get_sources_generators(self.API_SOURCES)
+                source_generators = self.API_SOURCES
             elif source_type == "feeds":
-                source_generators = self._get_sources_generators(self.FEED_SOURCES)
+                source_generators = self.FEED_SOURCES
             else:
                 raise SourceRetrievalError("Unrecognized source_type: %s" % source_type)
 
-        self._import_events(source_generators)
+        self._import_events(self._get_sources_generators(source_generators))
 
     def _get_sources_generators(self, sources_str_list):
         """
