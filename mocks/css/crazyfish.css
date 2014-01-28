@@ -76,11 +76,6 @@
   text-shadow:none;
 } 
 
-#all-opt {
-	margin:30px 0px;
-}
-
-
 .dropdown-menu{
     position:absolute;
     right:0px;
@@ -98,27 +93,31 @@
     background-clip:border-box; /* back to default */
 }
 
-
- textarea:focus, input[type="text"]:focus,textarea[type="text"]:focus,   input[type="password"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="date"]:focus, input[type="month"]:focus, input[type="time"]:focus, input[type="week"]:focus, input[type="number"]:focus, input[type="email"]:focus, input[type="url"]:focus, input[type="search"]:focus, input[type="tel"]:focus,  input[type="color"]:focus, .uneditable-input:focus, .form-control:focus {  
+ textarea:focus, input[type="text"]:focus,
+ textarea[type="text"]:focus,   
+ input[type="password"]:focus, 
+ input[type="datetime"]:focus, 
+ input[type="datetime-local"]:focus, 
+ input[type="date"]:focus, input[type="month"]:focus, 
+ input[type="time"]:focus, input[type="week"]:focus, 
+ input[type="number"]:focus, input[type="email"]:focus, 
+ input[type="url"]:focus, input[type="search"]:focus, 
+ input[type="tel"]:focus,  input[type="color"]:focus, 
+ .uneditable-input:focus, 
+ .form-control:focus {  
 border-color: none;
 box-shadow: none;
 outline: none;}
 
-.form-text {
-    float: left;
-}
-
-.form-group {
-    float: left;
-    width: 255px;
-    margin-bottom:0; /* prevent form-groups from pushing away other elements, which can look weird on small screens*/
-}
- 
 .form-control,
 .form-control[readonly] {
     font-size: 35px;
+    height: auto;
+    vertical-align: text-bottom;
+    padding-top: 0;
+    padding-bottom: 0;
+    line-height: 100%;
     color: #00e3fe;
-    height: 60px;
     background-color:transparent;
     border: none; /* back to default */
     border-radius:0;/* back to default */
@@ -127,10 +126,9 @@ outline: none;}
     background-clip:border-box; /* back to default */
     webkit-transition: none; /* back to default */
     transition: none;
-    width: 255px;
     text-overflow: ellipsis;
     cursor: pointer;
-}
+} 
  
 .icon {
     padding: 5px 0 0 38px;
