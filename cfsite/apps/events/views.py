@@ -279,7 +279,7 @@ def format_event_data(event, t_min, t_max):
     month_num_to_str = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
                         'Sep', 'Oct', 'Nov', 'Dec']
     datetime_val = weekday_num_to_str[event.event_start_date.weekday()] + ' ' \
-                   + month_num_to_str[event.event_start_date.month] + ' ' \
+                   + month_num_to_str[event.event_start_date.month - 1] + ' ' \
                    + str(event.event_start_date.day) + ', ' + start_time_val
 
     # Check if price is here or not
