@@ -232,7 +232,7 @@ def get_and_parse_stanford_general(): # generator function
             description = item.getElementsByTagName('description')[0].firstChild.data
         except IndexError:
             continue # move onto the next event
-        categories = [MEET] # do something smarter with the description
+        categories = [ART] # do something smarter with the description
 
         # can't use pubDate for this feed
         start_date = start_date_pattern.search(description)
