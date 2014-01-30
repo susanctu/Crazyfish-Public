@@ -279,7 +279,7 @@ def format_event_data(event, t_min, t_max):
     month_num_to_str = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
                         'Sep', 'Oct', 'Nov', 'Dec']
     datetime_val = weekday_num_to_str[event.event_start_date.weekday()] + ' ' \
-                   + month_num_to_str[event.event_start_date.month] + ' ' \
+                   + month_num_to_str[event.event_start_date.month - 1] + ' ' \
                    + str(event.event_start_date.day) + ', ' + start_time_val
 
     # Check if price is here or not
@@ -290,7 +290,7 @@ def format_event_data(event, t_min, t_max):
 
     # Format the category data
     # Don't forget to remove the 'other' category which doesn't have a logo.
-    cat_data = build_category_data()
+    cat_data = build_category_data([cat.id for cat in event.category.all()])
     # If there is more than one category we arbitrarily select the first
     # category for display
     if cat_data:
@@ -308,7 +308,7 @@ def format_event_data(event, t_min, t_max):
         duration_minutes=duration_minutes_val,
         duration_percent=duration_percent_val,
         price=price_val,
-        event_date_time_verbose=datetime_val,
+        event_datetime_verbose=datetime_val,
         category_logo=cat_data,
     )
 
@@ -356,7 +356,7 @@ def format_time_header_data_from_min_max(t_min, t_max, e_date):
     month_num_to_str = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
                         'Sep', 'Oct', 'Nov', 'Dec']
     date_val = weekday_num_to_str[e_date.weekday()] + ' ' \
-               + month_num_to_str[e_date.month] + ' ' + str(e_date.day)
+               + month_num_to_str[e_date.month - 1] + ' ' + str(e_date.day)
 
     # Get the lines and their name and position
     times_data_pos = format_lines_data(t_min, t_max)
@@ -461,7 +461,7 @@ def format_lines_data(t_min, t_max):
     return line_pos
 
 
-def build_category_data():
+def build_category_data(cat_id_list=None):
     """ build_category_data
     ----------
     Builds the list of category context data dictionaries. Category id's
@@ -469,7 +469,6 @@ def build_category_data():
 
     @param cat_id_list: a list of categories IDs
     @type cat_id_list: [int]
-
     @return: a list of category description dictionaries, with fields css
              and name.
     @rtype: [dict]
@@ -482,6 +481,9 @@ def build_category_data():
                      name=DB_TO_VERBOSE_NAME[cat.base_name],
                     id=cat.id)
             )
+    if cat_id_list:
+        return [cat for cat in cat_data if (cat['id'] in cat_id_list)]
+
     return cat_data
 
 
