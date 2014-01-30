@@ -102,7 +102,7 @@ def _extract_datetime_paloaltoplayers(description):
             later_day = DAYS.index(most_days.group(2))
             earlier_day = DAYS.index(most_days.group(1))
 
-    if most_days and day_of_week >= earlier_day and day_of_week <= later_day):
+    if most_days and day_of_week >= earlier_day and day_of_week <= later_day:
         if ':' in most_days.group(3):
             return datetime.strptime("%s 2014 %s" % (stripped_start_date.group(), most_days.group(3)), "%B %d %Y %I:%M%p")
         else:
