@@ -92,14 +92,23 @@ def _extract_datetime_paloaltoplayers(description):
     most_days = start_time_patterns[0].search(description)
     one_days = start_time_patterns[1].search(description)
     
-    # TODO, what if it's Saturday - Monday? (i.e., day of week earlier in DAYS is second)
-    if most_days and day_of_week >= DAYS.index(most_days.group(1)) and day_of_week <= DAYS.index(most_days.group(2)):
+    # check if the earlier day (in sense of Monday being "earlier" than Tuesday) 
+    # is listed first
+    if most_days:
+        if DAYS.index(most_days.group(1)) < DAYS.index(most_days.group(2)):
+            earlier_day = DAYS.index(most_days.group(1))
+            later_day = DAYS.index(most_days.group(2))
+        else:
+            later_day = DAYS.index(most_days.group(2))
+            earlier_day = DAYS.index(most_days.group(1))
+
+    if most_days and day_of_week >= earlier_day and day_of_week <= later_day:
         if ':' in most_days.group(3):
             return datetime.strptime("%s 2014 %s" % (stripped_start_date.group(), most_days.group(3)), "%B %d %Y %I:%M%p")
         else:
             return datetime.strptime("%s 2014 %s" % (stripped_start_date.group(), most_days.group(3)), "%B %d %Y %I%p")
-    elif one_day: # TODO assume for now that it's the one other day, fix later
-        if ':' in most_days.group(2):
+    elif one_day and day_of_week == DAYS.index(one_day.group(1)):
+        if ':' in one_day.group(2):
             return datetime.strptime("%s 2014 %s" % (stripped_start_date.group(), one_day.group(2)), "%B %d %Y %I:%M%p")
         else:
             return datetime.strptime("%s 2014 %s" % (stripped_start_date.group(), one_day.group(2)), "%B %d %Y %I%p")
@@ -223,7 +232,7 @@ def get_and_parse_stanford_general(): # generator function
             description = item.getElementsByTagName('description')[0].firstChild.data
         except IndexError:
             continue # move onto the next event
-        categories = [MEET] # do something smarter with the description
+        categories = [ART] # do something smarter with the description
 
         # can't use pubDate for this feed
         start_date = start_date_pattern.search(description)
