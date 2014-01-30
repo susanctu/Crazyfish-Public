@@ -247,7 +247,10 @@ def format_event_data(event, t_min, t_max):
             formatter.feed(event.description)
             description_formatted_val = formatter.get_formatted_string()
         else:
-            description_formatted_val = event.description
+            if t_detect.get_tags().find('<img>') >= 0:
+                description_formatted_val = 'Please visit event website for a description.'
+            else:
+                description_formatted_val = event.description
     else:
         description_short_val = 'No description for this event.'
         description_formatted_val = '<p>No description for this event.</p>'

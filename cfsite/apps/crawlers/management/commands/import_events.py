@@ -118,7 +118,10 @@ class Command(BaseCommand):
             if 'url' in event_dict:
                 ev.website = event_dict['url']
             if 'description' in event_dict:
-                ev.description = event_dict['description'][:MAX_DESCRIPTION_LEN]
+                if len(event_dict['description']) > MAX_DESCRIPTION_LEN:
+                    ev.description = 'Please visit event website for the event description.'
+                else:
+                    ev.description = event_dict['description'][:MAX_DESCRIPTION_LEN]
                 self.stdout.write('Description len: %s' % len(ev.description))
             if 'address' in event_dict:
                 ev.address = event_dict['address']
