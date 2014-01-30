@@ -3,7 +3,7 @@ from optparse import make_option
 from django.core.management.base import BaseCommand, CommandError
 
 # for event retrieval and saving
-from cfsite.apps.events.models import Event, Location, Category
+from cfsite.apps.events.models import Event, Location, Category, MAX_DESCRIPTION_LEN
 from cfsite.apps.crawlers.deduplication import SimpleDeduplicator
 from cfsite.apps.crawlers.management.commands._import_from_feeds \
     import get_and_parse_stanford_general, get_and_parse_stanford_sport, get_and_parse_cityofpaloalto, \
@@ -11,6 +11,7 @@ from cfsite.apps.crawlers.management.commands._import_from_feeds \
 from cfsite.apps.crawlers.management.commands._import_from_ebrite import get_and_parse_eventbrite_JSON
 from cfsite.apps.crawlers.management.commands._import_from_meetup import get_and_parse_meetup_JSON
 from cfsite.apps.crawlers.management.commands._errors import SourceRetrievalError
+
 
 class Command(BaseCommand):
     """
@@ -117,7 +118,7 @@ class Command(BaseCommand):
             if 'url' in event_dict:
                 ev.website = event_dict['url']
             if 'description' in event_dict:
-                ev.description = event_dict['description']
+                ev.description = event_dict['description'][:MAX_DESCRIPTION_LEN]
                 self.stdout.write('Description len: %s' % len(ev.description))
             if 'address' in event_dict:
                 ev.address = event_dict['address']
