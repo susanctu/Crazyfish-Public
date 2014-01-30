@@ -3,42 +3,38 @@ Main html template for the index.html page. This template renders the event
 selection menu.
 *************************************************************************** -->
 {% load staticfiles %}
-
-<div class="main-search dropdown">
+<div class="main-search">
 
 	<form class="form-inline" role="form" action="search" method="get">
+        <div class="blue-box dropdown">
         <span class="form-text" id="firstWord">Show me events on</span>
 
-		<span class="form-text" id='dateBlank'>
-			<font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ _</font>   
-		</span>
-        
-        <span class="form-group" id="DPLoc">
+        <div class="form-group" id="DPLoc" style="width: 315px;">
 			<label id='dateLabelAndInput'>  
-				<input type="text" name="date" class="form-control datepicker" data-toggle="dropdown" id="datePicker" placeholder="date" readonly>  
+				<input type="text" name="date" class="cfinput form-control datepicker" data-toggle="dropdown" id="datePicker" placeholder="date" readonly>  
             </label>    
             <script src="{% static "js/bootstrap-datepicker.js" %}"></script>
-        </span>
+        </div>
 
         <span class="form-text"> in </span>
-
-		<span class="form-text" id='locationBlank'> 
-			<font color="#11b1d3" face="helvetica, arial" size="5px">_ _ _ _ _ _ _ _ _ _ _ _ _</font>
-		</span>
 		
-        <span class="form-group">
+        <div class="form-group" style="width: 250px;">
 			<label class="dropdown-toggle" data-toggle="dropdown" id='locationLabelAndInput'>
-				<input  type="text" name="location" class="form-control" value="Palo Alto, CA" readonly>
+				<input  type="text" name="location" class="cfinput form-control" value="Palo Alto, CA" readonly>
             </label>
             <ul class="dropdown-menu" role="menu">
                 <li>We're only available in Palo Alto, CA for now!
             </ul>
-        </span>
-	
-		<div class="button-container" align="center">
-			<input type="submit" id="go" class="btn btn-search" value="LET'S GO">
-		</div>
-    </form>   
- </div>
+        </div>
+    </div>
+    <div class="button-container" align="center">
+            <input type="submit" id="go" class="btn btn-search" value="LET'S GO">
+    </div>
+
+    </form>
+    
+    </div>
+
+
 
 

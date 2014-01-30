@@ -4,54 +4,11 @@ Those are the scripts that should be loaded *after* the html has been declared.
 Other scripts should go into index_head_includes.html
 *************************************************************************** -->
 <script>
-   $(document).ready( function() { //set today's date as the default
+     $(document).ready( function() { //set today's date as the default
 		var now = new Date();
 		$('#datePicker').val(CfUtils.format_as_day_month_date(now));
 	});
-	
+
     $('.dropdown-toggle').dropdown();
     $('.datepicker').datepicker({placeInside:'#DPLoc'});
-
-	$(window).load(main_search_center_and_wrap);
- 	$(window).resize(main_search_center_and_wrap);
-    
-    function main_search_center_and_wrap() {
-		reposition_inputs(); // first reposition inputs since this affects where the last word appears, which we depend on for centering
-	    main_search_center_content(); // center contents of main-search
-	    main_search_adjust_height(); // then adjust height of main-search
-	    reposition_inputs(); // reposition inputs again after having done centering step
-	}
-    
-	function main_search_center_content() {
-		var main_search_width = $('.main-search').outerWidth();
-		var lastWordPos = $('#locationBlank').position();
-		var firstWordPos = $('#firstWord').position();
-		if (lastWordPos.top == firstWordPos.top) { // if they are on the same line
-			var main_content_width = lastWordPos.left + $('#locationBlank').outerWidth() - firstWordPos.left;
-			var sidePadding = (main_search_width - main_content_width)/2 +'px';
-			console.log(sidePadding);
-			$('.main-search').css({'padding-left': sidePadding, 'padding-right': sidePadding});
-		} else {
-			$('.main-search').css({'padding-left': '30px', 'padding-right': '30px'});
-		}
-	}
-	
-	function main_search_adjust_height() { // adjust height of div so that the darker blue is behind all the text
-		var lastWordPos = $('#locationBlank').position();
-		$('.main-search').css('height',(lastWordPos.top + 75) + 'px'); // 75px is arbitrary / looks reasonable
-	}
-	
-	function reposition_single_input(line_id, input_id) { // positions input on top of line_id element 
-		var linePos = $(line_id).position();
-		$(input_id).css({position:'absolute', 
-						left:linePos.left,
-						top:linePos.top - 5}); // -5px so that input text sits above line
-	}
-	
-	function reposition_inputs() {
-		// Keep all the inputs on their respective "_ _ _ _"'s 
-		// by moving the label (that input element is inside) to where the "_ _ _" is
-		reposition_single_input('#dateBlank', '#dateLabelAndInput');
-		reposition_single_input('#locationBlank', '#locationLabelAndInput');
-	}
 </script>
