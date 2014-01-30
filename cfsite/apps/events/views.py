@@ -172,8 +172,7 @@ def format_sr_data_from_event_list(event_list, date, location):
         all_event_end_dates = filter(None,
                                      list(set([event.event_end_date
                                      for event in event_list])))
-        if all_event_end_dates:
-            if max(all_event_end_dates) > date:
+        if all_event_end_dates and max(all_event_end_dates) > date:
                 t_max = datetime.time(23, 59)
         else:
             t_max1 = max([event.event_start_time for event in event_list])
