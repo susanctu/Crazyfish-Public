@@ -3,7 +3,7 @@ from optparse import make_option
 from django.core.management.base import BaseCommand, CommandError
 
 # for event retrieval and saving
-from cfsite.apps.events.models import Event, Location, Category, MAX_DESCRIPTION_LEN
+from cfsite.apps.events.models import Event, Location, Category, MAX_DESCRIPTION_LEN, MAX_NAME_LEN
 from cfsite.apps.crawlers.deduplication import SimpleDeduplicator
 from cfsite.apps.crawlers.management.commands._import_from_feeds \
     import get_and_parse_stanford_general, get_and_parse_stanford_sport, get_and_parse_cityofpaloalto, \
@@ -11,7 +11,7 @@ from cfsite.apps.crawlers.management.commands._import_from_feeds \
 from cfsite.apps.crawlers.management.commands._import_from_ebrite import get_and_parse_eventbrite_JSON
 from cfsite.apps.crawlers.management.commands._import_from_meetup import get_and_parse_meetup_JSON
 from cfsite.apps.crawlers.management.commands._errors import SourceRetrievalError
-
+from django.db.utils import DataError
 
 class Command(BaseCommand):
     """
@@ -98,7 +98,7 @@ class Command(BaseCommand):
         self.stdout.write('Saving events to database:')
         for event_dict in event_list:
             ev = Event(
-                name=event_dict['name'],
+                name=event_dict['name'][:MAX_NAME_LEN],
                 event_location=Location.objects.get_or_create(
                     city='Palo Alto',
                     state_province='CA',
@@ -127,10 +127,13 @@ class Command(BaseCommand):
                 self.stdout.write('Skipping duplicate...')
             else:
                 self.stdout.write(event_dict['name'])
-                ev.save()
-                for category in event_dict['categories']:
-                    cat, unused_is_new_bool = Category.objects.get_or_create(base_name=category);
-                    ev.category.add(cat);
+                try: 
+                    ev.save()
+                    for category in event_dict['categories']:
+                        cat, unused_is_new_bool = Category.objects.get_or_create(base_name=category)
+                        ev.category.add(cat)
+                except DataError:
+                    pass # could not save event, probably some field is too long for our db. skip
 
     def _import_events(self, sources_generators):
         for gen in sources_generators:

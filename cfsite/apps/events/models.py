@@ -19,6 +19,7 @@ FOOD = 'food & wine'
 CF_CATEGORIES = [ART, CLASS, CONF, FAM, MUSIC, MEET, FOOD, SPORT]
 
 MAX_DESCRIPTION_LEN = 500
+MAX_NAME_LEN = 100
 
 ### Models for the event app here ###
 
@@ -219,7 +220,7 @@ class Event(models.Model):
 
     """
 
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=MAX_NAME_LEN)
     category = models.ManyToManyField(Category)
     description = models.CharField(max_length=MAX_DESCRIPTION_LEN, blank=True)
     event_location = models.ForeignKey(Location)
