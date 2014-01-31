@@ -290,7 +290,7 @@ def format_event_data(event, t_min, t_max):
     if event.price is not None:
         price_val = int(round(event.price))
     else:
-        price_val = '??'
+        price_val = ''
 
     # Format the category data
     # Don't forget to remove the 'other' category which doesn't have a logo.
