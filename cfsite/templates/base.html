@@ -8,6 +8,8 @@ Base template for all other CF templates.
     <title>{% block title %}{% endblock %}</title>
 
     {% block head_style_and_js %}{% endblock %}
+
+    {% include "google_analytics.html" %}
 </head>
 
 <body>
@@ -18,8 +20,6 @@ Base template for all other CF templates.
     {% block footer %}{% endblock %}
 
     {% block body_js %}{% endblock %}
-
-    {% include "google_analytics.html" %}
  </body>
 
 </html>

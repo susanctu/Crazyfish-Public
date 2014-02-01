@@ -11,14 +11,14 @@ ART = 'arts & culture'
 CLASS = 'classes & workshop'
 CONF = 'conference'
 FAM = 'family'
-SPORT ='sport'
+SPORT = 'sport'
 MUSIC = 'music'
 MEET = 'meetup'
 FOOD = 'food & wine'
 
 CF_CATEGORIES = [ART, CLASS, CONF, FAM, MUSIC, MEET, FOOD, SPORT]
 
-MAX_DESCRIPTION_LEN = 500
+MAX_DESCRIPTION_LEN = 10000
 MAX_NAME_LEN = 100
 
 ### Models for the event app here ###

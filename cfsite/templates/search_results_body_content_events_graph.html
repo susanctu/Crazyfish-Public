@@ -98,7 +98,9 @@ Those fields hold the following information:
                 </div>
                 {% if event.price > 0 %}
                 <div class="currency from">
+                {% if event.price %}
                     $
+                {% endif %}
                 </div>
                 <div class="price from">
                     {{ event.price }}
@@ -111,7 +113,9 @@ Those fields hold the following information:
             {% else %}
                 {% if event.price > 0 %}
                 <div class="currency">
+                {% if event.price %}
                     $
+                {% endif %}
                 </div>
                 <div class="price">
                     {{ event.price }}
@@ -140,7 +144,7 @@ Those fields hold the following information:
                 <div class="graph">
                     <div class="event-box no-duration" style="margin-left: {{ event.event_start_time_percent }}%">
                         <div class="point warning"></div>
-                        <div class="warning-message">missing info</div>
+                        <div class="warning-message"></div>
                     </div>
                 </div>
             {% endif %}
@@ -206,10 +210,12 @@ Those fields hold the following information:
                             <div class="event-misc-info-details">{{ event.address }}</div>
                         </div>
                     {% endif %}
+                    {% if event.price %}
                         <div class="event-misc-info-price">
                             <div class="event-misc-info-subtitle">Price:</div>
                             <div class="event-misc-info-details">${{ event.price }}</div>
                         </div>
+                    {% endif %}
                     {% if event.price_details %}
                         <div class="event-misc-info-admission">
                             <div class="event-misc-info-subtitle">Admission:</div>

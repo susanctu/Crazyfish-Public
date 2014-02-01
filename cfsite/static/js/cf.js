@@ -150,7 +150,7 @@ function getSelectedCategoriesString () {
     var sumStr = '';
 
     if ( selectedCategoriesId.length == 0 ) {
-        return 'No events';
+        return 'All events';
     }
     if ( selectedCategoriesId.length == countProperties(categoriesVerbose) ) {
         sumStr = 'All events';
@@ -856,11 +856,16 @@ function getIdEventsMatchingFilters () {
         
         // Check if categories match
         var hasCorrectCategory = false;
-        var cCategory = allEvents[i][1];
-        for ( var k = 0; k < cCategory.length; k++ ) {
-            if ( catSelected.indexOf(cCategory[k]) != -1 ) {
-                hasCorrectCategory = true;
-                break;
+        if ( catSelected.length == 0 ) {
+            hasCorrectCategory = true;
+        }
+        else {
+            var cCategory = allEvents[i][1];
+            for ( var k = 0; k < cCategory.length; k++ ) {
+                if ( catSelected.indexOf(cCategory[k]) != -1 ) {
+                    hasCorrectCategory = true;
+                    break;
+                }
             }
         }
         shouldBeDisplayed = shouldBeDisplayed && hasCorrectCategory;

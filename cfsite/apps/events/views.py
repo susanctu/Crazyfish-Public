@@ -169,10 +169,11 @@ def format_sr_data_from_event_list(event_list, date, location):
         # t_max can also be the maximum event start time of an event that does not
         # have duration information
         # finally, if an event ends a day after, t_max should be midnight
-        if len(filter(None,
-                      list(set([event.event_end_date
-                                for event in event_list])))) > 1:
-            t_max = datetime.time(23, 59)
+        all_event_end_dates = filter(None,
+                                     list(set([event.event_end_date
+                                     for event in event_list])))
+        if all_event_end_dates and max(all_event_end_dates) > date:
+                t_max = datetime.time(23, 59)
         else:
             t_max1 = max([event.event_start_time for event in event_list])
             times = filter(None, [event.event_end_time for event in event_list])
@@ -245,7 +246,10 @@ def format_event_data(event, t_min, t_max):
             formatter.feed(event.description)
             description_formatted_val = formatter.get_formatted_string()
         else:
-            description_formatted_val = event.description
+            if t_detect.get_tags().find('<img>') >= 0:
+                description_formatted_val = 'Please visit event website for a description.'
+            else:
+                description_formatted_val = event.description
     else:
         description_short_val = 'No description for this event.'
         description_formatted_val = '<p>No description for this event.</p>'
@@ -286,7 +290,7 @@ def format_event_data(event, t_min, t_max):
     if event.price is not None:
         price_val = int(round(event.price))
     else:
-        price_val = '??'
+        price_val = ''
 
     # Format the category data
     # Don't forget to remove the 'other' category which doesn't have a logo.
@@ -406,10 +410,12 @@ def calculate_bounds_time_data(t_min, t_max):
     # Then make sure the width of the window is a multiple of two hours
     # 23:59 for t_max is a special case, as it should really be 24:00
     if t_max == datetime.time(23, 59):
-        if divmod(24 - t_min.hour, 2):
+        (q, r) = divmod(24 - t_min.hour, 2)
+        if r:
             t_min = t_min.replace(hour=t_min.hour-1)
     else:
-        if divmod(24 - t_min.hour, 2):
+        (q, r) = divmod(24 - t_min.hour, 2)
+        if r:
             if t_max.hour == 23:
                 t_max = t_max.replace(minute=59)
             else:
