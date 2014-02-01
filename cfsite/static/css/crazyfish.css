@@ -22,7 +22,10 @@
   color: #fff; /* text color */
   font-family: "Quicksand";
   font-size: 35px;
-  padding: 30px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  padding-left: 30px;
+  padding-right: 30px;
  }
 
  .error404 {
@@ -111,6 +114,13 @@ outline: none;
 cursor: pointer;
 }
 
+.form-group {
+   margin:0 auto; /* for centering */
+}
+
+.form-text {
+   display:inline;
+}
 .form-control,
 .form-control[readonly] {
     font-size: 35px;
@@ -121,7 +131,12 @@ cursor: pointer;
     line-height: 100%;
     color: #00e3fe;
     background-color:transparent;
-    border: none; /* back to default */
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom:  #0ec7ee;
+    border-bottom-width: 1.5px;
+    border-bottom-style: dashed;
     border-radius:0;/* back to default */
     webkit-box-shadow: none;/* back to default */
     box-shadow: none; /* back to default */
@@ -130,6 +145,8 @@ cursor: pointer;
     transition: none;
     text-overflow: ellipsis;
     cursor: pointer;
+    
+
 } 
  
 .icon {
