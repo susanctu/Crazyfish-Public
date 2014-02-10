@@ -12,6 +12,7 @@ name_extract_re = (re.compile('%s\W*block\W+([^\W]+)\W*?%s' %
 endblock_re = (re.compile('%s\W*endblock\W*?%s' % 
 		      (re.escape(BLOCK_TAG_START), re.escape(BLOCK_TAG_END))))
 
+JS_FORMAT = '$(\"%s\" ).on(\"%s\", function() { window.location = \"%s\"});'
 class TagError(Exception):
     pass
 
@@ -51,7 +52,7 @@ def is_end_tag(token):
 	else:
 		return False
 
-def generate_page(template, new_page, block_content):
+def generate_page(template, new_page, block_content, flow_info=None):
 	"""
 	TODO
 	"""
@@ -59,7 +60,6 @@ def generate_page(template, new_page, block_content):
 	src = open(template, 'r')
 	tokens = tokenize(src.read())
 	src.close()
-	referenced_blocks = block_content.keys()
 	tag_depth = 0 # start counting whenever we enter a block that is supposed to be replaced
 	in_repl_block = False
 	repl_block = None
@@ -73,7 +73,7 @@ def generate_page(template, new_page, block_content):
 		elif is_tag and repl_block: 
 			# so this could be an unreferenced start tag
 			if is_start_tag(token):
-				if get_block_name(token) in referenced_blocks:
+				if get_block_name(token) in block_content:
 					raise TagError('Cannot replace nested blocks.')
 				else:
 					tag_depth += 1
@@ -85,11 +85,18 @@ def generate_page(template, new_page, block_content):
 					output.write(block_content[repl_block])
 					repl_block = None
 		else: # is_tag and not repl_block
-			print 'here'
 			if is_start_tag(token):
-				if get_block_name(token) in referenced_blocks:
+				if get_block_name(token) in block_content:
 					repl_block = get_block_name(token)
 					tag_depth += 1	
+	if flow_info: # TODO (susanctu): this works but SHOULD go before the last html tag
+		output.write('<script src=\"https://code.jquery.com/jquery.js\"></script>')
+		output.write('<script>')
+		for class_or_id in flow_info.keys():
+			output.write(JS_FORMAT % (class_or_id, 
+				                     flow_info[class_or_id][0], 
+				                     flow_info[class_or_id][1]))
+		output.write('</script>')
 	output.close()			
 
 def main():
@@ -97,7 +104,11 @@ def main():
 	exec(f);
 	
 	for new_page, src_info in PAGES.items():	
-		generate_page(src_info[0], new_page, src_info[1])
+		if new_page in FLOWS:
+			generate_page(src_info[0], new_page, src_info[1], FLOWS[new_page])
+		else:
+			print 'WARNING: no FLOW found'
+			generate_page(src_info[0], new_page, src_info[1])
 
 if __name__ == "__main__":
 	main()
