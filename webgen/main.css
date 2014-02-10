@@ -1,0 +1,11 @@
+body {
+        background-image: url('http://imgur.com/kiSODJV.png');
+}
+
+.central {
+		margin-top: 200px;
+        text-align: center;
+  		color: #8f0000; /* text color */
+  		font-family: "Quicksand";
+  		font-size: 75px;
+}
