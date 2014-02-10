@@ -1,4 +1,5 @@
 import re
+import argparse
 
 BLOCK_TAG_START = '{%'
 BLOCK_TAG_END = '%}'
@@ -39,6 +40,9 @@ def is_start_tag(token):
 		return False
 
 def get_block_name(token):
+	"""
+	Assumes that token is a start tag.
+	"""
 	match = name_extract_re.search(token)
 	if match:
 		return match.group(1)
@@ -54,7 +58,10 @@ def is_end_tag(token):
 
 def generate_page(template, new_page, block_content, flow_info=None):
 	"""
-	TODO
+	Takes in the name of the template, the name of the page to be generated,
+	a dictionary mapping block names to content they should be replaced with,
+	and optional flow information (a map of classes/id's mapping to tuples 
+	(event, page to redirect to)).
 	"""
 	output = open(new_page, 'w')
 	src = open(template, 'r')
@@ -99,8 +106,8 @@ def generate_page(template, new_page, block_content, flow_info=None):
 		output.write('</script>')
 	output.close()			
 
-def main():
-	f = open('config.py', 'r')
+def main(config_file):
+	f = open(config_file, 'r')
 	exec(f);
 	
 	for new_page, src_info in PAGES.items():	
@@ -111,4 +118,7 @@ def main():
 			generate_page(src_info[0], new_page, src_info[1])
 
 if __name__ == "__main__":
-	main()
+	parser = argparse.ArgumentParser()
+	parser.add_argument("config_file", help="a configuration file to tell this tool what to generate")
+	args = parser.parse_args()
+	main(args.config_file)

@@ -11,7 +11,12 @@
                         <div class="central">
                                 {% block central %}
                                 This is a test site...
-                                {% endblock %}          
+                                {% block ignore %}
+                                {% endblock %}
+                                {% endblock %}     
+                                {% block ignore %}
+
+                                {% endblock %}      
                         </div>
                 </div>
         </body>
