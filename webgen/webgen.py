@@ -22,7 +22,7 @@ MALFORMED_CONFIG_FORMAT = 'Mandatory definition of %s missing from config file.\
 class TagError(Exception):
     pass
 
-class ConfigError(Exception):
+class OverwriteError(Exception):
     pass
 
 def tokenize(template_string):
@@ -80,11 +80,14 @@ def generate_page(template, new_page, block_content, clobber=False, flow_info=No
     a dictionary mapping block names to content they should be replaced with,
     and optional flow information (a map of classes/id's mapping to tuples 
     (event, page to redirect to)).
+
+    Raises:
+        TagError and Exception.
     """
     
         
     if not clobber and os.path.isfile(new_page):
-        raise Exception('%s already exists. (use --clobber to overwrite)' % new_page)
+        raise OverwriteError('%s already exists. (use --clobber to overwrite)' % new_page)
     else:
         output = open(new_page, 'w')
     
@@ -93,7 +96,8 @@ def generate_page(template, new_page, block_content, clobber=False, flow_info=No
     tokens = tokenize(src.read())
     src.close()
 
-    tag_depth = 0 # start counting whenever we enter a block that is supposed to be replaced
+    tag_depth = 0
+    repl_tag_depth = 0 # start counting whenever we enter a block that is supposed to be replaced
     # repl_block is the name of the block to replace, None means we're not in one
     repl_block = None 
     for token, is_tag in tokens:
@@ -105,22 +109,28 @@ def generate_page(template, new_page, block_content, clobber=False, flow_info=No
             # so this could be an unreferenced start tag
             if is_start_tag(token):
                 if get_block_name(token) in block_content:
-                    raise TagError('Cannot replace nested blocks.')
+                    raise TagError('Cannot replace 2 blocks when one nested inside other.')
                 else:
+                    repl_tag_depth += 1
                     tag_depth += 1
             else: # or an endtag
-                tag_depth -= 1
-                if tag_depth < 0:
-                    raise TagError('Found more endtags than start tags.')
-                if tag_depth == 0:
+                repl_tag_depth -= 1
+                tag_depth -=1
+                if repl_tag_depth == 0:
                     # write the replacement text
                     output.write(block_content[repl_block])
                     repl_block = None
         else: # is_tag and not repl_block
             if is_start_tag(token):
+                tag_depth += 1
                 if get_block_name(token) in block_content:
                     repl_block = get_block_name(token)
-                    tag_depth += 1  
+                    repl_tag_depth += 1
+            else: # endblock
+                tag_depth -= 1
+                if tag_depth < 0:
+                    raise TagError('Found more endtags than start tags.')
+                  
     if flow_info: # TODO (susanctu): this works but SHOULD go before the last html tag
         output.write('<script src=\"https://code.jquery.com/jquery.js\"></script>')
         output.write('<script>')
@@ -213,8 +223,13 @@ def main():
     # with appropriate navigation between them
     for new_page, src_info in PAGES.items():
         if len(src_info) != 2:
-            raise ConfigError(
-                'Block name and replacement text tuple contains too many elements.')
+            sys.stderr.write(
+                'Template and fill-in info pair %s contains too many elements.\n' % str(src_info))
+            exit(1)
+        if type(src_info[1]) is not dict:
+            sys.stderr.write(
+                'Did not get expected block / replacement pairs: %s.\n' % str(src_info))
+            exit(1)
         try: 
             if new_page in FLOWS:
                 generate_page(src_info[0], 
@@ -224,12 +239,15 @@ def main():
                               FLOWS[new_page])
             else:
                 sys.stderr.write(
-                    'WARNING: No FLOWS found for nagivation away from %s\n' % new_page)
+                    'WARNING: No FLOWS found for navigation away from %s\n' % new_page)
                 generate_page(src_info[0], new_page, src_info[1], args.clobber)
+        except (TagError, OverwriteError) as e:
+            sys.stderr.write(str(e) + '\n')
         except Exception as e:
-            print e
-            raise ConfigError('Error generating %s, likely due to config error.'
+            sys.stderr.write('Error generating %s, likely due to config error, details:\n'
                                % new_page)
+            sys.stderr.write(str(e) + '\n')
+            exit(1)
 
 if __name__ == "__main__":
     main()
