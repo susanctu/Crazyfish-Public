@@ -109,7 +109,8 @@ def generate_page(template, new_page, block_content, clobber=False, flow_info=No
             # so this could be an unreferenced start tag
             if is_start_tag(token):
                 if get_block_name(token) in block_content:
-                    raise TagError('Cannot replace 2 blocks when one nested inside other.')
+                    raise TagError('Cannot replace 2 blocks when one nested inside other, here %s is inside %s.' 
+                                   % (get_block_name(token), repl_block))
                 else:
                     repl_tag_depth += 1
                     tag_depth += 1
@@ -130,16 +131,17 @@ def generate_page(template, new_page, block_content, clobber=False, flow_info=No
                 tag_depth -= 1
                 if tag_depth < 0:
                     raise TagError('Found more endtags than start tags.')
-                  
+ 
+    output.write('<script src=\"https://code.jquery.com/jquery.js\"></script>')
+    output.write('<script>')                 
     if flow_info: # TODO (susanctu): this works but SHOULD go before the last html tag
-        output.write('<script src=\"https://code.jquery.com/jquery.js\"></script>')
-        output.write('<script>')
         for class_or_id in flow_info.keys():
             output.write(JS_FORMAT % (class_or_id, 
                                      flow_info[class_or_id][0], 
                                      flow_info[class_or_id][1]))
-        output.write('</script>')
+    output.write('</script>')
     output.close()          
+
 
 def load_config(config_file):
     """
