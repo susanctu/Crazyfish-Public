@@ -1,0 +1,54 @@
+<!-- **************************************************************************
+Main html template for the search_results.html page. This template renders
+the event table and header for a single results tab.
+    @param {location_requested} String representing the location requested by
+           the user, so that future
+    @param {tab_id} Unique ID for the results tab.
+    @param {time_header_data} A structure with the following fields: min_time
+           corresponding to the minimum time allowed for display, max_time
+           corresponding to the maximum time allowed for display, date which
+           is a string representing the date the user searched for, and
+           times_val_and_pos which is an array of times to be displayed on
+           the time filter control. See search_results_body_content_timeline
+           prototype for details.
+    @param {lines_data} See search_results_body_content_lines.html prototype
+           for details.
+    @param {events_data} See search_results_body_events_graph.html prototype
+           for details.
+    @param {categories_data} See search_results_body_content_controls.html
+           prototype for details.
+*************************************************************************** -->
+<!-- Need a location helper for future Ajax GET requests -->
+<div class="location-helper" style="display: none;">{{ location_requested }}</div>
+<!-- Render only the data for one date, which goes in a single tab -->
+<div id="{{ tab_id }}" class="results results-events selected">
+    <div class="results-content">
+        <div class="event-holder">
+            <!-- Render controls here -->
+            <div class="timeline-header" style="left: 0px;">
+                {% include "search_results_body_content_controls.html" with category_list=categories_data %}
+
+                {% include "search_results_body_content_timeline.html" with min_time=time_header_data.min_time max_time=time_header_data.max_time date=time_header_data.date times_val_and_pos=time_header_data.times_val_and_pos %}
+            </div>
+
+            <!-- Render event graph here -->
+            <div class="events-table">
+                {% include "search_results_body_content_lines.html" with lines_data_pos=lines_data %}
+
+                {% include "search_results_body_content_events_graph.html" with event_list=events_data %}
+            </div>
+
+            <!-- Display the warning only if no events were found -->
+            {% if events_data %}
+            <div class="no-event-found-warning" style="display: none;">
+                No event found with the filters you selected...
+            </div>
+            {% else %}
+            <div class="no-event-found-warning" style="display: block;">
+                No event found with the filters you selected...
+            </div>
+            {% endif %}
+            <div class="bottom-spacer"></div>
+        </div>
+    </div>
+</div>

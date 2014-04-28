@@ -1,0 +1,99 @@
+/* Filter / sort list pseudo elements */
+
+.filter-logos-wrapper li span:after, .sort-logos-wrapper li span:after {
+    content: "";
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    margin-left: -5px;
+    width: 0px;
+    height: 0px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent rgba(0, 0, 0, 0.7);
+}
+
+/* Filter / sort list tooltip animations */
+
+.filter-logos-wrapper li:hover span, .sort-logos-wrapper li:hover span {
+    opacity: 1;
+}
+
+/* Time bar pseudo elements */
+
+.results-events .timeheader .anchor .hit-area .time-flag.right-arrow:before, .results-events .timeheader .anchor .hit-area .time-flag.right-arrow:after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 100%;
+    width: 0px;
+    height: 0px;
+    border-width: 11px;
+    border-style: solid;
+    border-color: transparent transparent transparent #38afc8;
+}
+
+.results-events .timeheader .anchor .hit-area .time-flag.right-arrow:after {
+    bottom: 1px;
+    border-color: transparent transparent transparent #00e3fe;
+    border-width: 8px;
+}
+
+.results-events .timeheader .anchor .hit-area .time-flag.left-arrow:before, .results-events .timeheader .anchor .hit-area .time-flag.left-arrow:after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0%;
+    margin-left: -22px;
+    width: 0px;
+    height: 0px;
+    border-width: 11px;
+    border-style: solid;
+    border-color: transparent #38afc8 transparent transparent;
+}
+
+.results-events .timeheader .anchor .hit-area .time-flag.left-arrow:after {
+    bottom: 1px;
+    margin-left: -16px;
+    border-color: transparent #00e3fe transparent transparent;
+    border-width: 8px;
+}
+
+/* Time bar animations */
+
+.results-events .timeheader .anchor .hit-area:hover .time-flag {
+    background-color: #fff9e5;
+    color: #fe6e27;
+    border-color: #fe6e27;
+}
+
+.results-events .timeheader .anchor .hit-area.left:hover {
+    border-left: 2px solid #fe6e27;
+}
+
+.results-events .timeheader .anchor .hit-area:hover .time-flag.left-arrow:before {
+    border-color: transparent #fe6e27 transparent transparent;
+}
+
+.results-events .timeheader .anchor .hit-area:hover .time-flag.left-arrow:after {
+    border-color: transparent #fff9e5 transparent transparent;
+}
+
+.results-events .timeheader .anchor .hit-area.right:hover {
+    border-right: 2px solid #fe6e27;
+}
+
+.results-events .timeheader .anchor .hit-area:hover .time-flag.right-arrow:before {
+    border-color: transparent transparent transparent #fe6e27;
+}
+
+.results-events .timeheader .anchor .hit-area:hover .time-flag.right-arrow:after {
+    border-color: transparent transparent transparent #fff9e5;
+}
+
+
+/* Graph display animations */
+
+.results-events .event .event-info:hover {
+    background-color: #fff9e5;
+}

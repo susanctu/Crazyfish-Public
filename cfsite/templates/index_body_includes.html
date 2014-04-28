@@ -1,0 +1,14 @@
+<!-- **************************************************************************
+CSS and JS includes for the index.html page.
+Those are the scripts that should be loaded *after* the html has been declared.
+Other scripts should go into index_head_includes.html
+*************************************************************************** -->
+<script>
+     $(document).ready( function() { //set today's date as the default
+		var now = new Date();
+		$('#datePicker').val(CfUtils.format_as_day_month_date(now));
+	});
+
+    $('.dropdown-toggle').dropdown();
+    $('.datepicker').datepicker({placeInside:'#DPLoc'});
+</script>

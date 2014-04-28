@@ -1,0 +1,40 @@
+<!-- **************************************************************************
+Main html template for the index.html page. This template renders the event
+selection menu.
+*************************************************************************** -->
+{% load staticfiles %}
+<div class="main-search">
+
+	<form class="form-inline" role="form" action="search" method="get">
+        <div class="blue-box dropdown" style="text-align: center">
+        <div class="form-text" id="firstWord" style="width: 340px;">Show me events on</div>
+
+        <div class="form-group" id="DPLoc" style="width: 285px;">
+			<label id='dateLabelAndInput'>  
+				<input type="text" name="date" class="form-control datepicker cfinput" data-toggle="dropdown" id="datePicker" placeholder="date" readonly>  
+            </label>    
+            <script src="{% static "js/bootstrap-datepicker.js" %}"></script>
+        </div>
+
+        <span class="form-text" style="width: 50px;"> in </span>
+		
+        <div class="form-group" style="width: 250px;">
+			<label class="dropdown-toggle" data-toggle="dropdown" id='locationLabelAndInput'>
+				<input  type="text" name="location" class="form-control" value="Palo Alto, CA" readonly>
+            </label>
+            <ul class="dropdown-menu" role="menu">
+                <li>We're only available in Palo Alto, CA for now!
+            </ul>
+        </div>
+    </div>
+    <div class="button-container" align="center">
+            <input type="submit" id="go" class="btn btn-search" value="LET'S GO">
+    </div>
+
+    </form>
+    
+    </div>
+
+
+
+

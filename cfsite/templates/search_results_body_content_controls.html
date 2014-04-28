@@ -1,0 +1,77 @@
+<!-- **************************************************************************
+Filter and sort controls for the search_results.html template.
+    @param {category_list} a list of categories, each of them having the
+           following fields: css, name and id.
+
+The logo_css_name corresponds to the css class name used to determine which
+logo should be displayed for the category filter.
+The tooltip corresponds to the text that shows up when the user hovers above
+the logo.
+The id is used by the front-end javascript to use the table of correspondence
+between category IDs (used for the events list) and the actual category, so
+that events are properly filtered when the user clicks on the controls.
+*************************************************************************** -->
+<div class="controls-header">
+    <!-- FILTERS GO HERE (Category and Sort by) -->
+
+    <!-- Start by filter controls, for which we get the list of approved
+    categories from context -->
+    <div class="filter-controls control-set">
+        <div class="label">
+            Filter by:
+        </div>
+            <ul class="filter-logos-wrapper">
+            {% for category in category_list %}
+                <li>
+                    <div class="filter-logos">
+                        <div class="spacer"></div>
+                        <div class="filter-logo filter-logo-{{ category.css }}"></div>
+                    </div>
+                    <span class="tooltip-comment">{{ category.name|safe }}</span>
+                    <span class="category-id" style="display: none;">
+                        {{ category.id }}
+                    </span>
+                </li>
+            {% endfor %}
+            </ul>
+    </div>
+
+    <!-- Sorting controls are completely independent of what happens in the
+    database, so they don't need to be given any context and are simply as follows -->
+    <div class="sort-controls control-set">
+        <div class="label">
+            Sort by:
+        </div>
+        <ul class="sort-logos-wrapper">
+            <li>
+                <div class="sort-logos">
+                    <div class="spacer"></div>
+                    <div class="sort-logo sort-logo-magic selected"></div>
+                </div>
+                <span class="tooltip-comment">magic</span>
+            </li>
+            <li>
+                <div class="sort-logos">
+                    <div class="spacer"></div>
+                    <div class="sort-logo sort-logo-price"></div>
+                </div>
+                <span class="tooltip-comment">price</span>
+            </li>
+            <li>
+                <div class="sort-logos">
+                    <div class="spacer"></div>
+                    <div class="sort-logo sort-logo-start-time"></div>
+                </div>
+                <span class="tooltip-comment">start time</span>
+            </li>
+            <li>
+                <div class="sort-logos">
+                    <div class="spacer"></div>
+                    <div class="sort-logo sort-logo-duration"></div>
+                </div>
+                <span class="tooltip-comment">duration</span>
+            </li>
+        </ul>
+
+    </div>
+</div>

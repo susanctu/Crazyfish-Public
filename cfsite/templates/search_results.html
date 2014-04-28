@@ -1,0 +1,29 @@
+<!-- **************************************************************************
+Base template for the search_results.html page. This template extends the CF
+base template, and calls several other subtemplates to render different
+elements.
+    @param {sr_data} a structure containing all the required data to render the
+           search_results.html page. This structure should have the following
+           fields: time_header, lines, categories, uid and events.
+What is in these structures is detailed in the search_results_body_contents.html
+template prototype.
+*************************************************************************** -->
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}crazyfish :: all your events in one place{% endblock %}
+
+{% block head_style_and_js %}{% include "search_results_head_includes.html" %}{% endblock %}
+
+{% block header_content %}{% include "search_results_header.html" %}{% endblock %}
+
+{% block body_content %}
+    <div id="results-area">
+    {% include "search_results_body_content.html" with location_requested=sr_data.location_requested tab_id=sr_data.uid time_header_data=sr_data.time_header lines_data=sr_data.lines categories_data=sr_data.categories events_data=sr_data.events %}
+    </div>
+{% endblock %}
+
+{% block footer %}{% include "search_results_footer.html" %}{% endblock %}
+
+{% block body_js %}{% include "search_results_body_includes.html" %}{% endblock %}
+

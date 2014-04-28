@@ -1,0 +1,25 @@
+<!-- **************************************************************************
+Base template for all other CF templates.
+*************************************************************************** -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>{% block title %}{% endblock %}</title>
+
+    {% block head_style_and_js %}{% endblock %}
+
+    {% include "google_analytics.html" %}
+</head>
+
+<body>
+    {% block header_content %}{% endblock %}
+
+    {% block body_content %}{% endblock %}
+
+    {% block footer %}{% endblock %}
+
+    {% block body_js %}{% endblock %}
+ </body>
+
+</html>

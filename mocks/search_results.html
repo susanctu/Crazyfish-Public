@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>crazyfish :: all your events in one place</title>
+    <link href="css/cf.css" rel="stylesheet">
+    <link href="css/cf-animations.css" rel="stylesheet">
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+</head>
+
+<body id="body">
+<div class="header-wrapper">
+    <div class="header">
+        <div class="logo-wrapper">
+            <div class="nowrap">
+                <a href="/">
+                    <div id="header-logo">
+                        <div class="cflogo"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="results-area">
+    <div class="location-helper" style="display: none;">Palo Alto</div>
+    <div id="results-0" class="results results-events selected">
+        <div class="results-over-content">
+            <div class="results-over-content__error-container" style="display: none;">
+                <div class="search-results-tab-error">
+                    <div class="search-results-tab-error__header"></div>
+                    <div class="search-results-tab-error__message"></div>
+                    <img src="/static/img/logo-dead-transparent.png">
+                </div>
+            </div>
+        </div>
+        <div class="results-content">
+            <div class="event-holder">
+                <div class="timeline-header" style="left: 0px;">
+                    <div class="controls-header">
+                        <!-- FILTERS GO HERE (Category and Sort by) -->
+                        <div class="filter-controls control-set">
+                            <div class="label">
+                                Filter by:
+                            </div>
+                            <ul class="filter-logos-wrapper">
+                                <li>
+                                    <div class="filter-logos">
+                                        <div class="spacer"></div>
+                                        <div class="filter-logo filter-logo-arts-culture selected"></div>
+                                    </div>
+                                    <span class="tooltip-comment">arts &amp; culture</span>
+                                    <span class="category-id" style="display: none;">0</span>
+                                </li>
+                                <li>
+                                    <div class="filter-logos">
+                                        <div class="spacer"></div>
+                                        <div class="filter-logo filter-logo-classes-workshops selected"></div>
+                                    </div>
+                                    <span class="tooltip-comment">classes &amp; workshops</span>
+                                    <span class="category-id" style="display: none;">1</span>
+                                </li>
+                                <li>
+                                    <div class="filter-logos">
+                                        <div class="spacer"></div>
+                                        <div class="filter-logo filter-logo-conference selected"></div>
+                                    </div>
+                                    <span class="tooltip-comment">conference</span>
+                                    <span class="category-id" style="display: none;">2</span>
+                                </li>
+                                <li>
+                                    <div class="filter-logos">
+                                        <div class="spacer"></div>
+                                        <div class="filter-logo filter-logo-family selected"></div>
+                                    </div>
+                                    <span class="tooltip-comment">family</span>
+                                    <span class="category-id" style="display: none;">3</span>
+                                </li>
+                                <li>
+                                    <div class="filter-logos">
+                                        <div class="spacer"></div>
+                                        <div class="filter-logo filter-logo-food-wine selected"></div>
+                                    </div>
+                                    <span class="tooltip-comment">food &amp; wine</span>
+                                    <span class="category-id" style="display: none;">4</span>
+                                </li>
+                                <li>
+                                    <div class="filter-logos">
+                                        <div class="spacer"></div>
+                                        <div class="filter-logo filter-logo-meetup selected"></div>
+                                    </div>
+                                    <span class="tooltip-comment">meetup</span>
+                                    <span class="category-id" style="display: none;">5</span>
+                                </li>
+                                <li>
+                                    <div class="filter-logos">
+                                        <div class="spacer"></div>
+                                        <div class="filter-logo filter-logo-music selected"></div>
+                                    </div>
+                                    <span class="tooltip-comment">music</span>
+                                    <span class="category-id" style="display: none;">6</span>
+                                </li>
+                                <li>
+                                    <div class="filter-logos">
+                                        <div class="spacer"></div>
+                                        <div class="filter-logo filter-logo-sports selected"></div>
+                                    </div>
+                                    <span class="tooltip-comment">sports</span>
+                                    <span class="category-id" style="display: none;">7</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="sort-controls control-set">
+                            <div class="label">
+                                Sort by:
+                            </div>
+                            <ul class="sort-logos-wrapper">
+                                <li>
+                                    <div class="sort-logos">
+                                        <div class="spacer"></div>
+                                        <div class="sort-logo sort-logo-magic selected"></div>
+                                    </div>
+                                    <span class="tooltip-comment">magic</span>
+                                </li>
+                                <li>
+                                    <div class="sort-logos">
+                                        <div class="spacer"></div>
+                                        <div class="sort-logo sort-logo-price"></div>
+                                    </div>
+                                    <span class="tooltip-comment">price</span>
+                                </li>
+                                <li>
+                                    <div class="sort-logos">
+                                        <div class="spacer"></div>
+                                        <div class="sort-logo sort-logo-start-time"></div>
+                                    </div>
+                                    <span class="tooltip-comment">start time</span>
+                                </li>
+                                <li>
+                                    <div class="sort-logos">
+                                        <div class="spacer"></div>
+                                        <div class="sort-logo sort-logo-duration"></div>
+                                    </div>
+                                    <span class="tooltip-comment">duration</span>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+
+                    <div class="timeline-table">
+                        <!-- Start/end time selection goes here -->
+                        <div class="head-block">
+                            <div class="timeheader">
+                                <div class="time-helper" style="display: none;">
+                                    <span class="time-helper-min-value">08:00</span>
+                                    <span class="time-helper-max-value">24:00</span>
+                                </div>
+
+                                <div class="anchor left">
+                                    <div class="hit-area left">
+                                        <div class="time-flag right right-arrow">
+                                            Start
+                                            <div class="arrow"></div>
+                                        </div>
+                                        <div class="time-flag left left-border timebox">
+                                            8:45 AM
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="timeval" style="left: 12.5%; width: 25%;">
+                                    <div class="time light hour10">
+                                        10am
+                                    </div>
+                                </div>
+                                <div class="timeval" style="left: 25%; width: 25%;">
+                                    <div class="time light hour12">
+                                        12pm
+                                    </div>
+                                </div>
+                                <div class="timeval" style="left: 37.5%; width: 25%;">
+                                    <div class="time light hour14">
+                                        2pm
+                                    </div>
+                                </div>
+                                <div class="timeval" style="left: 50%; width: 25%;">
+                                    <div class="time light hour16">
+                                        4pm
+                                    </div>
+                                </div>
+                                <div class="timeval" style="left: 62.5%; width: 25%;">
+                                    <div class="time light hour18">
+                                        6pm
+                                    </div>
+                                </div>
+                                <div class="timeval" style="left: 75%; width: 25%;">
+                                    <div class="time light hour20">
+                                        8pm
+                                    </div>
+                                </div>
+                                <div class="timeval" style="left: 87.5%; width: 25%;">
+                                    <div class="time light hour22">
+                                        10pm
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="timeheader timeheader-right">
+                                <div class="anchor right" style="left: 100%;">
+                                    <div class="hit-area right">
+                                        <div class="time-flag left left-arrow">
+                                            End
+                                            <div class="arrow"></div>
+                                        </div>
+                                        <div class="time-flag right right-border timebox">
+                                            11:45 PM
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="left-column-header">
+                                <div class="main">
+                                    <p class="col-header-cat">All events</p>
+                                    <p class="col-header-date">for Wed Jan 29th</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="events-table">
+
+                    <div class="alllines">
+                        <div class="graydiv graydiv-left"></div>
+                        <div class="graydiv graydiv-right"></div>
+
+                        <div class="line" style="left: 0%"></div>
+                        <div class="line" style="left: 12.5%"></div>
+                        <div class="line" style="left: 25%"></div>
+                        <div class="line" style="left: 37.5%"></div>
+                        <div class="line" style="left: 50%"></div>
+                        <div class="line" style="left: 62.5%"></div>
+                        <div class="line" style="left: 75%"></div>
+                        <div class="line" style="left: 87.5%"></div>
+                        <div class="line" style="left: calc(100% - 1px)"></div>
+                    </div>
+
+                    <div class="events-graph">
+
+                        <div class="event">
+                            <div class="event-helper" style="display: none;">
+                                <div class="event-helper-category">[6]</div>
+                                <div class="event-helper-magic">5</div>
+                                <div class="event-helper-price">0</div>
+                                <div class="event-helper-start-time">7:30 PM</div>
+                                <div class="event-helper-duration-minutes">0</div>
+                            </div>
+
+                            <div class="event-info">
+                                <div class="toggle-expand"></div>
+                                <div class="category-column">
+                                    <div class="category-logos">
+                                        <div class="category-logo category-logo-music"></div>
+                                    </div>
+                                    <div class="category-name">
+                                        Music
+                                    </div>
+                                </div>
+                                <div class="title-column">
+                                    <div class="title-main">
+                                        Stanford Percussion Ensemble - Mark Verrege, director
+                                    </div>
+                                    <div class="title-sub">
+                                        Mark Verrege directs the Percussion Ensemble's program featuring Bob Becker's Mudra, Thomas Gauger's Gainsborough, Blake Tyson's Cloud Forest, Doug Wallace's Chimera, Rudiger Pawassar's Sculpture 3, and other selections.
+                                    </div>
+                                </div>
+                                <div class="price-column">
+                                    <div class="price-free">
+                                        free
+                                    </div>
+                                </div>
+                                <div class="event-time-info">
+                                    <div class="graph">
+                                        <div class="event-box no-duration" style="margin-left: 71.9%">
+                                            <div class="point warning"></div>
+                                            <div class="warning-message">missing info</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="address-column">
+                                    <div class="address">
+                                        Bing Concert Hall Studio, Stanford University
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="event-details">
+
+                                <div class="event-details-column-left">
+                                    <div class="event-title-field">
+                                        <div class="event-title">Stanford Percussion Ensemble - Mark Verrege, director</div>
+                                    </div>
+
+                                    <div class="event-description-field">
+                                        <div class="event-description">Mark Verrege directs the Percussion Ensemble's program featuring Bob Becker's Mudra, Thomas Gauger's Gainsborough, Blake Tyson's Cloud Forest, Doug Wallace's Chimera, Rudiger Pawassar's Sculpture 3, and other selections.</div>
+                                    </div>
+
+                                    <div class="event-external">
+                                        <div class="link-external">
+                                            <a href="http://live.stanford.edu/calendar/january-2014/stanford-percussion-ensemble">View Event</a>
+                                            <div class="link-comment">(Opens organizer's page in a new window)</div>
+                                        </div>
+                                        <div class="calendar-integration"></div>
+                                        <div class="share-widgets"></div>
+                                    </div>
+
+                                </div>
+
+                                <div class="event-details-column-middle">
+
+                                    <div class="event-all-other container">
+                                        <div class="event-misc-info">
+                                            <div class="event-misc-info-when">
+                                                <div class="event-misc-info-subtitle">When:</div>
+                                                <div class="event-misc-info-details">Wednesday, January 29th, 7:30 PM</div>
+                                            </div>
+                                            <div class="event-misc-info-where">
+                                                <div class="event-misc-info-subtitle">Where:</div>
+                                                <div class="event-misc-info-details">Bing Concert Hall Studio</div>
+                                            </div>
+                                            <div class="event-misc-info-price">
+                                                <div class="event-misc-info-subtitle">Price:</div>
+                                                <div class="event-misc-info-details">$0</div>
+                                            </div>
+                                            <div class="event-misc-info-admission">
+                                                <div class="event-misc-info-subtitle">Admission:</div>
+                                                <div class="event-misc-info-details">free</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="event-details-column-right">
+                                    <div class="deselect">
+                                        Collapse
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="separator"></div>
+
+                        <div class="event">
+                            <div class="event-helper" style="display: none;">
+                                <div class="event-helper-category">[0]</div>
+                                <div class="event-helper-magic">2.5</div>
+                                <div class="event-helper-price">10</div>
+                                <div class="event-helper-start-time">2:30 PM</div>
+                                <div class="event-helper-duration-minutes">0</div>
+                            </div>
+
+                            <div class="event-info">
+                                <div class="toggle-expand"></div>
+                                <div class="category-column">
+                                    <div class="category-logos">
+                                        <div class="category-logo category-logo-arts-culture"></div>
+                                    </div>
+                                    <div class="category-name">
+                                        Arts &amp; Culture
+                                    </div>
+                                </div>
+                                <div class="title-column">
+                                    <div class="title-main">
+                                        Cirque du Soleil's Amaluna
+                                    </div>
+                                    <div class="title-sub">
+                                        Join the GSPB for a trip to see Cirque de Soleil's Amaluna! Inspired by Shakespeare's The Tempest, this magical show takes you to a mysterious island where goddesses walk the land and the rhythm of life is rules by the cycles of the moon.
+                                        For more information, see the show's website at http://www.cirquedusoleil.com/en/shows/amaluna/default.aspx.
+                                        We'll be attending the 8pm performance of the show on Thursday, January 30th. We'll meet at 6:45pm in front of the GCC (750 Escondido Rd) on the day of the show to distribute tickets and work out carpools. The copay for each attendee is $25, a huge discount on the sticker price of $70!
+                                        Please sign up at the link below before 5pm on Friday, January 24th. **Only people who are SELECTED will be notified.** Lottery winners will receive an email with further instructions that evening.
+                                        Sign up here: https://www.research.net/s/Amaluna
+                                        Sponsored by the Graduate Student Programming Board
+                                        http://www.stanford.edu/group/gspb/"
+                                    </div>
+                                </div>
+                                <div class="price-column">
+                                    <div class="from-flag">
+                                        from
+                                    </div>
+                                    <div class="currency from">
+                                        $
+                                    </div>
+                                    <div class="price from">
+                                        10
+                                    </div>
+                                </div>
+
+                                <div class="event-time-info">
+                                    <div class="graph">
+                                        <div class="event-box no-duration" style="margin-left: 40.6%">
+                                            <div class="point warning"></div>
+                                            <div class="warning-message">missing info</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="address-column">
+                                    <div class="address">
+                                        Memorial Auditorium, Stanford University
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="event-details">
+
+                                <div class="event-details-column-left">
+                                    <div class="event-title-field">
+                                        <div class="event-title">Cirque du Soleil's Amaluna</div>
+                                    </div>
+
+                                    <div class="event-description-field">
+                                        <div class="event-description">
+                                            <p>Join the GSPB for a trip to see Cirque de Soleil's Amaluna! Inspired by Shakespeare's The Tempest, this magical show takes you to a mysterious island where goddesses walk the land and the rhythm of life is rules by the cycles of the moon.
+                                            For more information, see the show's website at http://www.cirquedusoleil.com/en/shows/amaluna/default.aspx.</p>
+                                            <br>
+                                            <p>We'll be attending the 8pm performance of the show on Thursday, January 30th. We'll meet at 6:45pm in front of the GCC (750 Escondido Rd) on the day of the show to distribute tickets and work out carpools. The copay for each attendee is $25, a huge discount on the sticker price of $70!</p>
+                                            <br>
+                                            <p>Please sign up at the link below before 5pm on Friday, January 24th. **Only people who are SELECTED will be notified.** Lottery winners will receive an email with further instructions that evening.</p>
+                                            <br>
+                                            <p>Sign up here: https://www.research.net/s/Amaluna</p>
+                                            <br>
+                                            <p>Sponsored by the Graduate Student Programming Board
+                                            http://www.stanford.edu/group/gspb/</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="event-external">
+                                        <div class="link-external">
+                                            <a href="http://live.stanford.edu/calendar/january-2014/grupo-corpo">View Event</a>
+                                            <div class="link-comment">(Opens organizer's page in a new window)</div>
+                                        </div>
+                                        <div class="calendar-integration"></div>
+                                        <div class="share-widgets"></div>
+                                    </div>
+
+                                </div>
+
+                                <div class="event-details-column-middle">
+
+                                    <div class="event-all-other container">
+                                        <div class="event-misc-info">
+                                            <div class="event-misc-info-when">
+                                                <div class="event-misc-info-subtitle">When:</div>
+                                                <div class="event-misc-info-details">Wednesday, January 29th, 2:30 PM</div>
+                                            </div>
+                                            <div class="event-misc-info-where">
+                                                <div class="event-misc-info-subtitle">Where:</div>
+                                                <div class="event-misc-info-details">Memorial Auditorium </div>
+                                            </div>
+                                            <div class="event-misc-info-price">
+                                                <div class="event-misc-info-subtitle">Price:</div>
+                                                <div class="event-misc-info-details">$10</div>
+                                            </div>
+                                            <div class="event-misc-info-admission">
+                                                <div class="event-misc-info-subtitle">Admission:</div>
+                                                <div class="event-misc-info-details">general $15 | student $10 | free for Stanford students with SUID | senior $10</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="event-details-column-right">
+                                    <div class="deselect">
+                                        Collapse
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="separator"></div>
+
+                        <div class="event">
+                            <div class="event-helper" style="display: none;">
+                                <div class="event-helper-category">[1]</div>
+                                <div class="event-helper-magic">1</div>
+                                <div class="event-helper-price">25</div>
+                                <div class="event-helper-start-time">12:30 PM</div>
+                                <div class="event-helper-duration-minutes">120</div>
+                            </div>
+
+                            <div class="event-info">
+                                <div class="toggle-expand"></div>
+                                <div class="category-column">
+                                    <div class="category-logos">
+                                        <div class="category-logo category-logo-classes-workshops"></div>
+                                    </div>
+                                    <div class="category-name">
+                                        Classes &amp; Workshops
+                                    </div>
+                                </div>
+                                <div class="title-column">
+                                    <div class="title-main">
+                                        Dan Riley, "Generation Atheist"
+                                    </div>
+                                    <div class="title-sub">
+                                        We will be hosting author Dan Riley for a lecture and discussion about his book, Generation Atheist.
+
+                                        From 2008-2011, Dan Riley worked as a campus organizer in the outreach department at the non-profit think tank the Center for Inquiry. He got to know many secular student leaders during his time with CFI. Finding many of their personal journeys to atheism to be fascinating, compelling, and unique, he decided to create a book that tells their stories.
+
+                                        Free and open to all. Hosted by the Atheists, Humanists, and Agnostics (AHA!) @ Stanford. Sponsored by Stanford Graduate Student Council and the ASSU Undergraduate Senate.
+                                    </div>
+                                </div>
+                                <div class="price-column">
+                                    <div class="currency">
+                                        $
+                                    </div>
+                                    <div class="price">
+                                        25
+                                    </div>
+                                </div>
+                                <div class="lines">
+                                    <div class=" line" style="left: 12.5%"></div>
+                                    <div class=" line" style="left: 25%"></div>
+                                    <div class=" line" style="left: 37.5%"></div>
+                                    <div class=" line" style="left: 50%"></div>
+                                    <div class=" line" style="left: 62.5%"></div>
+                                    <div class=" line" style="left: 75%"></div>
+                                    <div class=" line" style="left: 87.5%"></div>
+                                </div>
+                                <div class="event-time-info">
+                                    <div class="graph">
+                                        <div class="box event-box" style="width: 12.5%; margin-left: 28.1%;">
+                                            <div class="duration-wrapper">
+                                                <div class="duration">2h00</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="address-column">
+                                    <div class="address">
+                                        Memorial Auditorium, Stanford University
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="event-details">
+
+                                <div class="event-details-column-left">
+                                    <div class="event-title-field">
+                                        <div class="event-title">
+                                            Dan Riley, "Generation Atheist"
+                                        </div>
+                                    </div>
+
+                                    <div class="event-description-field">
+                                        <div class="event-description">
+                                            <p>We will be hosting author Dan Riley for a lecture and discussion about his book, Generation Atheist.</p>
+                                            <br>
+                                            <p>From 2008-2011, Dan Riley worked as a campus organizer in the outreach department at the non-profit think tank the Center for Inquiry. He got to know many secular student leaders during his time with CFI. Finding many of their personal journeys to atheism to be fascinating, compelling, and unique, he decided to create a book that tells their stories.</p>
+                                            <br>
+                                            <p>Free and open to all. Hosted by the Atheists, Humanists, and Agnostics (AHA!) @ Stanford. Sponsored by Stanford Graduate Student Council and the ASSU Undergraduate Senate.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="event-external">
+                                        <div class="link-external">
+                                            <a href="http://live.stanford.edu/calendar/january-2014/grupo-corpo">View Event</a>
+                                            <div class="link-comment">(Opens organizer's page in a new window)</div>
+                                        </div>
+                                        <div class="calendar-integration"></div>
+                                        <div class="share-widgets"></div>
+                                    </div>
+
+                                </div>
+
+                                <div class="event-details-column-middle">
+
+                                    <div class="event-all-other container">
+                                        <div class="event-misc-info">
+                                            <div class="event-misc-info-when">
+                                                <div class="event-misc-info-subtitle">When:</div>
+                                                <div class="event-misc-info-details">Wednesday, January 29th, 12:30 PM</div>
+                                            </div>
+                                            <div class="event-misc-info-where">
+                                                <div class="event-misc-info-subtitle">Where:</div>
+                                                <div class="event-misc-info-details">Memorial Auditorium </div>
+                                            </div>
+                                            <div class="event-misc-info-price">
+                                                <div class="event-misc-info-subtitle">Price:</div>
+                                                <div class="event-misc-info-details">$25</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="event-details-column-right">
+                                    <div class="deselect">
+                                        Collapse
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="separator"></div>
+
+                        <div class="event">
+                            <div class="event-helper" style="display: none;">
+                                <div class="event-helper-category">[2]</div>
+                                <div class="event-helper-magic">1.2</div>
+                                <div class="event-helper-price">125</div>
+                                <div class="event-helper-start-time">1:30 PM</div>
+                                <div class="event-helper-duration-minutes">0</div>
+                            </div>
+
+                            <div class="event-info">
+                                <div class="toggle-expand"></div>
+                                <div class="category-column">
+                                    <div class="category-logos">
+                                        <div class="category-logo category-logo-conference"></div>
+                                    </div>
+                                    <div class="category-name">
+                                        Conference
+                                    </div>
+                                </div>
+                                <div class="title-column">
+                                    <div class="title-main">
+                                        Contemporary Issues in Indian Law Conference
+                                    </div>
+                                    <div class="title-sub">
+                                        No description for this event.
+                                    </div>
+                                </div>
+                                <div class="price-column">
+                                    <div class="currency">
+                                        $
+                                    </div>
+                                    <div class="price">
+                                        125
+                                    </div>
+                                </div>
+
+                                <div class="event-time-info">
+                                    <div class="graph">
+                                        <div class="event-box no-duration" style="margin-left: 34.4%">
+                                            <div class="point warning"></div>
+                                            <div class="warning-message">missing info</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="address-column">
+                                    <div class="address">
+                                        Memorial Auditorium, Stanford University
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="event-details">
+
+                                <div class="event-details-column-left">
+                                    <div class="event-title-field">
+                                        <div class="event-title">
+                                            Contemporary Issues in Indian Law Conference
+                                        </div>
+                                    </div>
+
+                                    <div class="event-description-field">
+                                        <div class="event-description">
+                                            No description for this event.
+                                        </div>
+                                    </div>
+
+                                    <div class="event-external">
+                                        <div class="link-external">
+                                            <a href="http://live.stanford.edu/calendar/january-2014/grupo-corpo">View Event</a>
+                                            <div class="link-comment">(Opens organizer's page in a new window)</div>
+                                        </div>
+                                        <div class="calendar-integration"></div>
+                                        <div class="share-widgets"></div>
+                                    </div>
+
+                                </div>
+
+                                <div class="event-details-column-middle">
+
+                                    <div class="event-all-other container">
+                                        <div class="event-misc-info">
+                                            <div class="event-misc-info-when">
+                                                <div class="event-misc-info-subtitle">When:</div>
+                                                <div class="event-misc-info-details">Thursday, October 31st, 7:30 PM</div>
+                                            </div>
+                                            <div class="event-misc-info-where">
+                                                <div class="event-misc-info-subtitle">Where:</div>
+                                                <div class="event-misc-info-details">Dinkelspiel Auditorium </div>
+                                            </div>
+                                            <div class="event-misc-info-price">
+                                                <div class="event-misc-info-subtitle">Price:</div>
+                                                <div class="event-misc-info-details">$10</div>
+                                            </div>
+                                            <div class="event-misc-info-admission">
+                                                <div class="event-misc-info-subtitle">Admission:</div>
+                                                <div class="event-misc-info-details">general $15 | student $10 | free for Stanford students with SUID | senior $10</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="event-details-column-right">
+                                    <div class="deselect">
+                                        Collapse
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="separator"></div>
+
+                        <div class="event">
+                            <div class="event-helper" style="display: none;">
+                                <div class="event-helper-category">3</div>
+                                <div class="event-helper-magic">4.3</div>
+                                <div class="event-helper-price">10</div>
+                                <div class="event-helper-start-time">2:00 PM</div>
+                                <div class="event-helper-duration-minutes">210</div>
+                            </div>
+
+                            <div class="event-info">
+                                <div class="toggle-expand"></div>
+                                <div class="category-column">
+                                    <div class="category-logos">
+                                        <div class="category-logo category-logo-family"></div>
+                                    </div>
+                                    <div class="category-name">
+                                        Family
+                                    </div>
+                                </div>
+                                <div class="title-column">
+                                    <div class="title-main">
+                                        Cal vs. Colorado: Family Friendly Hoops Party
+                                    </div>
+                                    <div class="title-sub">
+                                        Show your kids what Cal Spirit is all about at the Cal vs. Colorado Family Friendly Hoops Party. Young Cal Bears will delight in meeting Oski, face painting, a bounce house, and the general feelings of camaraderie a hoops party brings!
+                                        Hoops Party Includes
+                                        Admission to the party
+                                        Chalk talk from a men’s basketball assistant coach
+                                        Remarks from Deputy Director of Cal Athletics Phil Esten
+                                        Interactive Cal themed children’s program
+                                        Lunch - menu TBA
+                                        One drink ticket for an alcoholic or non-alcoholic beverage
+                                        No-host bar for additional alcoholic and non-alcoholic beverages
+                                        Pom-poms and “Go Bears!” cheer cards
+                                        Performance from the Cal Straw Hat Band and Cal Spirit Groups
+                                        Oski coloring books, bounce house, face painting, and other activities children will love
+                                        Game tickets are not included.
+                                    </div>
+                                </div>
+                                <div class="price-column">
+                                    <div class="from-flag">
+                                        from
+                                    </div>
+                                    <div class="currency from">
+                                        $
+                                    </div>
+                                    <div class="price from">
+                                        10
+                                    </div>
+                                </div>
+
+                                <div class="event-time-info">
+                                    <div class="graph">
+                                        <div class="box event-box" style="width: 21.9%; margin-left: 37.5%;">
+                                            <div class="duration-wrapper">
+                                                <div class="duration">3h30</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="address-column">
+                                    <div class="address">
+                                        Campus drive @ Munger residences, Stanford University
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="event-details">
+
+                                <div class="event-details-column-left">
+                                    <div class="event-title-field">
+                                        <div class="event-title">
+                                            Cal vs. Colorado: Family Friendly Hoops Party
+                                        </div>
+                                    </div>
+
+                                    <div class="event-description-field">
+                                        <div class="event-description">
+                                            <p>Show your kids what Cal Spirit is all about at the Cal vs. Colorado Family Friendly Hoops Party. Young Cal Bears will delight in meeting Oski, face painting, a bounce house, and the general feelings of camaraderie a hoops party brings!</p>
+                                            <br>
+                                            <p>Hoops Party Includes:</p>
+                                            <ul>
+                                                <li>Admission to the party</li>
+                                                <li>Chalk talk from a men's basketball assistant coach</li>
+                                                <li>Remarks from Deputy Director of Cal Athletics Phil Esten</li>
+                                                <li>Interactive Cal themed children's program</li>
+                                                <li>Lunch - menu TBA</li>
+                                                <li>One drink ticket for an alcoholic or non-alcoholic beverage</li>
+                                                <li>No-host bar for additional alcoholic and non-alcoholic beverages</li>
+                                                <li>Pom-poms and "Go Bears!" cheer cards</li>
+                                                <li>Performance from the Cal Straw Hat Band and Cal Spirit Groups</li>
+                                                <li>Oski coloring books, bounce house, face painting, and other activities children will love</li>
+                                            </ul>
+                                            <br>
+                                            <p>Game tickets are not included.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="event-external">
+                                        <div class="link-external">
+                                            <a href="http://live.stanford.edu/calendar/january-2014/grupo-corpo">View Event</a>
+                                            <div class="link-comment">(Opens organizer's page in a new window)</div>
+                                        </div>
+                                        <div class="calendar-integration"></div>
+                                        <div class="share-widgets"></div>
+                                    </div>
+
+                                </div>
+
+                                <div class="event-details-column-middle">
+
+                                    <div class="event-all-other container">
+                                        <div class="event-misc-info">
+                                            <div class="event-misc-info-when">
+                                                <div class="event-misc-info-subtitle">When:</div>
+                                                <div class="event-misc-info-details">Wednesday, January 29th, 2:00 PM</div>
+                                            </div>
+                                            <div class="event-misc-info-where">
+                                                <div class="event-misc-info-subtitle">Where:</div>
+                                                <div class="event-misc-info-details">Campus drive @ Munger residences, Stanford University</div>
+                                            </div>
+                                            <div class="event-misc-info-price">
+                                                <div class="event-misc-info-subtitle">Price:</div>
+                                                <div class="event-misc-info-details">$10</div>
+                                            </div>
+                                            <div class="event-misc-info-admission">
+                                                <div class="event-misc-info-subtitle">Admission:</div>
+                                                <div class="event-misc-info-details">general $15 | student $10 | free for Stanford students with SUID | senior $10</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="event-details-column-right">
+                                    <div class="deselect">
+                                        Collapse
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="separator"></div>
+
+                        <div class="event">
+                            <div class="event-helper" style="display: none;">
+                                <div class="event-helper-category">4</div>
+                                <div class="event-helper-magic">2.5</div>
+                                <div class="event-helper-price">0</div>
+                                <div class="event-helper-start-time">2:00 PM</div>
+                                <div class="event-helper-duration-minutes">210</div>
+                            </div>
+
+                            <div class="event-info">
+                                <div class="toggle-expand"></div>
+                                <div class="category-column">
+                                    <div class="category-logos">
+                                        <div class="category-logo category-logo-food-wine"></div>
+                                    </div>
+                                    <div class="category-name">
+                                        Food &amp; Wine
+                                    </div>
+                                </div>
+                                <div class="title-column">
+                                    <div class="title-main">
+                                        Galette des Rois (King's cake) organized by the French Stanford Student Association
+                                    </div>
+                                    <div class="title-sub">
+                                        Have you ever wanted to be a king for a day? Or just to taste an almond filled French pastry?
+
+                                        Then, come draw the kings and taste a "galette des rois" with the French Stanford Student Association!!!
+
+                                        The King's cake tradition celebrates Epiphany beginning of January in France. The King's cake is a circular cake made of flaky puff pastry layers with a dense center of frangipane (almond filling). A figurine is hidden in the cake and the person who finds it in their slice becomes "king" and wins a crown!
+
+                                        For the occasion, the French Stanford Student Association will buy French King's cakes and will serve them with quiches, salads and cider.
+
+                                        When: Wednesday, January 15th, 2014, from 6:30pm to 9pm
+                                        Where: the Assembly Room at the Bechtel International Center
+
+                                        This event is free and open to all. Bring your friends!
+
+                                        Please bring your ID if you want to drink wine or hard cider.
+
+                                        This event is sponsored by the Graduate Student Council, the Billie Achilles fund and the Bechtel International Center.
+                                    </div>
+                                </div>
+                                <div class="price-column">
+                                    <div class="price-free">
+                                        free
+                                    </div>
+                                </div>
+
+                                <div class="event-time-info">
+                                    <div class="graph">
+                                        <div class="box event-box" style="width: 21.9%; margin-left: 37.5%;">
+                                            <div class="duration-wrapper">
+                                                <div class="duration">3h30</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="address-column">
+                                    <div class="address">
+                                        Bechtel Internation Center, Stanford University
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="event-details">
+
+                                <div class="event-details-column-left">
+                                    <div class="event-title-field">
+                                        <div class="event-title">
+                                            Galette des Rois (King's cake) organized by the French Stanford Student Association
+                                        </div>
+                                    </div>
+
+                                    <div class="event-description-field">
+                                        <div class="event-description">
+                                            <p>Have you ever wanted to be a king for a day? Or just to taste an almond filled French pastry?</p>
+                                            <br>
+                                            <p>Then, come draw the kings and taste a "galette des rois" with the French Stanford Student Association!!!</p>
+                                            <br>
+                                            <p>The King's cake tradition celebrates Epiphany beginning of January in France. The King's cake is a circular cake made of flaky puff pastry layers with a dense center of frangipane (almond filling). A figurine is hidden in the cake and the person who finds it in their slice becomes "king" and wins a crown!</p>
+                                            <br>
+                                            <p>For the occasion, the French Stanford Student Association will buy French King's cakes and will serve them with quiches, salads and cider.</p>
+                                            <br>
+                                            <p>When: Wednesday, January 15th, 2014, from 6:30pm to 9pm
+                                            Where: the Assembly Room at the Bechtel International Center</p>
+                                            <br>
+                                            <p>This event is free and open to all. Bring your friends!</p>
+                                            <br>
+                                            <p>Please bring your ID if you want to drink wine or hard cider.</p>
+                                            <br>
+                                            <p>This event is sponsored by the Graduate Student Council, the Billie Achilles fund and the Bechtel International Center.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="event-external">
+                                        <div class="link-external">
+                                            <a href="http://live.stanford.edu/calendar/january-2014/grupo-corpo">View Event</a>
+                                            <div class="link-comment">(Opens organizer's page in a new window)</div>
+                                        </div>
+                                        <div class="calendar-integration"></div>
+                                        <div class="share-widgets"></div>
+                                    </div>
+
+                                </div>
+
+                                <div class="event-details-column-middle">
+
+                                    <div class="event-all-other container">
+                                        <div class="event-misc-info">
+                                            <div class="event-misc-info-when">
+                                                <div class="event-misc-info-subtitle">When:</div>
+                                                <div class="event-misc-info-details">Wednesday, January 29th, 2:30 PM</div>
+                                            </div>
+                                            <div class="event-misc-info-where">
+                                                <div class="event-misc-info-subtitle">Where:</div>
+                                                <div class="event-misc-info-details">Memorial Auditorium </div>
+                                            </div>
+                                            <div class="event-misc-info-price">
+                                                <div class="event-misc-info-subtitle">Price:</div>
+                                                <div class="event-misc-info-details">$10</div>
+                                            </div>
+                                            <div class="event-misc-info-admission">
+                                                <div class="event-misc-info-subtitle">Admission:</div>
+                                                <div class="event-misc-info-details">general $15 | student $10 | free for Stanford students with SUID | senior $10</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="event-details-column-right">
+                                    <div class="deselect">
+                                        Collapse
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="separator"></div>
+
+                        <div class="event">
+                            <div class="event-helper" style="display: none;">
+                                <div class="event-helper-category">5</div>
+                                <div class="event-helper-magic">2.5</div>
+                                <div class="event-helper-price">10</div>
+                                <div class="event-helper-start-time">4:30 PM</div>
+                                <div class="event-helper-duration-minutes">60</div>
+                            </div>
+
+                            <div class="event-info">
+                                <div class="toggle-expand"></div>
+                                <div class="category-column">
+                                    <div class="category-logos">
+                                        <div class="category-logo category-logo-meetup"></div>
+                                    </div>
+                                    <div class="category-name">
+                                        Meetup
+                                    </div>
+                                </div>
+                                <div class="title-column">
+                                    <div class="title-main">
+                                        Google Glass Meetup
+                                    </div>
+                                    <div class="title-sub">
+                                        It's becoming clear that Glass has tapped into something unique – perhaps the next step in human-computer interaction. This bleeding edge holds much potential for visionary entrepreneurs and curious developers alike. Join us, and share your thoughts, ideas and code on the most exciting device and technology that could change everything.
+                                    </div>
+                                </div>
+                                <div class="price-column">
+                                    <div class="from-flag">
+                                        from
+                                    </div>
+                                    <div class="currency from">
+                                        $
+                                    </div>
+                                    <div class="price from">
+                                        10
+                                    </div>
+                                </div>
+
+                                <div class="event-time-info">
+                                    <div class="graph">
+                                        <div class="box event-box" style="width: 6.3%; margin-left: 53.1%;">
+                                            <div class="duration-wrapper">
+                                                <div class="duration">1h00</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="address-column">
+                                    <div class="address">
+                                        Memorial Auditorium, Stanford University
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="event-details">
+
+                                <div class="event-details-column-left">
+                                    <div class="event-title-field">
+                                        <div class="event-title">Google Glass Meetup</div>
+                                    </div>
+
+                                    <div class="event-description-field">
+                                        <div class="event-description">
+                                            It's becoming clear that Glass has tapped into something unique – perhaps the next step in human-computer interaction. This bleeding edge holds much potential for visionary entrepreneurs and curious developers alike. Join us, and share your thoughts, ideas and code on the most exciting device and technology that could change everything.
+                                        </div>
+                                    </div>
+
+                                    <div class="event-external">
+                                        <div class="link-external">
+                                            <a href="http://live.stanford.edu/calendar/january-2014/grupo-corpo">View Event</a>
+                                            <div class="link-comment">(Opens organizer's page in a new window)</div>
+                                        </div>
+                                        <div class="calendar-integration"></div>
+                                        <div class="share-widgets"></div>
+                                    </div>
+
+                                </div>
+
+                                <div class="event-details-column-middle">
+
+                                    <div class="event-all-other container">
+                                        <div class="event-misc-info">
+                                            <div class="event-misc-info-when">
+                                                <div class="event-misc-info-subtitle">When:</div>
+                                                <div class="event-misc-info-details">Wednesday, January 29th, 4:30 PM</div>
+                                            </div>
+                                            <div class="event-misc-info-where">
+                                                <div class="event-misc-info-subtitle">Where:</div>
+                                                <div class="event-misc-info-details">Memorial Auditorium </div>
+                                            </div>
+                                            <div class="event-misc-info-price">
+                                                <div class="event-misc-info-subtitle">Price:</div>
+                                                <div class="event-misc-info-details">$10</div>
+                                            </div>
+                                            <div class="event-misc-info-admission">
+                                                <div class="event-misc-info-subtitle">Admission:</div>
+                                                <div class="event-misc-info-details">general $15 | student $10 | free for Stanford students with SUID | senior $10</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="event-details-column-right">
+                                    <div class="deselect">
+                                        Collapse
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="separator"></div>
+
+                        <div class="event">
+                            <div class="event-helper" style="display: none;">
+                                <div class="event-helper-category">6</div>
+                                <div class="event-helper-magic">2.5</div>
+                                <div class="event-helper-price">10</div>
+                                <div class="event-helper-start-time">5:30 PM</div>
+                                <div class="event-helper-duration-minutes">150</div>
+                            </div>
+
+                            <div class="event-info">
+                                <div class="toggle-expand"></div>
+                                <div class="category-column">
+                                    <div class="category-logos">
+                                        <div class="category-logo category-logo-music"></div>
+                                    </div>
+                                    <div class="category-name">
+                                        Music
+                                    </div>
+                                </div>
+                                <div class="title-column">
+                                    <div class="title-main">
+                                        Symposium: Arts and Music from Tibet
+                                    </div>
+                                    <div class="title-sub">
+                                        This symposium will feature musicians and scholars from Tibet. Professor Jiayong Qunpei of China's Minzu (Minority Nationalities) University will discuss music from Tibet, especially the Tibetan opera tradition. Reshi Tsering Tan, a popular and well-respected Tibetan recording artist, will share his experience as founder of the Shangri-La Folk Music Preservation Association (SFMPA). SFMPA is a non-profit organization devoted to making field recordings of traditional Tibetan music, especially fast-vanishing religious music. Select Tibetan musicians from the Tibetan Opera and Music Troupe of Qinghai Regong will demonstrate various types of Tibetan traditional and monastic music.
+                                    </div>
+                                </div>
+                                <div class="price-column">
+                                    <div class="from-flag">
+                                        from
+                                    </div>
+                                    <div class="currency from">
+                                        $
+                                    </div>
+                                    <div class="price from">
+                                        10
+                                    </div>
+                                </div>
+
+                                <div class="event-time-info">
+                                    <div class="graph">
+                                        <div class="box event-box" style="width: 15.6%; margin-left: 59.4%;">
+                                            <div class="duration-wrapper">
+                                                <div class="duration">2h30</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="address-column">
+                                    <div class="address">
+                                        Memorial Auditorium, Stanford University
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="event-details">
+
+                                <div class="event-details-column-left">
+                                    <div class="event-title-field">
+                                        <div class="event-title">
+                                            Symposium: Arts and Music from Tibet
+                                        </div>
+                                    </div>
+
+                                    <div class="event-description-field">
+                                        <div class="event-description">
+                                            This symposium will feature musicians and scholars from Tibet. Professor Jiayong Qunpei of China's Minzu (Minority Nationalities) University will discuss music from Tibet, especially the Tibetan opera tradition. Reshi Tsering Tan, a popular and well-respected Tibetan recording artist, will share his experience as founder of the Shangri-La Folk Music Preservation Association (SFMPA). SFMPA is a non-profit organization devoted to making field recordings of traditional Tibetan music, especially fast-vanishing religious music. Select Tibetan musicians from the Tibetan Opera and Music Troupe of Qinghai Regong will demonstrate various types of Tibetan traditional and monastic music.
+                                        </div>
+                                    </div>
+
+                                    <div class="event-external">
+                                        <div class="link-external">
+                                            <a href="http://live.stanford.edu/calendar/january-2014/grupo-corpo">View Event</a>
+                                            <div class="link-comment">(Opens organizer's page in a new window)</div>
+                                        </div>
+                                        <div class="calendar-integration"></div>
+                                        <div class="share-widgets"></div>
+                                    </div>
+
+                                </div>
+
+                                <div class="event-details-column-middle">
+
+                                    <div class="event-all-other container">
+                                        <div class="event-misc-info">
+                                            <div class="event-misc-info-when">
+                                                <div class="event-misc-info-subtitle">When:</div>
+                                                <div class="event-misc-info-details">Wednesday, January 29th, 5:30 PM</div>
+                                            </div>
+                                            <div class="event-misc-info-where">
+                                                <div class="event-misc-info-subtitle">Where:</div>
+                                                <div class="event-misc-info-details">Memorial Auditorium </div>
+                                            </div>
+                                            <div class="event-misc-info-price">
+                                                <div class="event-misc-info-subtitle">Price:</div>
+                                                <div class="event-misc-info-details">$10</div>
+                                            </div>
+                                            <div class="event-misc-info-admission">
+                                                <div class="event-misc-info-subtitle">Admission:</div>
+                                                <div class="event-misc-info-details">general $15 | student $10 | free for Stanford students with SUID | senior $10</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="event-details-column-right">
+                                    <div class="deselect">
+                                        Collapse
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="separator"></div>
+
+                        <div class="event">
+                            <div class="event-helper" style="display: none;">
+                                <div class="event-helper-category">7</div>
+                                <div class="event-helper-magic">2.5</div>
+                                <div class="event-helper-price">0</div>
+                                <div class="event-helper-start-time">6:30 PM</div>
+                                <div class="event-helper-duration-minutes">90</div>
+                            </div>
+
+                            <div class="event-info">
+                                <div class="toggle-expand"></div>
+                                <div class="category-column">
+                                    <div class="category-logos">
+                                        <div class="category-logo category-logo-sports"></div>
+                                    </div>
+                                    <div class="category-name">
+                                        Sports
+                                    </div>
+                                </div>
+                                <div class="title-column">
+                                    <div class="title-main">
+                                        Interdepartmental Foosball Tournament
+                                    </div>
+                                    <div class="title-sub">
+                                        When: Friday, 31 Jan, 5pm
+                                        Where: Durand
+                                        Who: Students in Mechanical Engineering, Business, and their teammates
+
+                                        Gear up for the Super Bowl by joining us for an interdepartmental foosball tournament! Teams must have a least one member in ME or Business, but you can also sign up as an individual and be paired by the organizers!  Each team will be assigned an NFL team name, and we'll see who wins it all!  We'll have beer, EANABS, pizza, and a trophy for the winner!
+                                    </div>
+                                </div>
+                                <div class="price-column">
+                                    <div class="price-free">
+                                        free
+                                    </div>
+                                </div>
+
+                                <div class="event-time-info">
+                                    <div class="graph">
+                                        <div class="box event-box" style="width: 9.4%; margin-left: 65.6%;">
+                                            <div class="duration-wrapper">
+                                                <div class="duration">1h30</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="address-column">
+                                    <div class="address">
+                                        Durand, Stanford University
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="event-details">
+
+                                <div class="event-details-column-left">
+                                    <div class="event-title-field">
+                                        <div class="event-title">Interdepartmental Foosball Tournament</div>
+                                    </div>
+
+                                    <div class="event-description-field">
+                                        <div class="event-description">
+                                            <p>When: Friday, 31 Jan, 5pm</p>
+                                            <p>Where: Durand</p>
+                                            <p>Who: Students in Mechanical Engineering, Business, and their teammates</p>
+                                            <br>
+                                            <p>Gear up for the Super Bowl by joining us for an interdepartmental foosball tournament! Teams must have a least one member in ME or Business, but you can also sign up as an individual and be paired by the organizers!  Each team will be assigned an NFL team name, and we'll see who wins it all!  We'll have beer, EANABS, pizza, and a trophy for the winner!</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="event-external">
+                                        <div class="link-external">
+                                            <a href="http://live.stanford.edu/calendar/january-2014/grupo-corpo">View Event</a>
+                                            <div class="link-comment">(Opens organizer's page in a new window)</div>
+                                        </div>
+                                        <div class="calendar-integration"></div>
+                                        <div class="share-widgets"></div>
+                                    </div>
+
+                                </div>
+
+                                <div class="event-details-column-middle">
+
+                                    <div class="event-all-other container">
+                                        <div class="event-misc-info">
+                                            <div class="event-misc-info-when">
+                                                <div class="event-misc-info-subtitle">When:</div>
+                                                <div class="event-misc-info-details">Wednesday, January 29th, 2:30 PM</div>
+                                            </div>
+                                            <div class="event-misc-info-where">
+                                                <div class="event-misc-info-subtitle">Where:</div>
+                                                <div class="event-misc-info-details">Memorial Auditorium </div>
+                                            </div>
+                                            <div class="event-misc-info-price">
+                                                <div class="event-misc-info-subtitle">Price:</div>
+                                                <div class="event-misc-info-details">$10</div>
+                                            </div>
+                                            <div class="event-misc-info-admission">
+                                                <div class="event-misc-info-subtitle">Admission:</div>
+                                                <div class="event-misc-info-details">general $15 | student $10 | free for Stanford students with SUID | senior $10</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="event-details-column-right">
+                                    <div class="deselect">
+                                        Collapse
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="separator"></div>
+
+                        <div class="event">
+                            <div class="event-helper" style="display: none;">
+                                <div class="event-helper-category">4</div>
+                                <div class="event-helper-magic">2.5</div>
+                                <div class="event-helper-price">10</div>
+                                <div class="event-helper-start-time">6:00 PM</div>
+                                <div class="event-helper-duration-minutes">0</div>
+                            </div>
+
+                            <div class="event-info">
+                                <div class="toggle-expand"></div>
+                                <div class="category-column">
+                                    <div class="category-logos">
+                                        <div class="category-logo category-logo-food-wine"></div>
+                                    </div>
+                                    <div class="category-name">
+                                        Food &amp; Wine
+                                    </div>
+                                </div>
+                                <div class="title-column">
+                                    <div class="title-main">
+                                        Oregano's Pizza
+                                    </div>
+                                    <div class="title-sub">
+                                        Broke after the holidays, looking for a free dinner?  Before things get too crazy in the quarter, come join other graduate students for dinner at Oregano's Wood-Fired Pizza in Los Altos and the GSPB will sponsor up to $15 (including tax and tip) for your meal.  This event is limited to 20 people so please respond to the survey by Tuesday January 14, 2014 at 8.00pm to be included in the lottery (Winners will be notified that evening).  Consult the menu https://www.waitersonwheels.com/menus/141.pdf, and bring cash to cover any amount over $15. Preference may be given to drivers.  Any questions contact Steve Krukowski (spk170@stanford.edu) or Zach Vane (zvane@stanford.edu).  Sign up at https://www.research.net/s/78P96NV
+                                    </div>
+                                </div>
+                                <div class="price-column">
+                                    <div class="currency">
+                                        $
+                                    </div>
+                                    <div class="price">
+                                        15
+                                    </div>
+                                </div>
+
+                                <div class="event-time-info">
+                                    <div class="graph">
+                                        <div class="box event-box" style="width: 12.5%; margin-left: 62.5%;">
+                                            <div class="duration-wrapper">
+                                                <div class="duration">2h00</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="address-column">
+                                    <div class="address">
+                                        Oregano's Wood-Fired Pizza (4546 El Camino Real, Los Altos, CA 94022)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="event-details">
+
+                                <div class="event-details-column-left">
+                                    <div class="event-title-field">
+                                        <div class="event-title">
+                                            Oregano's Pizza
+                                        </div>
+                                    </div>
+
+                                    <div class="event-description-field">
+                                        <div class="event-description">
+                                        Broke after the holidays, looking for a free dinner?  Before things get too crazy in the quarter, come join other graduate students for dinner at Oregano's Wood-Fired Pizza in Los Altos and the GSPB will sponsor up to $15 (including tax and tip) for your meal.  This event is limited to 20 people so please respond to the survey by Tuesday January 14, 2014 at 8.00pm to be included in the lottery (Winners will be notified that evening).  Consult the menu https://www.waitersonwheels.com/menus/141.pdf, and bring cash to cover any amount over $15. Preference may be given to drivers.  Any questions contact Steve Krukowski (spk170@stanford.edu) or Zach Vane (zvane@stanford.edu).  Sign up at https://www.research.net/s/78P96NV
+                                        </div>
+                                    </div>
+
+                                    <div class="event-external">
+                                        <div class="link-external">
+                                            <a href="http://live.stanford.edu/calendar/january-2014/grupo-corpo">View Event</a>
+                                            <div class="link-comment">(Opens organizer's page in a new window)</div>
+                                        </div>
+                                        <div class="calendar-integration"></div>
+                                        <div class="share-widgets"></div>
+                                    </div>
+
+                                </div>
+
+                                <div class="event-details-column-middle">
+
+                                    <div class="event-all-other container">
+                                        <div class="event-misc-info">
+                                            <div class="event-misc-info-when">
+                                                <div class="event-misc-info-subtitle">When:</div>
+                                                <div class="event-misc-info-details">Wednesday, January 29th, 6:00 PM</div>
+                                            </div>
+                                            <div class="event-misc-info-where">
+                                                <div class="event-misc-info-subtitle">Where:</div>
+                                                <div class="event-misc-info-details">Oregano's Wood-Fired Pizza (4546 El Camino Real, Los Altos, CA 94022)</div>
+                                            </div>
+                                            <div class="event-misc-info-price">
+                                                <div class="event-misc-info-subtitle">Price:</div>
+                                                <div class="event-misc-info-details">$15</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="event-details-column-right">
+                                    <div class="deselect">
+                                        Collapse
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+                <div class="no-event-found-warning" style="display: none;">
+                    No event found with the filters you selected...
+                </div>
+                <div class="bottom-spacer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/cf.js"></script>
+
+</body>
+
+</html>

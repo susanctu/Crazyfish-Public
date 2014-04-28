@@ -1,0 +1,80 @@
+<!-- **************************************************************************
+Time filter control for the search_results.html template.
+    @param {min_time} Minimum time that the time filter will allow.
+    @param {max_time} Maximum time that the time filter will allow.
+    @param {times_val_and_pos} A list of times that will be displayed on the
+           time list, as well as the position where they should be displayed.
+           Each element of the list should have the fields "pos" (a floating
+           point number corresponding to the percentage to the left the time
+           should be placed at) and "val", which is the string which wil be
+           displayed to indicate the time (for example, "10am").
+    @param {date} The date for which events are being looked up.
+*************************************************************************** -->
+<div class="timeline-table">
+    <!-- Start/end time selection goes here -->
+    <div class="head-block">
+        <div class="timeheader">
+
+            <!-- This helper is not displayed but is used by the front-end JS
+            code to switch between percentages and times -->
+            <div class="time-helper" style="display: none;">
+                <span class="time-helper-min-value">{{ min_time }}</span>
+                <span class="time-helper-max-value">{{ max_time }}</span>
+            </div>
+
+            <!-- Left anchor is initialized on the leftmost possible position,
+            consequently its starting value should be min_time -->
+            <div class="anchor left">
+                <div class="hit-area left">
+                    <div class="time-flag right right-arrow">
+                        Start
+                        <div class="arrow"></div>
+                    </div>
+                    <div class="time-flag left left-border timebox">
+                        {{ min_time }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Build the list of times that are displayed with a
+            numerical value here -->
+            {% for time in times_val_and_pos %}
+            <div class="timeval" style="left: {{ time.pos }}%; width: 25%;">
+                <div class="time">
+                    {{ time.val }}
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+
+        <!-- For alignment purposes, separate the right time slider.
+         It's easier this way in the CSS. -->
+        <div class="timeheader timeheader-right">
+
+            <!-- Right anchor is initialized on the rightmost possible position,
+            consequently its starting value should be max_time -->
+            <div class="anchor right" style="left: 100%;">
+                <div class="hit-area right">
+                    <div class="time-flag left left-arrow">
+                        End
+                        <div class="arrow"></div>
+                    </div>
+                    <div class="time-flag right right-border timebox">
+                        {{ max_time }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Default behavior is to select all events, so no need to worry about
+        this part of the template, however date should still be set to the
+        correct value -->
+        <div class="left-column-header">
+            <div class="main">
+                <p class="col-header-cat">All events</p>
+                <p class="col-header-date">{{ date }}</p>
+            </div>
+        </div>
+    </div>
+</div>

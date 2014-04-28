@@ -1,0 +1,23 @@
+<!-- **************************************************************************
+Lines for the event timing graph in the search_results.html template.
+    @param {lines_data_pos}: an array of position of lines, specified as a
+           floating point number representing a percentage of the time bar
+           (ex: 15.5), WITHOUT the percent sign.
+           The first and last line (0 and 100%) should NOT be included in this
+           array.
+*************************************************************************** -->
+<div class="alllines">
+    <!-- The graydivs will materialize which areas are greyed out when the user
+    slides the time filter controls around -->
+    <div class="graydiv graydiv-left"></div>
+    <div class="graydiv graydiv-right"></div>
+
+    <!-- Those lines are here to help the user materialize when events start and
+    end, so there should be an appropriate number so that the page is easy to
+    read and still looks elegant -->
+    <div class="line" style="left: 0%;"></div>
+{% for line_pos in lines_data_pos %}
+    <div class="line" style="left: {{ line_pos }}%;"></div>
+{% endfor %}
+    <div class="line" style="left: calc(100% - 1px);"></div>
+</div>

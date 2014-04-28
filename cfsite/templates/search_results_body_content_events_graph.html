@@ -1,0 +1,245 @@
+<!-- **************************************************************************
+The events graph is rendered here for the search_results.html landing page.
+    @param {event_list} A list of all the events that happen on the
+           user-specified date. Each event in the list should have the
+           following fields: category_list, rating, price, event_start_time,
+           duration, category_logo, name, description_short,
+           description_formatted, price_details, duration_percent,
+           duration_minutes, event_start_time_percent, website,
+           event_datetime_verbose
+
+Those fields hold the following information:
+    {category_list} A list of category IDs the event belongs to.
+    {rating} The rating of the event. Used for "magic" sorting.
+    {name} String describing the event.
+    {description_short} String giving details about the event. Optional.
+    {description_formatted} String giving details about the event, formatted
+                            to display nicely in the event details. Optional.
+    {event_start_time} Start time of the event. String.
+    {event_start_time_percent} Start time of the event, as a percentage of
+                               the time bar, represented by a floating point
+                               number WITHOUT a percent sign.
+    {duration} The duration of the event, as it should appear to the user
+               (example: "1h").
+    {duration_percent} The duration, converted to a floating point value
+                       representing a percentage of the time bar (ex: 15.5).
+                       There should NOT be a percent sign here.
+    {duration_minutes} The duration in minutes. Integer.
+    {price} Numerical price of the event (NO CURRENCY SIGN!).
+    {price_details} String detailing pricing policy for the event. Optional.
+    {website} URL of the event website. Optional.
+    {event_datetime_verbose} String representing how the date and time of the
+                             event should be represented to the user.
+    {category_logo} should itself have two fields, one with a string of all
+                    the valid class names for the logo, which will tell the CSS
+                    which logo to render. The other will correspond to the
+                    verbose name of the category. The first field is "css"
+                    and the second one is "name".
+    {address} address of the event. Optional.
+*************************************************************************** -->
+<div class="events-graph">
+{% for event in event_list %}
+    <div class="event">
+        <!-- Helper data, hidden but used by the JS code to make parsing of the
+        event a little easier -->
+        <div class="event-helper" style="display: none;">
+            <div class="event-helper-category">{{ event.category_list }}</div>
+            <div class="event-helper-magic">{{ event.rating }}</div>
+            <div class="event-helper-price">{{ event.price }}</div>
+            <div class="event-helper-start-time">{{ event.event_start_time }}</div>
+            <div class="event-helper-duration-minutes">{{ event.duration_minutes }}</div>
+        </div>
+
+        <!-- Event info corresponds to the summary of the event that appears
+        directly on the event graph -->
+        <div class="event-info">
+            <!-- Category information and logo -->
+        {% if event.category_logo %}
+            <div class="category-column">
+                <div class="category-logos">
+                    <div class="category-logo category-logo-{{ event.category_logo.css }}"></div>
+                </div>
+                <div class="category-name">
+                    {{ event.category_logo.name|title }}
+                </div>
+            </div>
+        {% else %}
+            <div class="category-column">
+                <div class="category-logos">
+                    <div class="category-logo">??</div>
+                </div>
+                <div class="category-name">
+                    Other
+                </div>
+            </div>
+        {% endif %}
+
+            <!-- Title and subtitle -->
+            <div class="title-column">
+                <div class="title-main">
+                    {{ event.name }}
+                </div>
+                <div class="title-sub">
+                {% if event.description_short %}
+                    {{ event.description_short }}
+                {% else %}
+                    No description for this event
+                {% endif %}
+                </div>
+            </div>
+
+            <!-- Pricing information -->
+            <div class="price-column">
+                <!-- Two types of price display depending on whether supplementary
+                pricing information is available or not -->
+            {% if event.price_details %}
+                <div class="from-flag">
+                    from
+                </div>
+                {% if event.price > 0 %}
+                <div class="currency from">
+                {% if event.price %}
+                    $
+                {% endif %}
+                </div>
+                <div class="price from">
+                    {{ event.price }}
+                </div>
+                {% else %}
+                <div class="price-free from">
+                    free
+                </div>
+                {% endif %}
+            {% else %}
+                {% if event.price > 0 %}
+                <div class="currency">
+                {% if event.price %}
+                    $
+                {% endif %}
+                </div>
+                <div class="price">
+                    {{ event.price }}
+                </div>
+                {% else %}
+                <div class="price-free">
+                    free
+                </div>
+                {% endif %}
+            {% endif %}
+            </div>
+
+            <!-- Event box in the event graph -->
+            <div class="event-time-info">
+                <!-- Two types of graph depending on whether the event duration is
+                available or not -->
+            {% if event.duration_minutes > 0 %}
+                <div class="graph">
+                    <div class="box event-box" style="width: {{ event.duration_percent }}%; margin-left: {{ event.event_start_time_percent }}%;">
+                        <div class="duration-wrapper">
+                            <div class="duration">{{ event.duration }}</div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="graph">
+                    <div class="event-box no-duration" style="margin-left: {{ event.event_start_time_percent }}%">
+                        <div class="point warning"></div>
+                        <div class="warning-message"></div>
+                    </div>
+                </div>
+            {% endif %}
+            </div>
+
+            <!-- Address information -->
+            <div class="address-column">
+                <div class="address">
+                    {% if event.address %}
+                        {{ event.address }}
+                    {% else %}
+                        No address data for this event.
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+        <!-- The event details show up when the user clicks on the event info
+        from the main event graph -->
+        <div class="event-details">
+            <!-- Left column has the title and long description, as well as the link to the organizer's website -->
+            <div class="event-details-column-left">
+                <div class="event-title-field">
+                    <div class="event-title">
+                        {{ event.name }}
+                    </div>
+                </div>
+
+                <div class="event-description-field">
+                    <div class="event-description">
+                    {% if event.description_formatted %}
+                        {{ event.description_formatted|safe }}
+                    {% else %}
+                        No description for this event
+                    {% endif %}
+                    </div>
+                </div>
+
+                <div class="event-external">
+                {% if event.website %}
+                    <div class="link-external">
+                        <a href="{{ event.website }}">View Event</a>
+                        <div class="link-comment">(Opens organizer's page in a new window)</div>
+                    </div>
+                {% endif %}
+                    <div class="calendar-integration"></div>
+                    <div class="share-widgets"></div>
+                </div>
+            </div>
+
+            <!-- Middle column has pricing, pricing details, address, date information -->
+            <div class="event-details-column-middle">
+
+                <div class="event-all-other container">
+                    <div class="event-misc-info">
+                        <div class="event-misc-info-when">
+                            <div class="event-misc-info-subtitle">When:</div>
+                            <div class="event-misc-info-details">{{ event.event_datetime_verbose }}</div>
+                        </div>
+                    {% if event.address %}
+                        <div class="event-misc-info-where">
+                            <div class="event-misc-info-subtitle">Where:</div>
+                            <div class="event-misc-info-details">{{ event.address }}</div>
+                        </div>
+                    {% endif %}
+                    {% if event.price %}
+                        <div class="event-misc-info-price">
+                            <div class="event-misc-info-subtitle">Price:</div>
+                            <div class="event-misc-info-details">${{ event.price }}</div>
+                        </div>
+                    {% endif %}
+                    {% if event.price_details %}
+                        <div class="event-misc-info-admission">
+                            <div class="event-misc-info-subtitle">Admission:</div>
+                            <div class="event-misc-info-details">{{ event.price_details }}</div>
+                        </div>
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right column only has the collapse control -->
+            <div class="event-details-column-right">
+                <div class="deselect">
+                    Collapse
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+<!-- Render separator only if it is not the last event in the list -->
+{% if not forloop.last %}
+    <div class="separator"></div>
+{% endif %}
+
+{% endfor %}
+</div>

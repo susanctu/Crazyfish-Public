@@ -1,0 +1,224 @@
+/*!
+ * Bootstrap v3.0.2 by @fat and @mdo
+ * Copyright 2013 Twitter, Inc.
+ * Licensed under http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Designed and built with all the love in the world by @mdo and @fat.
+ */
+
+/*! normalize.css v2.1.3 | MIT License | git.io/normalize */
+ body{
+  background-color: #0ec7ee;
+  font-family: bariol;
+ }
+ 
+ .main-search{
+  min-width: 330px; /* this needs to be larger than the width of the largest blank / single word*/
+  margin: 0px 30px 30px;
+ }
+
+ .blue-box {
+  background-color: #057f99;
+  color: #fff; /* text color */
+  font-family: "Quicksand";
+  font-size: 35px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  padding-left: 30px;
+  padding-right: 30px;
+ }
+
+ .error404 {
+  color: #8df0fb; 
+  font-family: "Quicksand";
+ }
+
+.above-header-spacer {
+    width: 200px;
+    height: 125px;
+}
+
+.btn-search{
+    text-align: center;
+    width: 200px;
+    margin-left: calc((50% - 100px));
+    margin-right: calc((50% - 100px));
+    margin-top: 50px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px; /* border radius */
+    -moz-background-clip: padding;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box; /* prevents bg color from leaking outside the border */
+    background-color: #09a990; /* layer fill content + color overlay */
+    -moz-box-shadow: inset 0 -3px 0 rgba(0,0,0,.34); /* inner shadow */
+    -webkit-box-shadow: inset 0 -3px 0 rgba(0,0,0,.34); /* inner shadow */
+    box-shadow: inset 0 -3px 0 rgba(0,0,0,.34); /* inner shadow */
+    color: #fff; /* text color + color overlay */
+    font-family: "Quicksand";
+    font-weight: 400;
+    font-size: 23px;
+    text-shadow: 0 1px 2px rgba(0,0,0,.25); /* drop shadow */
+}
+
+.btn-search:hover {
+    color: #fff;
+}
+
+.btn-default,
+.btn-default:hover,
+.btn-default:focus {
+  background-image:none;
+  background-color: #057f99;
+  color: #00e3fe; /* text color */
+  font-family: "Quicksand";
+  font-weight: 400; 
+  font-size: 17px;
+  border:0px;
+  text-shadow:none;
+} 
+
+.dropdown-menu{
+    position:absolute;
+    right:0px;
+    font-family: "Quicksand";
+    font-weight: 400;
+    font-size: 23px;
+    background-color:#35b2d2;
+    color: #057f99;
+    padding: 15px;
+    margin:0; /* set back to default */
+    border: none; /* back to default */
+    border-radius:0;/* back to default */
+    webkit-box-shadow: none;/* back to default */
+    box-shadow: none; /* back to default */
+    background-clip:border-box; /* back to default */
+}
+
+ textarea:focus, input[type="text"]:focus,
+ textarea[type="text"]:focus,   
+ input[type="password"]:focus, 
+ input[type="datetime"]:focus, 
+ input[type="datetime-local"]:focus, 
+ input[type="date"]:focus, input[type="month"]:focus, 
+ input[type="time"]:focus, input[type="week"]:focus, 
+ input[type="number"]:focus, input[type="email"]:focus, 
+ input[type="url"]:focus, input[type="search"]:focus, 
+ input[type="tel"]:focus,  input[type="color"]:focus, 
+ .uneditable-input:focus, 
+ .form-control:focus,
+ .form-control[readonly]:focus{  
+border-color: none;
+box-shadow: none;
+outline: none;
+cursor: pointer;
+}
+
+.form-group {
+   margin:0 auto; /* for centering */
+}
+
+.form-text {
+   display:inline;
+}
+.form-control,
+.form-control[readonly] {
+    font-size: 35px;
+    height: auto;
+    vertical-align: text-bottom;
+    padding-top: 0;
+    padding-bottom: 0;
+    line-height: 100%;
+    color: #00e3fe;
+    background-color:transparent;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom:  #0ec7ee;
+    border-bottom-width: 1.5px;
+    border-bottom-style: dashed;
+    border-radius:0;/* back to default */
+    webkit-box-shadow: none;/* back to default */
+    box-shadow: none; /* back to default */
+    background-clip:border-box; /* back to default */
+    webkit-transition: none; /* back to default */
+    transition: none;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    
+
+} 
+ 
+.icon {
+    padding: 5px 0 0 38px;
+}
+ 
+.arts-icon {
+    background: url('../img/icons/icon-black-arts.png') no-repeat left;
+}
+
+ .arts-icon:hover {
+   background: url('../img/icons/icon-on-arts.png') no-repeat left;
+}
+
+ .food-icon {
+   background: url('../img/icons/icon-black-food.png') no-repeat left;
+}
+
+ .food-icon:hover {
+   background: url('../img/icons/icon-on-food.png') no-repeat left;
+}
+
+ .classes-icon {
+   background: url('../img/icons/icon-black-classes.png') no-repeat left;
+}
+
+ .classes-icon:hover {
+   background: url('../img/icons/icon-on-classes.png') no-repeat left;
+}
+
+ .meetups-icon {
+   background: url('../img/icons/icon-black-meetups.png') no-repeat left;
+}
+
+ .meetups-icon:hover {
+   background: url('../img/icons/icon-on-meetups.png') no-repeat left;
+}
+
+ .conferences-icon {
+   background: url('../img/icons/icon-black-conferences.png') no-repeat left;
+}
+
+ .conferences-icon:hover {
+   background: url('../img/icons/icon-on-conferences.png') no-repeat left;
+}
+
+ .music-icon {
+   background: url('../img/icons/icon-black-music.png') no-repeat left;
+}
+
+ .music-icon:hover {
+   background: url('../img/icons/icon-on-music.png') no-repeat left;
+}
+
+ .family-icon {
+   background: url('../img/icons/icon-black-family.png') no-repeat left;
+}
+
+ .family-icon:hover {
+   background: url('../img/icons/icon-on-family.png') no-repeat left;
+}
+
+ .sport-icon {
+   background: url('../img/icons/icon-black-sports.png') no-repeat left;
+}
+
+ .sport-icon:hover {
+   background: url('../img/icons/icon-on-sports.png') no-repeat left;
+}
+
+.hover-white:hover{
+  color:white;
+}
+
+
