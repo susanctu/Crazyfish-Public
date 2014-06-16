@@ -17,3 +17,5 @@ The repository contains the following elements of the crazyfish project:
 It also contains a script (webgen/) that recognizes a simple templating language and replaces appropriate
 elements with user-specified html. It was intended to make faking an interactive website
 quick and easy, no coding knowledge (beyond html and css) required. 
+
+Code is provided under the MIT license, graphics under Creative Commons Attribution 3.0 (see license in mocks/ directory).
