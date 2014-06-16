@@ -1,6 +1,6 @@
-This repository was separted out from the contents of our (Bowen Pan, Georges Goetz, Susan Tu) private repo. 
+This repository was separated out from the contents of our (Bowen Pan, Georges Goetz, Susan Tu) private repo. 
  
-It contains the source code and resources for the first prototype
+It contains the source code and resources for the first prototype (online at http://www.crazyfish.info/)
 of the crazyfish events aggregator website. The website uses the Django framework on the back
 end, and Bootstrap for the front end. 
 
@@ -18,4 +18,4 @@ It also contains a script (webgen/) that recognizes a simple templating language
 elements with user-specified html. It was intended to make faking an interactive website
 quick and easy, no coding knowledge (beyond html and css) required. 
 
-Code is provided under the MIT license, graphics under Creative Commons Attribution 3.0 (see license in mocks/ directory).
+Code is provided under the MIT license, graphics under Creative Commons Attribution 3.0 (see separate license in mocks/ directory).
