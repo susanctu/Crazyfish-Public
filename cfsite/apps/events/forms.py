@@ -93,11 +93,12 @@ class SearchForm(forms.Form):
         self.cleaned_data['location_id'] = matching_location_ids[0]
         location = Location.objects.get(id=matching_location_ids[0])
 
+        # TODO (susanctu): disable for now:
         # Cleaning date
-        t = self.cleaned_data['date']
-        now = datetime.now(pytz.timezone(location.timezone)).date()
-        if t < now:
-            raise forms.ValidationError("It looks like the date you searched for already happened...")
+        # t = self.cleaned_data['date']
+        # now = datetime.now(pytz.timezone(location.timezone)).date()
+        # if t < now:
+        #     raise forms.ValidationError("It looks like the date you searched for already happened...")
 
         return self.cleaned_data
 
